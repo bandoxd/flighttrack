@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Indonesia Flight Deal Monitor</title>
+<style>
+.viz-root{color-scheme:light;--bg:#f4f4f2;--surface-1:#fcfcfb;--surface-2:#f6f6f4;--border:#e3e2de;--grid:#ebeae6;
+--text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#77766f;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;
+--good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;--accent:#2a78d6}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;--bg:#111110;
+--surface-1:#1a1a19;--surface-2:#20201f;--border:#2e2e2c;--grid:#262624;--text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--accent:#3987e5}}
+:root[data-theme="dark"] .viz-root{color-scheme:dark;--bg:#111110;--surface-1:#1a1a19;--surface-2:#20201f;--border:#2e2e2c;--grid:#262624;
+--text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--accent:#3987e5}
+*{box-sizing:border-box}
+body{margin:0}
+.viz-root{background:var(--bg);color:var(--text-primary);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:20px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px}
+h1{font-size:21px;margin:0;letter-spacing:-.01em}
+h2{font-size:15px;margin:0;font-weight:650}
+.sub{color:var(--text-secondary);font-size:13px}
+.muted{color:var(--text-muted)}
+.err{color:var(--critical)}
+a{color:var(--accent)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 2px 8px;flex-wrap:wrap}
+.banner{border-radius:10px;padding:10px 14px;font-weight:600;border:1px solid var(--serious);background:color-mix(in srgb,var(--serious) 14%,transparent)}
+.status{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;font-size:13px}
+.status b{font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--border);white-space:nowrap;background:var(--surface-1)}
+.badge i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:baseline;flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13px;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);border-radius:999px;padding:4px 12px;cursor:pointer;display:inline-flex;align-items:center}
+.chip[aria-pressed="true"]{border-color:var(--text-primary);font-weight:600}
+button.plain{font:inherit;font-size:12px;background:transparent;color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:4px 10px;cursor:pointer}
+button.plain[aria-pressed="true"]{background:var(--grid)}
+/* Verbindungs-Pakete */
+.conns{display:grid;gap:8px}
+details.conn{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+details.conn[open]{border-color:var(--text-muted)}
+details.conn > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:110px 1fr auto;gap:6px 16px;align-items:center;padding:12px 14px}
+details.conn > summary::-webkit-details-marker{display:none}
+details.conn > summary:hover{background:var(--surface-2)}
+.price{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.price small{display:block;font-size:11px;font-weight:500;color:var(--text-muted)}
+.route{display:flex;flex-direction:column;gap:3px;min-width:0}
+.legline{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:13px}
+.legline .ap{font-weight:650;letter-spacing:.02em}
+.pill{font-size:12px;color:var(--text-secondary);background:var(--surface-2);border:1px solid var(--grid);border-radius:6px;padding:0 6px;white-space:nowrap}
+.meta{font-size:12px;color:var(--text-muted)}
+.chev{color:var(--text-muted);font-size:18px;transition:transform .15s}
+details[open] .chev{transform:rotate(90deg)}
+.body{border-top:1px solid var(--grid);padding:14px;display:grid;gap:14px;background:var(--surface-2)}
+.legs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.legbox h3{font-size:13px;margin:0 0 8px;color:var(--text-secondary);font-weight:650}
+.seg{display:grid;grid-template-columns:58px 1fr auto;gap:2px 10px;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface-1)}
+.seg .t{font-variant-numeric:tabular-nums;font-weight:650}
+.seg .fn{grid-column:1/-1;font-size:12px;color:var(--text-muted)}
+.lay{margin:4px 0 4px 18px;padding:2px 0 2px 12px;border-left:2px dashed var(--border);font-size:12px;color:var(--text-secondary)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;font-size:13px}
+.facts .k{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:13px;border-radius:8px;padding:6px 12px}
+.warn{font-size:12px;color:var(--text-secondary)}
+.empty{color:var(--text-muted);padding:16px 0;text-align:center}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.kpi .lbl{color:var(--text-secondary);font-size:12px;display:flex}
+.kpi .val{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums;margin:2px 0}
+/* Chart + Tabellen */
+.chart-wrap{position:relative}
+svg text{fill:var(--text-secondary);font-size:11px}
+.tip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;min-width:170px;z-index:2}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-secondary);margin:6px 0}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{color:var(--text-secondary);font-weight:600;font-size:12px}
+td.num,th.num{text-align:right}
+.scroll{overflow-x:auto}
+.cell{border-radius:6px;padding:2px 6px;display:inline-block;min-width:58px;text-align:right}
+details.more{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+details.more > summary{cursor:pointer;font-weight:650}
+details.more[open] > summary{margin-bottom:10px}
+@media (max-width:640px){details.conn > summary{grid-template-columns:1fr auto}.price{grid-column:1/-1;display:flex;gap:10px;align-items:baseline}.price small{display:inline}}
+</style>
+</head>
+<body class="viz-root">
+<div class="wrap" id="app"></div>
+<script>
+const D = {"generated": "2026-10-31T01:17:54+00:00", "demo": false, "config": {"trip": {"origin": "FRA", "adults": 1, "currency": "EUR", "depart_from": "2027-03-01", "depart_to": "2027-05-15", "depart_step_days": 4, "durations": [27, 30, 33], "max_stops": 1, "max_leg_duration_h": 26, "max_layover_h": 8}, "thresholds": {"extreme": 750, "good": 850, "normal": 950, "below_baseline_pct": 15, "baseline_days": 21, "baseline_min_samples": 6, "renotify_drop_eur": 25}, "budget": {"monthly_searches": 250, "reserve_for_verification": 30, "runs_per_day": 2, "max_searches_per_run": 6, "max_verifications_per_run": 2}, "variants": [{"id": "V1", "name": "Gabelflug FRA→SUB / DPS→FRA", "penalty_eur": 0, "outbound_to": "SUB", "return_from": "DPS"}, {"id": "V2", "name": "Hin & zurück FRA⇄DPS", "penalty_eur": 40, "outbound_to": "DPS", "return_from": "DPS"}, {"id": "V3", "name": "Gabelflug FRA→CGK / DPS→FRA", "penalty_eur": 40, "outbound_to": "CGK", "return_from": "DPS"}, {"id": "V4", "name": "Gabelflug FRA→DPS / SUB→FRA (umgekehrt)", "penalty_eur": 30, "outbound_to": "DPS", "return_from": "SUB"}]}, "state": {"usage": null, "fail_streak": null, "last_run": null}, "coverage": {"V1": {"total": 19, "checked": 0}, "V2": {"total": 19, "checked": 0}, "V3": {"total": 19, "checked": 0}, "V4": {"total": 19, "checked": 0}}, "runs": [], "obs": [], "deals": []};
+const TZ = 'Europe/Berlin';
+const COLORS = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)'];
+const TIER = {'EXTREM GUT':{c:'var(--good)',i:'🔥'},'GUT':{c:'var(--good)',i:'✓'},'NORMAL':{c:'var(--warning)',i:'–'},'ZU TEUER':{c:'var(--critical)',i:'✕'}};
+const STATUS = {ok:['var(--good)','OK'],partial:['var(--warning)','Teilweise'],error:['var(--critical)','Fehler'],skipped:['var(--serious)','Übersprungen'],no_results:['var(--warning)','Keine Treffer']};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = v => v == null ? '—' : Math.round(v).toLocaleString('de-DE') + ' €';
+const fdt = s => s ? new Date(s).toLocaleString('de-DE',{timeZone:TZ,day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+const fd = s => s ? new Date(s.slice(0,10)+'T00:00:00').toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+const fdd = s => s ? new Date(s.slice(0,10)+'T00:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'}) : '—';
+const dur = m => m ? `${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')}` : '—';
+const days = (a,b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+const V = id => D.config.variants.find(v => v.id === id) || {id, name:id};
+const vcolor = id => COLORS[D.config.variants.findIndex(v => v.id === id) % COLORS.length];
+const badge = t => t ? `<span class="badge"><i style="background:${(TIER[t]||{}).c}"></i>${(TIER[t]||{}).i||''} ${esc(t)}</span>` : '';
+const sbadge = s => { const x = STATUS[s] || ['var(--text-muted)', s]; return `<span class="badge"><i style="background:${x[0]}"></i>${esc(x[1])}</span>`; };
+const runsSorted = D.runs.slice().reverse();
+const REF = runsSorted.length ? Date.parse(runsSorted[0].ts) : Date.now();   // Bezugszeit = letzter Lauf
+let FILTER = 'all', SHOW = 8;
+
+/* ---------- Verbindungs-Paket ---------- */
+function legSummary(leg, from, to){
+  if (!leg || !leg.segments || !leg.segments.length)
+    return `<div class="legline"><span class="ap">${esc(from)} → ${esc(to)}</span><span class="pill">Details bei Deal-Prüfung</span></div>`;
+  const n = leg.segments.length, s0 = leg.segments[0], sl = leg.segments.at(-1);
+  return `<div class="legline"><span class="ap">${esc(s0.from)} → ${esc(sl.to)}</span>
+    <span class="pill">✈ ${n} ${n === 1 ? 'Flug' : 'Flüge'}</span><span class="pill">⏱ ${dur(leg.duration_min)}</span>
+    <span class="pill">${leg.stops === 0 ? 'nonstop' : leg.stops + ' Umstieg' + (leg.stops > 1 ? 'e' : '') + ' · ' + leg.layovers.map(l => esc(l.airport)).join(', ')}</span>
+    ${leg.self_transfer ? '<span class="pill err">Self-Transfer</span>' : ''}</div>`;
+}
+function legDetail(leg, title, from, to){
+  if (!leg || !leg.segments || !leg.segments.length)
+    return `<div class="legbox"><h3>${title} · ${esc(from)} → ${esc(to)}</h3><div class="warn">Die Einzelflüge werden aus Budgetgründen erst abgefragt, wenn dieser Termin ein Deal-Kandidat ist. Der Preis gilt bereits für Hin- und Rückflug.</div></div>`;
+  let h = `<div class="legbox"><h3>${title} · ${dur(leg.duration_min)} gesamt</h3>`;
+  leg.segments.forEach((s, i) => {
+    const nextDay = s.arr.slice(0,10) !== s.dep.slice(0,10);
+    h += `<div class="seg"><span class="t">${esc(s.dep.slice(11,16))}</span><span><b>${esc(s.from)}</b> <span class="meta">${fdd(s.dep)}</span></span><span class="meta">${dur(s.duration_min)}</span>
+      <span class="t">${esc(s.arr.slice(11,16))}</span><span><b>${esc(s.to)}</b> ${nextDay ? `<span class="meta">${fdd(s.arr)}</span>` : ''}</span><span></span>
+      <span class="fn">${esc(s.flight_number)} · ${esc(s.airline)}</span></div>`;
+    const l = leg.layovers[i];
+    if (l && i < leg.segments.length - 1) h += `<div class="lay">Umstieg in <b>${esc(l.airport)}</b> · ${dur(l.duration_min)}${l.overnight ? ' · über Nacht' : ''}</div>`;
+  });
+  return h + '</div>';
+}
+function connCard(c, open){
+  const v = V(c.variant), tier = c.tier;
+  const total = c.total, ticket = c.price, bag = c.bag_cost;
+  const status = c.kind === 'deal'
+    ? (c.notified ? `<span class="badge">🔔 gemeldet</span>` : c.duplicate ? '<span class="meta">bereits gemeldet</span>' : '')
+    : '';
+  return `<details class="conn" ${open ? 'open' : ''}><summary>
+    <div class="price">${eur(total)}<small>${c.kind === 'deal' && c.verified ? 'geprüft' : 'gesamt inkl. Gepäck'}</small></div>
+    <div class="route">
+      <div class="legline"><span class="swatch" style="background:${vcolor(c.variant)}"></span><b>${esc(v.name)}</b> ${badge(tier)} ${status}</div>
+      ${legSummary(c.leg, D.config.trip.origin, v.outbound_to)}
+      ${c.return_leg !== undefined ? legSummary(c.return_leg, v.return_from, D.config.trip.origin) : `<div class="legline"><span class="ap">${esc(v.return_from)} → ${esc(D.config.trip.origin)}</span><span class="pill">Rückflug inkl.</span></div>`}
+      <div class="meta">${fdd(c.out)} → ${fdd(c.ret)} ${c.ret.slice(0,4)} · ${days(c.out, c.ret)} Tage · ${esc((c.airlines || []).join(', '))}</div>
+    </div><span class="chev">›</span></summary>
+    <div class="body">
+      <div class="legs">${legDetail(c.leg, 'Hinflug', D.config.trip.origin, v.outbound_to)}${legDetail(c.return_leg, 'Rückflug', v.return_from, D.config.trip.origin)}</div>
+      <div class="facts">
+        <div><div class="k">Preis</div>Ticket ${eur(ticket)} + Gepäck ${eur(bag)} = <b>${eur(total)}</b>${v.penalty_eur ? `<div class="meta">Bewertet mit +${v.penalty_eur} € Varianten-Aufschlag</div>` : ''}</div>
+        <div><div class="k">Gepäck</div>${esc(c.bag_note || '—')}</div>
+        <div><div class="k">Gemessen</div>${fdt(c.ts)}${c.book_with ? `<div class="meta">Anbieter: ${esc(c.book_with)}</div>` : ''}</div>
+      </div>
+      ${c.reasons && c.reasons.length ? `<div class="warn">💡 ${c.reasons.map(esc).join(' · ')}</div>` : ''}
+      ${c.issues && c.issues.length ? `<div class="warn">⚠️ ${c.issues.map(esc).join(' · ')}</div>` : ''}
+      ${c.url ? `<div><a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener">Bei Google Flights öffnen ↗</a> <span class="meta">dort Anbieter wählen und Preis vor Buchung prüfen</span></div>` : ''}
+    </div></details>`;
+}
+const fromDeal = d => ({kind:'deal', variant:d.variant, out:d.out, ret:d.ret, ts:d.ts, tier:d.eval.tier, total:d.eval.total, price:d.offer.price,
+  bag_cost:d.eval.bag_cost, bag_note:d.eval.bag_note, leg:d.offer.leg, return_leg:d.offer.return_leg || null, airlines:d.offer.leg.airlines,
+  url:d.offer.google_flights_url, reasons:d.eval.reasons, issues:(d.eval.issues||[]).concat(d.offer.verify_notes||[]), notified:d.notified,
+  duplicate:d.duplicate, verified:d.offer.verified, book_with:(d.offer.booking||{}).book_with});
+const fromObs = o => ({kind:'obs', variant:o.variant, out:o.out, ret:o.ret, ts:o.ts, tier:o.tier, total:o.best_total, price:o.best_price,
+  bag_cost:o.bag_cost, bag_note:o.bag_note, leg:o.leg, airlines:o.airlines, url:o.google_flights_url});
+
+/* ---------- Seite ---------- */
+function render(){
+  const app = document.getElementById('app'), last = runsSorted[0];
+  const th = D.config.thresholds, b = D.config.budget;
+  const month = (last ? last.ts : new Date().toISOString()).slice(0,7);
+  const used = (D.state.usage || {})[month] || 0;
+  const left = last && last.budget_left != null ? last.budget_left : Math.max(0, b.monthly_searches - used);
+  const okObs = D.obs.filter(o => o.best_total);
+  const inF = x => FILTER === 'all' || x.variant === FILTER;
+  let h = '';
+  if (D.demo) h += `<div class="banner">DEMO – diese Seite zeigt synthetische Testdaten, keine echten Flugpreise.</div>`;
+  h += `<header><div><h1>Indonesia Flight Deal Monitor</h1>
+    <div class="sub">FRA → Surabaya · Bali → FRA · Abflug ${fd(D.config.trip.depart_from)}–${fd(D.config.trip.depart_to)} · ca. 30 Tage · 1 Erw. · Economy inkl. Gepäck</div></div>
+    <button class="plain" id="theme" aria-label="Farbschema wechseln">◐ Hell/Dunkel</button></header>`;
+  h += `<section class="card"><div class="status">
+    <span>${last ? sbadge(last.status) : sbadge('skipped')} Letzter Lauf <b>${last ? fdt(last.ts) : '—'}</b></span>
+    <span>Suchen <b>${used}</b>/${b.monthly_searches} <span class="muted">(${left} übrig)</span></span>
+    <span>Meldungen an <b>${last && last.channels && last.channels.length ? esc(last.channels.join(', ')) : '<span class="err">nicht konfiguriert</span>'}</b></span>
+    <span class="muted">Melden: &lt; ${th.extreme} € · ${th.extreme}–${th.good} € bei guter Verbindung · −${th.below_baseline_pct} % vs. Niveau</span>
+  </div>${last && last.errors && last.errors.length ? `<div class="err" style="margin-top:8px;font-size:13px">⚠ ${last.errors.map(esc).join('<br>⚠ ')}</div>` : ''}</section>`;
+  // Filter
+  h += `<div class="chips" role="group" aria-label="Variante filtern"><button class="chip" data-f="all" aria-pressed="${FILTER === 'all'}">Alle Varianten</button>` +
+    D.config.variants.map(v => `<button class="chip" data-f="${v.id}" aria-pressed="${FILTER === v.id}"><span class="swatch" style="background:${vcolor(v.id)}"></span>${esc(v.name)}</button>`).join('') + `</div>`;
+  // Deals
+  const deals = D.deals.filter(d => d.eval.notify && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => a.eval.total - b.eval.total);
+  h += `<div class="sechead"><h2>🔔 Deals</h2><span class="meta">Angebote, die deine Kriterien erfüllen (letzte 21 Tage)</span></div>`;
+  h += deals.length ? `<div class="conns">${deals.slice(0, 6).map((d,i) => connCard(fromDeal(d), false)).join('')}</div>` : `<div class="card empty">Noch kein Angebot unter deinen Schwellen – sobald eins auftaucht, erscheint es hier und du bekommst eine Nachricht.</div>`;
+  // Aktuell günstigste Verbindungen: letzter Messwert je Termin, 14 Tage
+  const latest = {};
+  okObs.filter(o => Date.parse(o.ts) >= REF - 14*864e5).forEach(o => { const k = o.variant+'|'+o.out+'|'+o.ret; if (!latest[k] || latest[k].ts < o.ts) latest[k] = o; });
+  const conns = Object.values(latest).filter(inF).sort((a,b) => a.best_total - b.best_total);
+  h += `<div class="sechead"><h2>✈️ Günstigste Verbindungen</h2><span class="meta">${conns.length} Termine gemessen (letzte 14 Tage) · antippen für Details</span></div>`;
+  h += conns.length ? `<div class="conns">${conns.slice(0, SHOW).map(o => connCard(fromObs(o), false)).join('')}</div>` +
+       (conns.length > SHOW ? `<div style="text-align:center"><button class="plain" id="moreconn">${Math.min(8, conns.length - SHOW)} weitere anzeigen</button></div>` : '')
+     : `<div class="card empty">Noch keine Messwerte.</div>`;
+  // Überblick je Variante + Verlauf
+  h += `<div class="sechead"><h2>📈 Preisentwicklung</h2></div><section class="kpis">` + D.config.variants.map(v => {
+    const vs = okObs.filter(o => o.variant === v.id && Date.parse(o.ts) >= REF - 4*864e5).sort((a,b) => a.best_total - b.best_total);
+    const all = okObs.filter(o => o.variant === v.id).sort((a,b) => a.best_total - b.best_total)[0];
+    const cov = D.coverage[v.id] || {total:0, checked:0};
+    return `<div class="card kpi"><div class="lbl"><span class="swatch" style="background:${vcolor(v.id)};margin-top:3px"></span>${esc(v.name)}</div>
+      <div class="val">${vs[0] ? 'ab ' + eur(vs[0].best_total) : '—'}</div>
+      <div class="meta">Tiefstwert bisher ${all ? eur(all.best_total) : '—'} · ${cov.checked}/${cov.total} Termine geprüft</div></div>`;
+  }).join('') + `</section>`;
+  h += `<section class="card"><div class="sechead" style="margin:0"><span class="meta">Günstigster Gesamtpreis pro Tag · gestrichelt: ${th.extreme} / ${th.good} / ${th.normal} €</span>
+    <span><button class="plain" id="vchart" aria-pressed="true">Diagramm</button> <button class="plain" id="vtable" aria-pressed="false">Tabelle</button></span></div>
+    <div class="legend">${D.config.variants.map(v => `<span><span class="swatch" style="background:${vcolor(v.id)}"></span>${esc(v.id)} ${esc(v.name)}</span>`).join('')}</div>
+    <div id="chart" class="chart-wrap"></div><div id="ctable" class="scroll" hidden></div></section>`;
+  // Matrix (eingeklappt)
+  const lm = {};
+  D.obs.forEach(o => { const k = o.variant + '|' + o.out; if (!lm[k] || lm[k].ts < o.ts) lm[k] = o; });
+  const outs = [...new Set(Object.values(lm).map(o => o.out))].sort();
+  h += `<details class="more"><summary>📅 Preis nach Abflugtag (${outs.length} Termine)</summary><div class="scroll">` + (outs.length ? `<table><thead><tr><th>Abflug</th>${D.config.variants.map(v => `<th class="num"><span class="swatch" style="background:${vcolor(v.id)}"></span>${esc(v.id)}</th>`).join('')}</tr></thead><tbody>` +
+    outs.map(d => `<tr><td>${fdd(d)} ${d.slice(2,4)}</td>` + D.config.variants.map(v => { const o = lm[v.id + '|' + d];
+      if (!o) return '<td class="num muted">·</td>';
+      if (!o.best_total) return `<td class="num" title="${esc(o.error || o.status)}">${o.status === 'error' ? '<span class="err">Fehler</span>' : '<span class="muted">keine</span>'}</td>`;
+      const t = TIER[o.tier] || {};
+      return `<td class="num"><span class="cell" style="background:color-mix(in srgb,${t.c} 16%,transparent)" title="${esc(o.tier)} · Rückflug ${fd(o.ret)} · ${esc((o.airlines||[]).join(', '))} · gemessen ${fdt(o.ts)}">${eur(o.best_total)}</span></td>`; }).join('') + '</tr>').join('') +
+    `</tbody></table>` : '<div class="empty">Noch keine Messwerte.</div>') + `</div></details>`;
+  // Läufe (eingeklappt)
+  const errRuns = runsSorted.filter(r => r.errors && r.errors.length).length;
+  h += `<details class="more"><summary>🛠 Letzte Suchläufe & Fehler ${errRuns ? `<span class="badge" style="margin-left:6px"><i style="background:var(--critical)"></i>${errRuns} mit Fehlern</span>` : ''}</summary><div class="scroll">` + (runsSorted.length ? `<table><thead><tr><th>Zeit</th><th>Status</th><th class="num">Suchen</th><th>Ergebnisse</th><th>Fehler / Hinweise</th></tr></thead><tbody>` +
+    runsSorted.slice(0, 30).map(r => `<tr><td>${fdt(r.ts)}</td><td>${sbadge(r.status)}</td><td class="num">${r.searches}${r.verifications ? ' + ' + r.verifications : ''}</td>
+      <td style="font-size:12px">${(r.results||[]).map(x => `${esc(x.variant)} ${fd(x.out)}: ${x.total ? eur(x.total) : '<span class="' + (x.status === 'error' ? 'err' : 'muted') + '">' + esc(x.message || x.status) + '</span>'}`).join('<br>') || '—'}</td>
+      <td style="font-size:12px">${(r.errors||[]).map(e => '<span class="err">' + esc(e) + '</span>').join('<br>')}${(r.notes||[]).length ? '<div class="muted">' + r.notes.map(esc).join('<br>') + '</div>' : ''}</td></tr>`).join('') +
+    `</tbody></table>` : '<div class="empty">Noch kein Suchlauf.</div>') + `</div></details>`;
+  h += `<footer class="sub">Daten: Google Flights über SerpApi · Seite erzeugt ${fdt(D.generated)} · Preise sind Momentaufnahmen. „wahrscheinlich inklusive“ = Annahme nach Airline-Standard, „verifiziert“ = laut Buchungsoption. Es wird nie automatisch gebucht.</footer>`;
+  app.innerHTML = h;
+  drawChart();
+  app.querySelectorAll('.chip').forEach(b => b.onclick = () => { FILTER = b.dataset.f; SHOW = 8; render(); });
+  const mc = document.getElementById('moreconn'); if (mc) mc.onclick = () => { SHOW += 8; render(); };
+  document.getElementById('theme').onclick = () => { const r = document.documentElement; const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('fdm-theme', r.dataset.theme); } catch(e){} drawChart(); };
+  const vc = document.getElementById('vchart'), vt = document.getElementById('vtable'), chart = document.getElementById('chart'), ctable = document.getElementById('ctable');
+  vc.onclick = () => { vc.setAttribute('aria-pressed','true'); vt.setAttribute('aria-pressed','false'); chart.hidden = false; ctable.hidden = true; };
+  vt.onclick = () => { vt.setAttribute('aria-pressed','true'); vc.setAttribute('aria-pressed','false'); chart.hidden = true; ctable.hidden = false; };
+}
+
+function series(){
+  const by = {};
+  D.obs.filter(o => o.best_total && (FILTER === 'all' || o.variant === FILTER)).forEach(o => {
+    const day = new Date(o.ts).toLocaleDateString('sv-SE',{timeZone:TZ});
+    const k = o.variant + '|' + day;
+    if (!by[k] || o.best_total < by[k].v) by[k] = {v:o.best_total, o};
+  });
+  const ds = [...new Set(Object.keys(by).map(k => k.split('|')[1]))].sort();
+  return {days: ds, s: D.config.variants.map(v => ({id:v.id, pts: ds.map((d,i) => by[v.id+'|'+d] ? {i, d, ...by[v.id+'|'+d]} : null).filter(Boolean)}))};
+}
+
+function drawChart(){
+  const el = document.getElementById('chart'), tb = document.getElementById('ctable');
+  const {days, s} = series();
+  if (!days.length){ el.innerHTML = '<div class="empty">Der Verlauf erscheint nach den ersten erfolgreichen Suchläufen.</div>'; tb.innerHTML = el.innerHTML; return; }
+  const th = D.config.thresholds;
+  const W = Math.max(320, el.clientWidth || 900), H = 260, m = {l:52, r:84, t:12, b:28};
+  const vals = s.flatMap(x => x.pts.map(p => p.v)).concat([th.extreme, th.normal]);
+  let lo = Math.floor((Math.min(...vals) - 30)/50)*50, hi = Math.ceil((Math.max(...vals) + 30)/50)*50;
+  const X = i => m.l + (days.length === 1 ? (W-m.l-m.r)/2 : i * (W-m.l-m.r)/(days.length-1));
+  const Y = v => m.t + (hi - v) * (H-m.t-m.b) / (hi - lo);
+  let g = `<svg width="${W}" height="${H}" role="img" aria-label="Preisverlauf je Variante">`;
+  const step = (hi-lo) > 600 ? 200 : (hi-lo) > 300 ? 100 : 50;
+  for (let v = Math.ceil(lo/step)*step; v <= hi; v += step) g += `<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v.toLocaleString('de-DE')} €</text>`;
+  [[th.extreme,'extrem'],[th.good,'gut'],[th.normal,'normal']].forEach(([v,l]) => { if (v > lo && v < hi) g += `<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--text-muted)" stroke-dasharray="4 4" stroke-width="1"/><text x="${m.l+4}" y="${Y(v)-4}" style="fill:var(--text-muted)">${l} ${v} €</text>`; });
+  const every = Math.ceil(days.length / Math.max(2, Math.floor((W-m.l-m.r)/70)));
+  days.forEach((d,i) => { if (i % every === 0 || i === days.length-1) g += `<text x="${X(i)}" y="${H-8}" text-anchor="middle">${d.slice(8,10)}.${d.slice(5,7)}.</text>`; });
+  const ends = [];
+  s.forEach(x => { if (!x.pts.length) return; const c = vcolor(x.id);
+    g += `<path d="${x.pts.map((p,k) => (k?'L':'M') + X(p.i).toFixed(1) + ',' + Y(p.v).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    x.pts.forEach(p => g += `<circle cx="${X(p.i)}" cy="${Y(p.v)}" r="4" fill="${c}" stroke="var(--surface-1)" stroke-width="2"/>`);
+    const lp = x.pts.at(-1); if (lp.i === days.length - 1) ends.push({id:x.id, v:lp.v, y:Y(lp.v)+4}); });
+  ends.sort((a,b) => a.y - b.y).forEach((e,k,arr) => { if (k && e.y - arr[k-1].y < 13) e.y = arr[k-1].y + 13; g += `<text x="${W-m.r+8}" y="${e.y}" style="fill:var(--text-primary);font-weight:600">${e.id} ${eur(e.v)}</text>`; });
+  g += `<line id="xh" y1="${m.t}" y2="${H-m.b}" stroke="var(--text-muted)" stroke-width="1" visibility="hidden"/><rect x="${m.l-10}" y="0" width="${W-m.l-m.r+20}" height="${H}" fill="transparent" id="hit"/></svg><div class="tip" id="tip"></div>`;
+  el.innerHTML = g;
+  const hit = el.querySelector('#hit'), tip = el.querySelector('#tip'), xh = el.querySelector('#xh');
+  hit.addEventListener('mousemove', ev => { const r = el.getBoundingClientRect(); const px = ev.clientX - r.left;
+    let i = Math.round((px - m.l) / ((W-m.l-m.r)/Math.max(1, days.length-1))); i = Math.max(0, Math.min(days.length-1, i));
+    xh.setAttribute('x1', X(i)); xh.setAttribute('x2', X(i)); xh.setAttribute('visibility','visible');
+    const rows = s.map(x => ({x, p: x.pts.find(p => p.i === i)})).filter(r => r.p).sort((a,b) => a.p.v - b.p.v);
+    tip.innerHTML = `<b>${fd(days[i])}</b>` + (rows.length ? rows.map(r => `<div><span class="swatch" style="background:${vcolor(r.x.id)}"></span>${r.x.id}: <b>${eur(r.p.v)}</b> <span class="muted">${fd(r.p.o.out)}→${fd(r.p.o.ret)}</span></div>`).join('') : '<div class="muted">keine Daten</div>');
+    tip.style.display = 'block'; tip.style.left = Math.min(px + 14, W - 230) + 'px'; tip.style.top = '16px'; });
+  hit.addEventListener('mouseleave', () => { tip.style.display = 'none'; xh.setAttribute('visibility','hidden'); });
+  tb.innerHTML = `<table><thead><tr><th>Tag</th>${s.map(x => `<th class="num">${x.id}</th>`).join('')}</tr></thead><tbody>${days.map((d,i) => `<tr><td>${fd(d)}</td>${s.map(x => { const p = x.pts.find(p => p.i === i); return `<td class="num">${p ? eur(p.v) : '—'}</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
+}
+try { const t = localStorage.getItem('fdm-theme'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+render();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawChart, 150); });
+</script>
+</body>
+</html>

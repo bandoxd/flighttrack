@@ -1,0 +1,86 @@
+# Indonesia Flight Deal Monitor – Konfiguration
+# Alle Preise in EUR, 1 Erwachsener, Economy.
+
+[trip]
+origin = "FRA"
+adults = 1
+currency = "EUR"
+# Abflugfenster (inkl.). März/April 2027, alternativ etwas später -> bis Mitte Mai.
+depart_from = "2027-03-01"
+depart_to   = "2027-05-15"
+# Abstand zwischen geprüften Abflugtagen (Tage). Kleinere Zahl = feiner, aber mehr Suchen.
+depart_step_days = 4
+# Reisedauern (Tage), werden pro Abflugtag rotiert.
+durations = [27, 30, 33]
+max_stops = 1                 # max. Umstiege pro Richtung (SerpApi stops=2 => "1 Stopp oder weniger")
+max_leg_duration_h = 26       # längere Reisezeit pro Richtung wird als "schlechte Verbindung" gewertet
+max_layover_h = 8
+
+# Zu überwachende Varianten. weight = wie oft im Rotationsplan, penalty_eur = Aufschlag
+# für die Bewertung (Anschluss-/Umwegkosten bei weniger bevorzugten Varianten).
+[[variants]]
+id = "V1"
+name = "Gabelflug FRA→SUB / DPS→FRA"
+outbound_to = "SUB"
+return_from = "DPS"
+weight = 3
+penalty_eur = 0
+
+[[variants]]
+id = "V2"
+name = "Hin & zurück FRA⇄DPS"
+outbound_to = "DPS"
+return_from = "DPS"
+weight = 2
+penalty_eur = 40     # Bali→Java muss separat organisiert werden
+
+[[variants]]
+id = "V3"
+name = "Gabelflug FRA→CGK / DPS→FRA"
+outbound_to = "CGK"
+return_from = "DPS"
+weight = 2
+penalty_eur = 40     # Jakarta→Surabaya (Zug/Inlandsflug)
+
+[[variants]]
+id = "V4"
+name = "Gabelflug FRA→DPS / SUB→FRA (umgekehrt)"
+outbound_to = "DPS"
+return_from = "SUB"
+weight = 1
+penalty_eur = 30
+
+[thresholds]
+extreme = 750      # < 750 € -> EXTREM GUT, sofort melden
+good    = 850      # 750–850 € -> GUT, melden bei guter Verbindung
+normal  = 950      # 850–950 € -> NORMAL, keine Meldung; > 950 ignorieren
+below_baseline_pct = 15     # Meldung, wenn >= 15 % unter beobachtetem Preisniveau
+baseline_days = 21          # Zeitraum für das beobachtete Preisniveau
+baseline_min_samples = 6    # erst ab so vielen Messwerten aktiv
+renotify_drop_eur = 25      # gleicher Deal wird nur erneut gemeldet, wenn er so viel günstiger wird
+
+[baggage]
+# Airlines, deren Standard-Economy ab Deutschland nach Asien üblicherweise Aufgabegepäck
+# enthält. Nur Annahme – wird bei Deal-Kandidaten über die Buchungsoptionen geprüft.
+usually_included = ["Qatar Airways", "Emirates", "Singapore Airlines", "Turkish Airlines",
+                    "Garuda Indonesia", "Thai Airways", "Etihad", "EVA Air", "China Airlines",
+                    "Saudia", "Oman Air"]
+# Pauschaler Zuschlag für 1 Aufgabegepäck (Hin+Rück), wenn nicht inkludiert/unbekannt.
+surcharge_unknown_eur = 120
+
+[budget]
+# SerpApi Free Plan: 250 Suchen/Monat.
+monthly_searches = 250
+reserve_for_verification = 30   # für Detailprüfung von Deal-Kandidaten
+runs_per_day = 2
+max_searches_per_run = 6
+max_verifications_per_run = 2
+
+[serpapi]
+gl = "de"
+hl = "en"          # Englisch für zuverlässiges Auslesen der Gepäck-Texte
+
+[notify]
+failure_alert_after_runs = 3    # Systemwarnung nach so vielen fehlgeschlagenen Läufen in Folge
+weekly_status = false           # optional: wöchentliche Statusmeldung
+dashboard_url = ""              # z. B. https://<user>.github.io/<repo>/ (für Links in Meldungen)
