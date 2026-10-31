@@ -1,0 +1,218 @@
+[
+ {
+  "ts": "2026-10-31T01:54:21Z",
+  "variant": "V3",
+  "out": "2027-03-01",
+  "ret": "2027-03-28",
+  "offer": {
+   "price": 694.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 124",
+      "from": "FRA",
+      "dep": "2027-03-01 21:30",
+      "to": "AUH",
+      "arr": "2027-03-02 06:40",
+      "duration_min": 370,
+      "overnight": true
+     },
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 472",
+      "from": "AUH",
+      "dep": "2027-03-02 08:45",
+      "to": "CGK",
+      "arr": "2027-03-02 20:20",
+      "duration_min": 515,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "AUH",
+      "duration_min": 125,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1010,
+    "airlines": [
+     "Etihad"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhpiEgoyMDI3LTAzLTAxIh8KA0ZSQRIKMjAyNy0wMy0wMRoDQVVIKgJFWTIDMTI0Ih8KA0FVSBIKMjAyNy0wMy0wMhoDQ0dLKgJFWTIDNDcyKAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wMy0yOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 479",
+      "from": "DPS",
+      "dep": "2027-03-28 01:30",
+      "to": "AUH",
+      "arr": "2027-03-28 06:25",
+      "duration_min": 535,
+      "overnight": true
+     },
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 119",
+      "from": "AUH",
+      "dep": "2027-03-28 08:30",
+      "to": "FRA",
+      "arr": "2027-03-28 13:15",
+      "duration_min": 405,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "AUH",
+      "duration_min": 125,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1065,
+    "airlines": [
+     "Etihad"
+    ],
+    "self_transfer": false
+   },
+   "verify_notes": [
+    "Verifikation fehlgeschlagen: HTTP 400: Missing `departure_id` parameter."
+   ]
+  },
+  "eval": {
+   "total": 694.0,
+   "effective": 734.0,
+   "bag_cost": 0.0,
+   "bag_note": "wahrscheinlich inklusive (Airline-Standard, nicht verifiziert)",
+   "tier": "EXTREM GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": null,
+   "baseline": null,
+   "reasons": [
+    "unter 750 €"
+   ],
+   "notify": true
+  },
+  "notified": true,
+  "key": "d939bd33333e00a2",
+  "channels": [
+   "discord"
+  ]
+ },
+ {
+  "ts": "2026-10-31T01:54:21Z",
+  "variant": "V2",
+  "out": "2027-03-01",
+  "ret": "2027-03-28",
+  "offer": {
+   "price": 704.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 120",
+      "from": "FRA",
+      "dep": "2027-03-01 14:45",
+      "to": "AUH",
+      "arr": "2027-03-02 00:10",
+      "duration_min": 385,
+      "overnight": false
+     },
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 478",
+      "from": "AUH",
+      "dep": "2027-03-02 08:50",
+      "to": "DPS",
+      "arr": "2027-03-02 22:15",
+      "duration_min": 565,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "AUH",
+      "duration_min": 520,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1470,
+    "airlines": [
+     "Etihad"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhpiEgoyMDI3LTAzLTAxIh8KA0ZSQRIKMjAyNy0wMy0wMRoDQVVIKgJFWTIDMTIwIh8KA0FVSBIKMjAyNy0wMy0wMhoDRFBTKgJFWTIDNDc4KAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wMy0yOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 479",
+      "from": "DPS",
+      "dep": "2027-03-28 01:30",
+      "to": "AUH",
+      "arr": "2027-03-28 06:25",
+      "duration_min": 535,
+      "overnight": true
+     },
+     {
+      "airline": "Etihad",
+      "flight_number": "EY 119",
+      "from": "AUH",
+      "dep": "2027-03-28 08:30",
+      "to": "FRA",
+      "arr": "2027-03-28 13:15",
+      "duration_min": 405,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "AUH",
+      "duration_min": 125,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1065,
+    "airlines": [
+     "Etihad"
+    ],
+    "self_transfer": false
+   },
+   "verify_notes": [
+    "Verifikation fehlgeschlagen: HTTP 400: Missing `departure_id` parameter."
+   ]
+  },
+  "eval": {
+   "total": 704.0,
+   "effective": 744.0,
+   "bag_cost": 0.0,
+   "bag_note": "wahrscheinlich inklusive (Airline-Standard, nicht verifiziert)",
+   "tier": "EXTREM GUT",
+   "good_connection": false,
+   "issues": [
+    "langer Umstieg AUH (8 h 40 min)"
+   ],
+   "pct_below_baseline": null,
+   "baseline": null,
+   "reasons": [
+    "unter 750 €"
+   ],
+   "notify": true
+  },
+  "notified": true,
+  "key": "1e529e658db0d75e",
+  "channels": [
+   "discord"
+  ]
+ }
+]

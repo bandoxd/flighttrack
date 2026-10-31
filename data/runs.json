@@ -1,0 +1,97 @@
+[
+ {
+  "ts": "2026-10-31T01:54:21Z",
+  "status": "partial",
+  "searches": 6,
+  "verifications": 4,
+  "errors": [
+   "Verifikation V3 2027-03-01: HTTP 400: Missing `departure_id` parameter.",
+   "Verifikation V2 2027-03-01: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "250 Suchen übrig (SerpApi-Konto), 2 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V1",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 1301.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 704.0,
+    "tier": "EXTREM GUT",
+    "airlines": [
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 694.0,
+    "tier": "EXTREM GUT",
+    "airlines": [
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 1372.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Singapore Airlines"
+    ]
+   },
+   {
+    "variant": "V4",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 1386.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 727.0,
+    "tier": "GUT",
+    "airlines": [
+     "Etihad"
+    ]
+   }
+  ],
+  "notified": [
+   "d939bd33333e00a2",
+   "1e529e658db0d75e"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 250
+ }
+]

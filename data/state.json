@@ -1,0 +1,30 @@
+{
+ "cursor": {
+  "pattern": 6,
+  "variant": {
+   "V1": 2,
+   "V2": 2,
+   "V3": 1,
+   "V4": 1
+  }
+ },
+ "notified": {
+  "d939bd33333e00a2": {
+   "total": 694.0,
+   "tier": "EXTREM GUT",
+   "ts": "2026-10-31T01:54:21Z",
+   "variant": "V3"
+  },
+  "1e529e658db0d75e": {
+   "total": 704.0,
+   "tier": "EXTREM GUT",
+   "ts": "2026-10-31T01:54:21Z",
+   "variant": "V2"
+  }
+ },
+ "usage": {
+  "2026-10": 10
+ },
+ "fail_streak": 0,
+ "last_run": "2026-10-31T01:54:21Z"
+}
