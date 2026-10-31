@@ -185,5 +185,96 @@
    "discord"
   ],
   "budget_left": 242
+ },
+ {
+  "ts": "2026-10-31T20:27:30Z",
+  "status": "partial",
+  "searches": 6,
+  "verifications": 2,
+  "errors": [
+   "Verifikation V2 2027-04-06: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "235 Suchen übrig (SerpApi-Konto), 1 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V4",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 1429.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-09",
+    "ret": "2027-04-11",
+    "recheck": false,
+    "status": "ok",
+    "total": 957.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-03-09",
+    "ret": "2027-04-11",
+    "recheck": false,
+    "status": "ok",
+    "total": 903.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-05-04",
+    "ret": "2027-06-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 1201.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-03-17",
+    "ret": "2027-04-16",
+    "recheck": false,
+    "status": "ok",
+    "total": 1455.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 780.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 235
  }
 ]

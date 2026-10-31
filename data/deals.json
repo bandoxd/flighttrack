@@ -319,5 +319,110 @@
   "notified": false,
   "key": "70496f588d3bb501",
   "duplicate": true
+ },
+ {
+  "ts": "2026-10-31T20:27:30Z",
+  "variant": "V2",
+  "out": "2027-04-06",
+  "ret": "2027-05-03",
+  "offer": {
+   "price": 780.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 70",
+      "from": "FRA",
+      "dep": "2027-04-06 09:35",
+      "to": "DOH",
+      "arr": "2027-04-06 16:35",
+      "duration_min": 360,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 964",
+      "from": "DOH",
+      "dep": "2027-04-06 17:55",
+      "to": "DPS",
+      "arr": "2027-04-07 08:25",
+      "duration_min": 570,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 80,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1010,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA0LTA2Ih4KA0ZSQRIKMjAyNy0wNC0wNhoDRE9IKgJRUjICNzAiHwoDRE9IEgoyMDI3LTA0LTA2GgNEUFMqAlFSMgM5NjQoAWoHCAESA0ZSQXIHCAESA0RQUxogEgoyMDI3LTA1LTAzKAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQE&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 961",
+      "from": "DPS",
+      "dep": "2027-05-03 00:35",
+      "to": "DOH",
+      "arr": "2027-05-03 04:45",
+      "duration_min": 550,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 67",
+      "from": "DOH",
+      "dep": "2027-05-03 09:15",
+      "to": "FRA",
+      "arr": "2027-05-03 14:35",
+      "duration_min": 380,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 270,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1200,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "verify_notes": [
+    "Verifikation fehlgeschlagen: HTTP 400: Missing `departure_id` parameter."
+   ]
+  },
+  "eval": {
+   "total": 780.0,
+   "effective": 820.0,
+   "bag_cost": 0.0,
+   "bag_note": "wahrscheinlich inklusive (Airline-Standard, nicht verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": null,
+   "baseline": null,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true
+  },
+  "notified": false,
+  "key": "5e86b90ca8946790",
+  "duplicate": true
  }
 ]
