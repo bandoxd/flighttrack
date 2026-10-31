@@ -485,8 +485,9 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
             offer["price"] = b["price"]
             if b.get("bag_cost") is not None:
                 offer["bag_cost"], offer["bag_note"] = b["bag_cost"], b["bag_note"]
-            elif b.get("bag_note"):
-                offer["bag_note"] = b["bag_note"]
+            elif b.get("bag_note"):  # laut Anbieter nicht inklusive, Preis unbekannt -> Pauschale ansetzen
+                sc = float(cfg["baggage"]["surcharge_unknown_eur"])
+                offer["bag_cost"], offer["bag_note"] = sc, f"laut Anbieter NICHT inklusive – {sc:.0f} € Pauschale angesetzt"
         if b.get("separate_tickets") and not b.get("found"):
             offer["separate_tickets"] = True
     elif btok:
