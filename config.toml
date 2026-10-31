@@ -63,8 +63,9 @@ renotify_drop_eur = 25      # gleicher Deal wird nur erneut gemeldet, wenn er so
 # Airlines, deren Standard-Economy ab Deutschland nach Asien üblicherweise Aufgabegepäck
 # enthält. Nur Annahme – wird bei Deal-Kandidaten über die Buchungsoptionen geprüft.
 usually_included = ["Qatar Airways", "Emirates", "Singapore Airlines", "Turkish Airlines",
-                    "Garuda Indonesia", "Thai Airways", "Etihad", "EVA Air", "China Airlines",
+                    "Garuda Indonesia", "Thai Airways", "EVA Air", "China Airlines",
                     "Saudia", "Oman Air"]
+# Etihad bewusst nicht enthalten: günstigste Tarife ab FRA oft ohne Aufgabegepäck (Economy Basic).
 # Pauschaler Zuschlag für 1 Aufgabegepäck (Hin+Rück), wenn nicht inkludiert/unbekannt.
 surcharge_unknown_eur = 120
 
@@ -83,4 +84,4 @@ hl = "en"          # Englisch für zuverlässiges Auslesen der Gepäck-Texte
 [notify]
 failure_alert_after_runs = 3    # Systemwarnung nach so vielen fehlgeschlagenen Läufen in Folge
 weekly_status = false           # optional: wöchentliche Statusmeldung
-dashboard_url = ""              # z. B. https://<user>.github.io/<repo>/ (für Links in Meldungen)
+dashboard_url = "https://bandoxd.github.io/flighttrack/"              # z. B. https://<user>.github.io/<repo>/ (für Links in Meldungen)
