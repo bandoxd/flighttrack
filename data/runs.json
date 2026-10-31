@@ -93,5 +93,97 @@
    "discord"
   ],
   "budget_left": 250
+ },
+ {
+  "ts": "2026-10-31T10:57:26Z",
+  "status": "partial",
+  "searches": 6,
+  "verifications": 2,
+  "errors": [
+   "Verifikation V3 2027-03-29: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "242 Suchen übrig (SerpApi-Konto), 2 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "recheck": false,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-04-26",
+    "ret": "2027-05-29",
+    "recheck": false,
+    "status": "ok",
+    "total": 1301.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-03-09",
+    "ret": "2027-04-11",
+    "recheck": false,
+    "status": "ok",
+    "total": 1100.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "China Southern"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-04-26",
+    "ret": "2027-05-29",
+    "recheck": false,
+    "status": "ok",
+    "total": 1410.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Condor",
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-04-26",
+    "ret": "2027-05-29",
+    "recheck": false,
+    "status": "ok",
+    "total": 941.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 2181.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Singapore Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 242
  }
 ]

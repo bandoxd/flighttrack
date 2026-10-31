@@ -214,5 +214,110 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-10-31T10:57:26Z",
+  "variant": "V3",
+  "out": "2027-03-29",
+  "ret": "2027-04-28",
+  "offer": {
+   "price": 782.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 46",
+      "from": "FRA",
+      "dep": "2027-03-29 15:15",
+      "to": "DXB",
+      "arr": "2027-03-29 23:35",
+      "duration_min": 380,
+      "overnight": false
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 356",
+      "from": "DXB",
+      "dep": "2027-03-30 04:10",
+      "to": "CGK",
+      "arr": "2027-03-30 15:30",
+      "duration_min": 500,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 275,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1155,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTAzLTI5Ih4KA0ZSQRIKMjAyNy0wMy0yORoDRFhCKgJFSzICNDYiHwoDRFhCEgoyMDI3LTAzLTMwGgNDR0sqAkVLMgMzNTYoAWoHCAESA0ZSQXIHCAESA0NHSxogEgoyMDI3LTA0LTI4KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQM&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 399",
+      "from": "DPS",
+      "dep": "2027-04-28 00:35",
+      "to": "DXB",
+      "arr": "2027-04-28 05:35",
+      "duration_min": 540,
+      "overnight": true
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 45",
+      "from": "DXB",
+      "dep": "2027-04-28 08:25",
+      "to": "FRA",
+      "arr": "2027-04-28 13:15",
+      "duration_min": 410,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 170,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1120,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "verify_notes": [
+    "Verifikation fehlgeschlagen: HTTP 400: Missing `departure_id` parameter."
+   ]
+  },
+  "eval": {
+   "total": 782.0,
+   "effective": 822.0,
+   "bag_cost": 0.0,
+   "bag_note": "wahrscheinlich inklusive (Airline-Standard, nicht verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": null,
+   "baseline": null,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true
+  },
+  "notified": false,
+  "key": "70496f588d3bb501",
+  "duplicate": true
  }
 ]
