@@ -699,7 +699,7 @@ def send_discord(subject: str, text: str, embeds: list[dict] | None = None) -> N
         payload = {"content": ((f"<@{mention}> " if mention else "") + f"**{subject}**") if i == 0 else "",
                    "allowed_mentions": {"users": [mention] if mention and i == 0 else []}, "embeds": emb}
         if hook:
-            payload["username"] = "Flug-Monitor"
+            payload["username"] = "goth baddie (claude bot)"
             _discord_request("POST", hook + ("&" if "?" in hook else "?") + "wait=true", payload, bot=False)
         else:
             _discord_request("POST", f"{DISCORD_API}/channels/{channel}/messages", payload, bot=True)
