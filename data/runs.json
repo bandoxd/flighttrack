@@ -276,5 +276,61 @@
    "discord"
   ],
   "budget_left": 235
+ },
+ {
+  "ts": "2026-11-01T11:52:17Z",
+  "status": "partial",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [
+   "Verifikation V3 2027-04-06: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "228 Suchen übrig (SerpApi-Konto), 60 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": true,
+    "status": "ok",
+    "total": 814.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Condor",
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 802.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-04-14",
+    "ret": "2027-05-17",
+    "recheck": false,
+    "status": "ok",
+    "total": 1201.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 228
  }
 ]
