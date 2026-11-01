@@ -332,5 +332,61 @@
    "discord"
   ],
   "budget_left": 228
+ },
+ {
+  "ts": "2026-11-01T21:12:19Z",
+  "status": "partial",
+  "searches": 3,
+  "verifications": 4,
+  "errors": [
+   "Verifikation V2 2027-05-04: HTTP 400: Missing `departure_id` parameter.",
+   "Verifikation V3 2027-05-04: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "224 Suchen übrig (SerpApi-Konto), 59 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V4",
+    "out": "2027-04-26",
+    "ret": "2027-05-29",
+    "recheck": false,
+    "status": "ok",
+    "total": 1453.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Singapore Airlines"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-05-04",
+    "ret": "2027-06-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 780.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-05-04",
+    "ret": "2027-06-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT",
+    "airlines": [
+     "Emirates"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 224
  }
 ]
