@@ -442,5 +442,59 @@
    "discord"
   ],
   "budget_left": 219
+ },
+ {
+  "ts": "2026-11-02T23:53:02Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "216 Suchen übrig (SerpApi-Konto), 57 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V2",
+    "out": "2027-03-17",
+    "ret": "2027-04-16",
+    "recheck": false,
+    "status": "ok",
+    "total": 828.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-03-17",
+    "ret": "2027-04-16",
+    "recheck": false,
+    "status": "ok",
+    "total": 931.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Condor",
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-04-22",
+    "ret": "2027-05-22",
+    "recheck": false,
+    "status": "ok",
+    "total": 2181.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Singapore Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 216
  }
 ]
