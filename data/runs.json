@@ -388,5 +388,59 @@
    "discord"
   ],
   "budget_left": 224
+ },
+ {
+  "ts": "2026-11-02T13:32:35Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "219 Suchen übrig (SerpApi-Konto), 57 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": true,
+    "status": "ok",
+    "total": 814.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Condor",
+     "Etihad"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-05-12",
+    "ret": "2027-06-08",
+    "recheck": false,
+    "status": "ok",
+    "total": 1158.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-03-25",
+    "ret": "2027-04-21",
+    "recheck": false,
+    "status": "ok",
+    "total": 1359.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 219
  }
 ]
