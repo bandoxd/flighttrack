@@ -477,8 +477,7 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
     btok = offer.get("booking_token")
     if btok and budget[0] > 0:
         budget[0] -= 1
-        bp = {k: params[k] for k in ("engine", "api_key", "currency", "gl", "hl")}
-        data = serpapi_search({**bp, "booking_token": btok})
+        data = serpapi_search({**params, "booking_token": btok})  # SerpApi verlangt die Original-Suchparameter
         b = parse_booking_options(data)
         offer["booking"] = b
         if b.get("found"):
@@ -510,12 +509,14 @@ def deal_key(d: dict) -> str:
 TIER_ORDER = ["ZU TEUER", "NORMAL", "GUT", "EXTREM GUT"]
 
 
-def should_notify(cfg: dict, state: dict, d: dict, now: dt.datetime | None = None) -> bool:
+def should_notify(cfg: dict, state: dict, d: dict, now: dt.datetime | None = None,
+                  latest: dict | None = None) -> bool:
     """Doppelte Meldungen vermeiden.
 
     * gleicher Deal (Variante, Daten, Flüge): nur bei höherer Stufe oder >= renotify_drop_eur günstiger
-    * andere Termine derselben Variante: nur wenn günstiger als die beste Meldung der letzten 7 Tage
-      (minus renotify_drop_eur) oder höhere Stufe
+    * andere Termine derselben Variante: nur wenn günstiger als die beste *noch gültige* Meldung der letzten
+      7 Tage (minus renotify_drop_eur) oder höhere Stufe. Eine frühere Meldung zählt nicht mehr, wenn der
+      Termin inzwischen teurer gemessen wurde (Preis gestiegen oder Gepäck nachträglich nicht inklusive).
     """
     drop = float(cfg["thresholds"]["renotify_drop_eur"])
     tier, total = TIER_ORDER.index(d["eval"]["tier"]), d["eval"]["total"]
@@ -524,8 +525,16 @@ def should_notify(cfg: dict, state: dict, d: dict, now: dt.datetime | None = Non
     if prev:
         return tier > TIER_ORDER.index(prev.get("tier", "ZU TEUER")) or total <= prev["total"] - drop
     now = now or parse_iso(d["ts"])
+    latest = latest or {}
+
+    def still_valid(x: dict) -> bool:
+        if "out" not in x:  # Einträge aus Version 1 ohne Termin-Info: nicht mehr berücksichtigen
+            return False
+        cur = latest.get((x["variant"], x["out"], x["ret"]))
+        return cur is None or cur <= x["total"] + drop
+
     recent = [x for x in notified.values() if x.get("variant") == d["variant"]
-              and now - parse_iso(x["ts"]) <= dt.timedelta(days=7)]
+              and now - parse_iso(x["ts"]) <= dt.timedelta(days=7) and still_valid(x)]
     if not recent:
         return True
     best = min(recent, key=lambda x: x["total"])
@@ -827,7 +836,11 @@ def run(cfg: dict) -> dict:
             new_obs.append(o)
             rec["results"].append(res)
         append_observations(new_obs)
-        process_candidates(cfg, state, rec, deals, candidates, ver_budget, now)
+        latest = {}
+        for o in sorted(obs_all + new_obs, key=lambda o: o["ts"]):
+            if o.get("best_total"):
+                latest[(o["variant"], o["out"], o["ret"])] = o["best_total"]
+        process_candidates(cfg, state, rec, deals, candidates, ver_budget, now, latest)
         month = now.strftime("%Y-%m")
         state.setdefault("usage", {})[month] = state.get("usage", {}).get(month, 0) + rec["searches"] + rec["verifications"]
         if combos and all(r["status"] == "error" for r in rec["results"]):
@@ -882,7 +895,7 @@ def best_recent_combo(obs: list[dict], now: dt.datetime) -> dict | None:
 MAX_DEALS_PER_MESSAGE = 3
 
 
-def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now):
+def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now, latest=None):
     """Kandidaten des Laufs: beste zuerst verifizieren, neu bewerten, entdoppeln, gebündelt melden."""
     candidates.sort(key=lambda x: x[0])
     to_send, verified_variants, slots = [], set(), 0
@@ -911,7 +924,7 @@ def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now):
         d["key"] = deal_key(d)
         if ev["notify"] and active:
             same_variant = [x for x in to_send if x["variant"] == d["variant"]]
-            if should_notify(cfg, state, d) and (not same_variant or ev["total"] <= min(
+            if should_notify(cfg, state, d, now, latest) and (not same_variant or ev["total"] <= min(
                     x["eval"]["total"] for x in same_variant) - float(cfg["thresholds"]["renotify_drop_eur"])):
                 to_send.append(d)
             else:
@@ -933,7 +946,8 @@ def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now):
         for d in to_send:
             d["notified"], d["channels"] = True, sent
             state.setdefault("notified", {})[d["key"]] = {"total": d["eval"]["total"], "tier": d["eval"]["tier"],
-                                                          "ts": iso(now), "variant": d["variant"]}
+                                                          "ts": iso(now), "variant": d["variant"],
+                                                          "out": d["out"], "ret": d["ret"]}
             rec["notified"].append(d["key"])
 
 
