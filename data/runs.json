@@ -496,5 +496,60 @@
    "discord"
   ],
   "budget_left": 216
+ },
+ {
+  "ts": "2026-11-03T12:50:04Z",
+  "status": "partial",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [
+   "Verifikation V2 2027-04-14: HTTP 400: Missing `departure_id` parameter."
+  ],
+  "notes": [
+   "213 Suchen übrig (SerpApi-Konto), 55 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": true,
+    "status": "ok",
+    "total": 824.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V4",
+    "out": "2027-03-09",
+    "ret": "2027-04-11",
+    "recheck": false,
+    "status": "ok",
+    "total": 1108.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "China Southern"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-04-14",
+    "ret": "2027-05-17",
+    "recheck": false,
+    "status": "ok",
+    "total": 752.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 213
  }
 ]
