@@ -841,5 +841,129 @@
   "notified": false,
   "key": "9324d72b4df9fa82",
   "duplicate": true
+ },
+ {
+  "ts": "2026-11-03T22:19:17Z",
+  "variant": "V3",
+  "out": "2027-04-14",
+  "ret": "2027-05-17",
+  "offer": {
+   "price": 809.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 70",
+      "from": "FRA",
+      "dep": "2027-04-14 09:35",
+      "to": "DOH",
+      "arr": "2027-04-14 16:35",
+      "duration_min": 360,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 958",
+      "from": "DOH",
+      "dep": "2027-04-14 18:50",
+      "to": "CGK",
+      "arr": "2027-04-15 07:30",
+      "duration_min": 520,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 135,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1015,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA0LTE0Ih4KA0ZSQRIKMjAyNy0wNC0xNBoDRE9IKgJRUjICNzAiHwoDRE9IEgoyMDI3LTA0LTE0GgNDR0sqAlFSMgM5NTgoAWoHCAESA0ZSQXIHCAESA0NHSxogEgoyMDI3LTA1LTE3KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQM&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 961",
+      "from": "DPS",
+      "dep": "2027-05-17 00:35",
+      "to": "DOH",
+      "arr": "2027-05-17 04:45",
+      "duration_min": 550,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 67",
+      "from": "DOH",
+      "dep": "2027-05-17 09:15",
+      "to": "FRA",
+      "arr": "2027-05-17 14:35",
+      "duration_min": 380,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 270,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1200,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 809.0,
+    "book_with": "Qatar Airways",
+    "option_title": "",
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "total": 809.0,
+   "effective": 849.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": 0.6,
+   "baseline": 814.0,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true
+  },
+  "notified": true,
+  "key": "a02b4ad4c0e828a7",
+  "channels": [
+   "discord"
+  ]
  }
 ]
