@@ -662,5 +662,58 @@
    "discord"
   ],
   "budget_left": 204
+ },
+ {
+  "ts": "2026-11-04T22:38:31Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "197 Suchen übrig (SerpApi-Konto), 53 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V1",
+    "out": "2027-04-30",
+    "ret": "2027-05-27",
+    "recheck": false,
+    "status": "ok",
+    "total": 2808.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "V4",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "recheck": false,
+    "status": "ok",
+    "total": 1245.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "China Southern"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-25",
+    "ret": "2027-04-21",
+    "recheck": false,
+    "status": "ok",
+    "total": 963.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "China Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 197
  }
 ]
