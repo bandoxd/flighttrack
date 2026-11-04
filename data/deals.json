@@ -965,5 +965,250 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-11-04T13:00:55Z",
+  "variant": "V2",
+  "out": "2027-05-12",
+  "ret": "2027-06-08",
+  "offer": {
+   "price": 726.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 70",
+      "from": "FRA",
+      "dep": "2027-05-12 09:35",
+      "to": "DOH",
+      "arr": "2027-05-12 16:35",
+      "duration_min": 360,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 964",
+      "from": "DOH",
+      "dep": "2027-05-12 17:35",
+      "to": "DPS",
+      "arr": "2027-05-13 08:25",
+      "duration_min": 590,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 60,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1010,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA1LTEyIh4KA0ZSQRIKMjAyNy0wNS0xMhoDRE9IKgJRUjICNzAiHwoDRE9IEgoyMDI3LTA1LTEyGgNEUFMqAlFSMgM5NjQoAWoHCAESA0ZSQXIHCAESA0RQUxogEgoyMDI3LTA2LTA4KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQE&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 961",
+      "from": "DPS",
+      "dep": "2027-06-08 00:35",
+      "to": "DOH",
+      "arr": "2027-06-08 04:45",
+      "duration_min": 550,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 67",
+      "from": "DOH",
+      "dep": "2027-06-08 09:15",
+      "to": "FRA",
+      "arr": "2027-06-08 14:35",
+      "duration_min": 380,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 270,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1200,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 726.0,
+    "book_with": "lastminute.com",
+    "option_title": "",
+    "baggage": [
+     "1 free carry-on"
+    ],
+    "extensions": [],
+    "bag_cost": null,
+    "bag_note": null,
+    "baggage_text": "1 free carry-on"
+   },
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "total": 726.0,
+   "effective": 766.0,
+   "bag_cost": 0.0,
+   "bag_note": "wahrscheinlich inklusive (Airline-Standard, nicht verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": 6.9,
+   "baseline": 780.0,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true
+  },
+  "notified": true,
+  "key": "6c8edcf6a9f9ab83",
+  "channels": [
+   "discord"
+  ]
+ },
+ {
+  "ts": "2026-11-04T13:00:55Z",
+  "variant": "V3",
+  "out": "2027-05-12",
+  "ret": "2027-06-08",
+  "offer": {
+   "price": 782.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 46",
+      "from": "FRA",
+      "dep": "2027-05-12 15:15",
+      "to": "DXB",
+      "arr": "2027-05-12 23:35",
+      "duration_min": 380,
+      "overnight": false
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 356",
+      "from": "DXB",
+      "dep": "2027-05-13 04:10",
+      "to": "CGK",
+      "arr": "2027-05-13 15:30",
+      "duration_min": 500,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 275,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1155,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA1LTEyIh4KA0ZSQRIKMjAyNy0wNS0xMhoDRFhCKgJFSzICNDYiHwoDRFhCEgoyMDI3LTA1LTEzGgNDR0sqAkVLMgMzNTYoAWoHCAESA0ZSQXIHCAESA0NHSxogEgoyMDI3LTA2LTA4KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQM&tfu=EgIIAQ",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 399",
+      "from": "DPS",
+      "dep": "2027-06-08 00:35",
+      "to": "DXB",
+      "arr": "2027-06-08 05:35",
+      "duration_min": 540,
+      "overnight": true
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 45",
+      "from": "DXB",
+      "dep": "2027-06-08 08:25",
+      "to": "FRA",
+      "arr": "2027-06-08 13:15",
+      "duration_min": 410,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 170,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1120,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 782.0,
+    "book_with": "Emirates",
+    "option_title": "",
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "total": 782.0,
+   "effective": 822.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": 3.9,
+   "baseline": 814.0,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true
+  },
+  "notified": true,
+  "key": "a32bf722439a4268",
+  "channels": [
+   "discord"
+  ]
  }
 ]
