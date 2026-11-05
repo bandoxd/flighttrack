@@ -158,6 +158,30 @@ def ground_for(cfg: dict, vid: str) -> dict:
     return {"min": lo, "max": hi, "items": sel, "open": open_items}
 
 
+def rank_score(cfg: dict, offer: dict, eff: float, g: dict) -> tuple[float, list[str]]:
+    """Rangfolge: Gesamtkosten (Flug inkl. Gepäck/Aufschläge + Inland/Fähren-Mitte)
+    + 10 € je Stunde Reisezeit über 20 h pro Richtung + 40 € je zusätzlichem Umstieg über 1."""
+    r = cfg.get("ranking", {})
+    per_h, base_h = float(r.get("eur_per_hour_over", 10)), float(r.get("hours_free", 20))
+    per_stop = float(r.get("eur_per_extra_stop", 40))
+    parts, score = [], eff
+    gmid = (g["min"] + g["max"]) / 2 if g["items"] else 0
+    if gmid:
+        score += gmid
+        parts.append(f"+{gmid:.0f} € Inland/Fähren (Mitte)")
+    for leg in (offer.get("leg"), offer.get("return_leg")):
+        if not leg:
+            continue
+        if leg.get("duration_min") and leg["duration_min"] / 60 > base_h:
+            pen = (leg["duration_min"] / 60 - base_h) * per_h
+            score += pen
+            parts.append(f"+{pen:.0f} € Reisezeit {fmt_dur(leg['duration_min'])}")
+        if leg["stops"] > 1:
+            score += (leg["stops"] - 1) * per_stop
+            parts.append(f"+{(leg['stops'] - 1) * per_stop:.0f} € {leg['stops']} Umstiege")
+    return round(score, 2), parts
+
+
 def access_cost(cfg: dict, offer: dict) -> tuple[float, list[str]]:
     """Anreise-Aufschlag für Flughäfen außer FRA (aus [airport_access], pro Strecke)."""
     acc = cfg.get("airport_access", {})
@@ -238,10 +262,14 @@ def next_combos(cfg: dict, state: dict, k: int, today: dt.date, recheck: dict | 
     trs = [tr for tr in trips(cfg) if any(plans.get(v["id"]) for v in tr["variants"])]
     if not trs:
         return []
-    tpat = weighted_pattern([{"id": tr["id"], "weight": tr.get("share", 1)} for tr in trs])
+    hot = cfg.get("_hot", set())
+    boost = float(cfg.get("budget", {}).get("hot_boost", 2))
+    tpat = weighted_pattern([{"id": tr["id"], "weight": round(tr.get("share", 1) * (boost if tr["id"] in hot else 1))}
+                             for tr in trs])
     vpats = {tr["id"]: weighted_pattern(tr["variants"]) for tr in trs}
     picked: list[dict] = []
-    if recheck and k >= 2 and recheck["variant"] in cfg["_vmap"]:
+    if recheck and k >= 2 and recheck["variant"] in cfg["_vmap"] \
+            and int(variant_by_id(cfg, recheck["variant"]).get("weight", 1)) > 0:
         picked.append({**recheck, "recheck": True})
     cur = state.setdefault("cursor", {})
     if "trips" not in cur:  # Migration vom Format der ersten Version (Fortschritt der Indonesien-Suche bleibt)
@@ -529,7 +557,8 @@ def evaluate(cfg: dict, offer: dict, vid: str, base: float | None) -> dict:
     if separate and reasons and not allow_sep:
         issues.append("nicht gemeldet: Self-Transfer/getrennte Tickets")
     g = ground_for(cfg, vid)
-    return {"total": round(total, 2), "effective": round(eff, 2), "bag_cost": bag_cost, "bag_note": bag_note,
+    score, score_parts = rank_score(cfg, offer, eff, g)
+    return {"score": score, "score_parts": score_parts, "total": round(total, 2), "effective": round(eff, 2), "bag_cost": bag_cost, "bag_note": bag_note,
             "tier": tier, "good_connection": good_conn, "issues": issues, "pct_below_baseline": pct_below,
             "pct_below_ref": pct_ref, "reference": round(ref, 2) if ref else None,
             "baseline": base, "reasons": reasons, "notify": notify, "access_cost": acc, "access_notes": acc_notes,
@@ -544,14 +573,15 @@ BAG_PRICE_RE = re.compile(r"(1st|first)?\s*checked bag[^0-9€]*?(?:€\s*(\d+(?
                           re.I)
 
 
-def parse_booking_options(data: dict, allow_separate: bool = False) -> dict:
+def parse_booking_options(data: dict, allow_separate: bool = False, airlines: list[str] | None = None,
+                          direct_margin: float = 25.0) -> dict:
     """Wertet SerpApi booking_options aus: günstigste Option, Gepäck, getrennte Tickets.
 
     Ohne allow_separate werden Optionen mit getrennten Tickets ("Separate tickets booked together")
     übergangen; gibt es nur solche, wird separate_tickets gesetzt.
     """
     opts = data.get("booking_options") or []
-    best, separate_seen = None, False
+    best, separate_seen, direct_best = None, False, None
     for o in opts:
         tog = o.get("together")
         if not tog:
@@ -567,11 +597,20 @@ def parse_booking_options(data: dict, allow_separate: bool = False) -> dict:
             separate_seen = True
             if not allow_separate:
                 continue
+        bw = str(tog.get("book_with", ""))
+        is_direct = bool(tog.get("airline")) or any(a and a.lower() in bw.lower() for a in (airlines or []))
+        cand = {"price": float(price), "book_with": bw, "option_title": tog.get("option_title", ""),
+                "is_separate": sep, "direct": is_direct,
+                "baggage": [str(x) for x in (tog.get("baggage_prices") or [])],
+                "extensions": [str(x) for x in (tog.get("extensions") or [])]}
         if best is None or price < best["price"]:
-            best = {"price": float(price), "book_with": tog.get("book_with", ""),
-                    "option_title": tog.get("option_title", ""), "is_separate": sep,
-                    "baggage": [str(x) for x in (tog.get("baggage_prices") or [])],
-                    "extensions": [str(x) for x in (tog.get("extensions") or [])]}
+            best = cand
+        if is_direct and (direct_best is None or price < direct_best["price"]):
+            direct_best = cand
+    if best is not None and direct_best is not None and direct_best is not best \
+            and direct_best["price"] <= best["price"] + direct_margin:
+        direct_best["cheapest_other"] = {"book_with": best["book_with"], "price": best["price"]}
+        best = direct_best
     if best is None:
         return {"separate_tickets": separate_seen, "found": False}
     text = " | ".join(best["baggage"] + best["extensions"])
@@ -615,7 +654,8 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
         budget[0] -= 1
         data = serpapi_search({**params, "booking_token": btok})  # SerpApi verlangt die Original-Suchparameter
         allow = bool(trip_of(cfg, offer["_variant"]).get("allow_separate_tickets")) if offer.get("_variant") else False
-        b = parse_booking_options(data, allow)
+        b = parse_booking_options(data, allow, offer["leg"]["airlines"],
+                                  float(cfg.get("ranking", {}).get("prefer_direct_within_eur", 25)))
         offer["booking"] = b
         if b.get("found"):
             offer["price"] = b["price"]
@@ -734,6 +774,9 @@ def format_deal(cfg: dict, d: dict) -> str:
     if tr.get("season"):
         lines.append("🌦️ " + escape(tr["season"]))
     b = o.get("booking") or {}
+    if b.get("cheapest_other"):
+        lines.append(f"ℹ️ Direktbuchung bei der Airline gewählt (günstigster Vermittler: "
+                     f"{escape(b['cheapest_other']['book_with'])} {b['cheapest_other']['price']:.0f} €)")
     if b.get("book_with"):
         lines.append(f"🏷️ Buchbar bei: {escape(b['book_with'])}" + (f" ({escape(b['option_title'])})" if b.get("option_title") else ""))
     if o.get("google_flights_url"):
@@ -808,7 +851,12 @@ def discord_embed(cfg: dict, d: dict) -> dict:
             f"✈️ {', '.join(o['leg']['airlines'])}", f"💡 {'; '.join(e['reasons'])}"]
     b = o.get("booking") or {}
     if b.get("book_with"):
-        desc.append(f"🏷️ Buchbar bei {b['book_with']}" + (f" ({b['option_title']})" if b.get("option_title") else ""))
+        desc.append(f"🏷️ Buchbar bei {b['book_with']}" + (" (direkt bei der Airline)" if b.get("direct") else "")
+                    + (f" – {b['option_title']}" if b.get("option_title") else ""))
+    if b.get("cheapest_other"):
+        desc.append(f"ℹ️ Günstigster Vermittler: {b['cheapest_other']['book_with']} {b['cheapest_other']['price']:.0f} €"
+                    f" (Airline-Direktbuchung bevorzugt)")
+    desc.append(f"🏁 Rang-Wert {e.get('score', 0):.0f} € (Gesamtkosten + Zeit/Umstiege)")
     extra = []
     if v.get("penalty_eur"):
         extra.append(f"{v['penalty_eur']} € Varianten-Aufschlag")
@@ -949,6 +997,7 @@ def run(cfg: dict) -> dict:
     trips(cfg)
     if state.get("mc_single_origin"):
         cfg["_mc_single_origin"] = True
+    cfg["_hot"] = hot_trips(cfg, obs_all, now)
     rec = {"ts": iso(now), "status": "ok", "searches": 0, "verifications": 0, "errors": [], "notes": [],
            "results": [], "notified": [], "channels": channels()}
 
@@ -1015,7 +1064,7 @@ def run(cfg: dict) -> dict:
                         valid.sort(key=lambda x: x[0]["effective"])
                         ev, best = valid[0]
                         o.update(best_total=ev["total"], best_price=best["price"], tier=ev["tier"],
-                                 effective=ev["effective"], reference=ev["reference"],
+                                 effective=ev["effective"], reference=ev["reference"], score=ev["score"],
                                  pct_below_ref=ev["pct_below_ref"], separate=ev["separate_tickets"],
                                  trip=tr["id"],
                                  leg=best["leg"], bag_note=ev["bag_note"], bag_cost=ev["bag_cost"],
@@ -1026,7 +1075,7 @@ def run(cfg: dict) -> dict:
                                        "duration_min": x[1]["leg"]["duration_min"]} for x in valid[:3]])
                         res.update(status="ok", total=ev["total"], tier=ev["tier"], airlines=best["leg"]["airlines"])
                         if ev["reasons"]:
-                            candidates.append((ev["effective"], c, params, best, base))
+                            candidates.append((ev["score"], c, params, best, base))
             except SourceError as e:
                 o["status"] = res["status"] = "error"
                 res["message"] = o["error"] = str(e)
@@ -1075,6 +1124,16 @@ def run(cfg: dict) -> dict:
     import dashboard
     dashboard.build(cfg, DATA, DOCS)
     return rec
+
+
+def hot_trips(cfg: dict, obs: list[dict], now: dt.datetime) -> set[str]:
+    """Reisen, bei denen in den letzten 7 Tagen GUT/EXTREM GUT gemessen wurde -> mehr Suchen."""
+    hot = set()
+    for o in obs:
+        if o.get("tier") in ("GUT", "EXTREM GUT") and o.get("variant") in cfg["_vmap"] \
+                and parse_iso(o["ts"]) >= now - dt.timedelta(days=7):
+            hot.add(trip_of(cfg, o["variant"])["id"])
+    return hot
 
 
 def best_recent_combo(obs: list[dict], now: dt.datetime) -> dict | None:

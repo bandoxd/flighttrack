@@ -46,12 +46,12 @@ def build(cfg: dict, data_dir: Path, docs_dir: Path) -> Path:
             "windows": tr.get("windows", []), "ground": tr.get("ground", []),
             "variants": [{"id": v["id"], "name": v["name"], "outbound_to": v["outbound_to"],
                           "return_from": v["return_from"], "penalty_eur": v.get("penalty_eur", 0),
-                          "ground": v.get("ground", [])} for v in tr["variants"]]})
+                          "ground": v.get("ground", []), "weight": int(v.get("weight", 1))} for v in tr["variants"]]})
     recent_cut = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=21)).isoformat()[:19]
     vtrip = {v["id"]: t["id"] for t in trips for v in t["variants"]}
     obs_keys = ("ts", "variant", "out", "ret", "status", "best_total", "tier", "airlines", "stops", "duration_min",
                 "google_flights_url", "error", "best_price", "bag_note", "bag_cost", "effective", "reference",
-                "pct_below_ref", "separate")
+                "pct_below_ref", "separate", "score")
     payload = {
         "generated": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
         "demo": (data_dir / "DEMO").exists(),

@@ -8,13 +8,13 @@
 <style>
 .viz-root{color-scheme:light;--bg:#f4f4f2;--surface-1:#fcfcfb;--surface-2:#f6f6f4;--border:#e3e2de;--grid:#ebeae6;
 --text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#77766f;
---s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;
 --good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;--accent:#2a78d6}
 @media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;--bg:#111110;
 --surface-1:#1a1a19;--surface-2:#20201f;--border:#2e2e2c;--grid:#262624;--text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;
---s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--accent:#3987e5}}
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--accent:#3987e5}}
 :root[data-theme="dark"] .viz-root{color-scheme:dark;--bg:#111110;--surface-1:#1a1a19;--surface-2:#20201f;--border:#2e2e2c;--grid:#262624;
---text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--accent:#3987e5}
+--text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--accent:#3987e5}
 *{box-sizing:border-box}
 body{margin:0}
 .viz-root{background:var(--bg);color:var(--text-primary);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:20px}
@@ -95,7 +95,7 @@ details.more[open] > summary{margin-bottom:10px}
 <script>
 const D = /*__DATA__*/null;
 const TZ = 'Europe/Berlin';
-const COLORS = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)'];
+const COLORS = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)','var(--s6)','var(--s7)'];
 const TIER = {'EXTREM GUT':{c:'var(--good)',i:'🔥'},'GUT':{c:'var(--good)',i:'✓'},'NORMAL':{c:'var(--warning)',i:'–'},'ZU TEUER':{c:'var(--critical)',i:'✕'}};
 const STATUS = {ok:['var(--good)','OK'],partial:['var(--warning)','Teilweise'],error:['var(--critical)','Fehler'],skipped:['var(--serious)','Übersprungen'],no_results:['var(--warning)','Keine Treffer']};
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -181,12 +181,12 @@ function connCard(c){
       ${c.url ? `<div><a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener">Bei Google Flights öffnen ↗</a> <span class="meta">dort Anbieter wählen und Preis vor Buchung prüfen</span></div>` : ''}
     </div></details>`;
 }
-const fromDeal = d => ({kind:'deal', variant:d.variant, trip:d.trip, out:d.out, ret:d.ret, ts:d.ts, tier:d.eval.tier, total:d.eval.total, price:d.offer.price,
+const fromDeal = d => ({kind:'deal', score:d.eval.score, variant:d.variant, trip:d.trip, out:d.out, ret:d.ret, ts:d.ts, tier:d.eval.tier, total:d.eval.total, price:d.offer.price,
   bag_cost:d.eval.bag_cost, bag_note:d.eval.bag_note, leg:d.offer.leg, return_leg:d.offer.return_leg || null, airlines:d.offer.leg.airlines,
   url:d.offer.google_flights_url, reasons:d.eval.reasons, issues:(d.eval.issues||[]).concat(d.offer.verify_notes||[]), notified:d.notified,
   duplicate:d.duplicate, verified:d.offer.verified, book_with:(d.offer.booking||{}).book_with, effective:d.eval.effective,
   reference:d.eval.reference, pct:d.eval.pct_below_ref, separate:d.eval.separate_tickets});
-const fromObs = o => ({kind:'obs', variant:o.variant, trip:o.trip, out:o.out, ret:o.ret, ts:o.ts, tier:o.tier, total:o.best_total, price:o.best_price,
+const fromObs = o => ({kind:'obs', score:o.score, variant:o.variant, trip:o.trip, out:o.out, ret:o.ret, ts:o.ts, tier:o.tier, total:o.best_total, price:o.best_price,
   bag_cost:o.bag_cost, bag_note:o.bag_note, leg:o.leg, airlines:o.airlines, url:o.google_flights_url, effective:o.effective,
   reference:o.reference, pct:o.pct_below_ref, separate:o.separate});
 
@@ -209,17 +209,19 @@ function render(){
     <span>${last ? sbadge(last.status) : sbadge('skipped')} Letzter Lauf <b>${last ? fdt(last.ts) : '—'}</b></span>
     <span>Suchen <b>${used}</b>/${b.monthly_searches} <span class="muted">(${left} übrig)</span></span>
     <span>Meldungen an <b>${last && last.channels && last.channels.length ? esc(last.channels.join(', ')) : '<span class="err">nicht konfiguriert</span>'}</b></span>
-    <span class="muted">Indonesien: &lt; ${th.extreme} € · ${th.extreme}–${th.good} € bei guter Verbindung · Szenarien A/B/D: ≥ 20 % unter Googles Normalpreis</span>
+    <span class="muted">Indonesien flexibel & Ostjava: &lt; ${th.extreme} € · ${th.extreme}–${th.good} € bei guter Verbindung · übrige Reisen: ≥ 20 % unter Googles Normalpreis · Reisen mit aktuell guten Preisen bekommen doppelt so viele Suchen</span>
     ${D.state.mc_single_origin ? '<span class="muted">Gabelflüge nur ab FRA (Mehrflughafen-Suche dort nicht unterstützt)</span>' : ''}
   </div>${last && last.errors && last.errors.length ? `<div class="err" style="margin-top:8px;font-size:13px">⚠ ${last.errors.map(esc).join('<br>⚠ ')}</div>` : ''}</section>`;
   // Szenario-Vergleich
-  h += `<div class="sechead"><h2>🧭 Szenario-Vergleich</h2><span class="meta">bester gemessener Flug der letzten 14 Tage + Richtwerte für Inland/Fähren</span></div>
-    <section class="card scroll"><table><thead><tr><th>Reise</th><th class="num">Bester Flug</th><th>Route · Termin</th><th class="num">Inland/Fähren</th><th class="num">Summe ≈</th><th>Saison & Hinweise</th><th class="num">geprüft</th></tr></thead><tbody>` +
-    TRIPS.map(t => {
-      const os = Object.values(latestAll).filter(o => o.trip === t.id).sort((a,b) => (a.effective ?? a.best_total) - (b.effective ?? b.best_total));
-      const best = os[0], g = best ? ground(best.variant) : null;
-      const cov = t.variants.reduce((a,v) => { const c = D.coverage[v.id] || {total:0,checked:0}; return [a[0]+c.checked, a[1]+c.total]; }, [0,0]);
-      return `<tr><td><span class="swatch" style="background:${tcolor(t.id)}"></span><b>${esc(t.emoji)} ${esc(t.name)}</b><div class="meta">Priorität ${esc(t.priority || '—')}</div></td>
+  h += `<div class="sechead"><h2>🧭 Szenario-Vergleich</h2><span class="meta">Rang nach Gesamtkosten (Flug + Inland/Fähren) mit Zuschlag für lange Reisezeit & viele Umstiege · letzte 14 Tage</span></div>
+    <section class="card scroll"><table><thead><tr><th class="num">Rang</th><th>Reise</th><th class="num">Bester Flug</th><th>Route · Termin</th><th class="num">Inland/Fähren</th><th class="num">Summe ≈</th><th>Saison & Hinweise</th><th class="num">geprüft</th></tr></thead><tbody>` +
+    TRIPS.map(t => ({t, best: Object.values(latestAll).filter(o => o.trip === t.id).sort((a,b) => (a.score ?? a.effective ?? a.best_total) - (b.score ?? b.effective ?? b.best_total))[0]}))
+      .sort((x,y) => (x.best ? (x.best.score ?? x.best.best_total) : 1e9) - (y.best ? (y.best.score ?? y.best.best_total) : 1e9))
+      .map(({t, best}, rank) => {
+      const os = best ? [best] : [];
+      const g = best ? ground(best.variant) : null;
+      const cov = t.variants.filter(v => v.weight !== 0).reduce((a,v) => { const c = D.coverage[v.id] || {total:0,checked:0}; return [a[0]+c.checked, a[1]+c.total]; }, [0,0]);
+      return `<tr><td class="num"><b>${best ? rank + 1 : '–'}</b></td><td><span class="swatch" style="background:${tcolor(t.id)}"></span><b>${esc(t.emoji)} ${esc(t.name)}</b><div class="meta">Priorität ${esc(t.priority || '—')} · Budget-Anteil ${t.share}</div></td>
         <td class="num"><b>${best ? eur(best.best_total) : '—'}</b>${best ? '<div>' + badge(best.tier) + '</div>' : ''}</td>
         <td>${best ? esc(V(best.variant).name) + '<div class="meta">' + fd(best.out) + ' → ' + fd(best.ret) + ' · ' + esc((best.airlines||[]).join(', ')) + '</div>' : '<span class="muted">noch keine Messung</span>'}</td>
         <td class="num">${g && g.items.length ? eur(g.lo) + '–' + eur(g.hi) + (g.open.length ? `<div class="meta">+ ${g.open.length} offen</div>` : '') : '—'}</td>
@@ -231,14 +233,14 @@ function render(){
   h += `<div class="chips" role="group" aria-label="Reise filtern"><button class="chip" data-t="all" aria-pressed="${TRIP === 'all'}">Alle Reisen</button>` +
     TRIPS.map(t => `<button class="chip" data-t="${t.id}" aria-pressed="${TRIP === t.id}"><span class="swatch" style="background:${tcolor(t.id)}"></span>${esc(t.emoji)} ${esc(t.name)}</button>`).join('') + `</div>`;
   if (TRIP !== 'all') h += `<div class="chips" role="group" aria-label="Route filtern" style="margin-top:-4px"><button class="chip" data-v="all" aria-pressed="${VAR === 'all'}">Alle Routen</button>` +
-    T(TRIP).variants.map(v => `<button class="chip" data-v="${v.id}" aria-pressed="${VAR === v.id}">${esc(v.name)}</button>`).join('') + `</div>`;
+    T(TRIP).variants.map(v => `<button class="chip" data-v="${v.id}" aria-pressed="${VAR === v.id}">${esc(v.name)}${v.weight === 0 ? ' <span class="muted">(pausiert)</span>' : ''}</button>`).join('') + `</div>`;
   // Deals
-  const deals = D.deals.filter(d => d.eval.notify && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => a.eval.effective - b.eval.effective);
+  const deals = D.deals.filter(d => d.eval.notify && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => (a.eval.score ?? a.eval.effective) - (b.eval.score ?? b.eval.effective));
   h += `<div class="sechead"><h2>🔔 Deals</h2><span class="meta">Angebote, die deine Kriterien erfüllen (letzte 21 Tage)</span></div>`;
   h += deals.length ? `<div class="conns">${deals.slice(0, 8).map(d => connCard(fromDeal(d))).join('')}</div>` : `<div class="card empty">Noch kein Angebot unter deinen Schwellen – sobald eins auftaucht, erscheint es hier und du bekommst eine Nachricht.</div>`;
   // Verbindungen
-  const conns = Object.values(latestAll).filter(inF).sort((a,b) => (a.effective ?? a.best_total) - (b.effective ?? b.best_total));
-  h += `<div class="sechead"><h2>✈️ Günstigste Verbindungen</h2><span class="meta">${conns.length} Termine gemessen (letzte 14 Tage) · antippen für Details</span></div>`;
+  const conns = Object.values(latestAll).filter(inF).sort((a,b) => (a.score ?? a.effective ?? a.best_total) - (b.score ?? b.effective ?? b.best_total));
+  h += `<div class="sechead"><h2>✈️ Günstigste Verbindungen</h2><span class="meta">${conns.length} Termine (letzte 14 Tage) · sortiert nach Gesamtkosten inkl. Inland, Reisezeit & Umstiegen · antippen für Details</span></div>`;
   h += conns.length ? `<div class="conns">${conns.slice(0, SHOW).map(o => connCard(fromObs(o))).join('')}</div>` +
        (conns.length > SHOW ? `<div style="text-align:center"><button class="plain" id="moreconn">${Math.min(8, conns.length - SHOW)} weitere anzeigen</button></div>` : '')
      : `<div class="card empty">Noch keine Messwerte.</div>`;

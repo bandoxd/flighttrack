@@ -18,6 +18,10 @@ import copy
 CFG_FULL = monitor.load_config(ROOT / "config.toml")
 # Alte Tests laufen mit der reinen Indonesien-Konfiguration -> prüft, dass sich das bisherige Verhalten nicht ändert
 CFG = copy.deepcopy({k: v for k, v in CFG_FULL.items() if k not in ("trips", "airport_access")})
+# Regressionstests der ursprünglichen Indonesien-Logik mit den ursprünglichen Einstellungen
+CFG["trip"]["depart_step_days"] = 4
+for _v, _w in zip(CFG["variants"], (3, 2, 2, 1)):
+    _v["weight"] = _w
 
 
 def full_cfg():
@@ -436,13 +440,34 @@ class TestTrips(Base):
     def test_trips_and_budget_shares(self):
         cfg = full_cfg()
         ids = [t["id"] for t in monitor.trips(cfg)]
-        self.assertEqual(ids, ["ID", "C", "A", "B", "D"])
+        self.assertEqual(ids, ["ID", "C", "PH", "LF", "D", "VN", "TH"])
+        from collections import Counter
+        cnt, st = Counter(), {}
+        for _ in range(90):
+            for c in monitor.next_combos(cfg, st, 2, dt.date(2026, 11, 5), None):
+                cnt[monitor.trip_of(cfg, c["variant"])["id"]] += 1
+        # Anteile 5:4:3:2:2:1:1 (Priorität)
+        self.assertEqual(cnt, Counter({"PH": 50, "LF": 40, "D": 30, "VN": 20, "TH": 20, "C": 10, "ID": 10}))
+        # pausierte Routen (weight 0) werden nie gesucht
+        st, seen = {}, set()
+        for _ in range(200):
+            for c in monitor.next_combos(cfg, st, 3, dt.date(2026, 11, 5), None):
+                seen.add(c["variant"])
+        self.assertFalse(seen & {"V4", "C2", "D3"})
+
+    def test_hot_trip_gets_double_share(self):
+        cfg = full_cfg()
+        monitor.trips(cfg)
+        cfg["_hot"] = {"TH"}
         from collections import Counter
         cnt, st = Counter(), {}
         for _ in range(110):
             for c in monitor.next_combos(cfg, st, 2, dt.date(2026, 11, 5), None):
                 cnt[monitor.trip_of(cfg, c["variant"])["id"]] += 1
-        self.assertEqual(cnt, Counter({"C": 66, "ID": 44, "A": 44, "B": 44, "D": 22}))
+        self.assertEqual(cnt["TH"], 2 * cnt["VN"])
+        obs = [{"ts": "2026-11-09T05:00:00Z", "variant": "LF1", "tier": "GUT"},
+               {"ts": "2026-10-01T05:00:00Z", "variant": "VN1", "tier": "EXTREM GUT"}]
+        self.assertEqual(monitor.hot_trips(cfg, obs, dt.datetime(2026, 11, 10, tzinfo=dt.timezone.utc)), {"LF"})
 
     def test_all_fixed_windows_visited(self):
         cfg, st, seen = full_cfg(), {}, set()
@@ -450,12 +475,13 @@ class TestTrips(Base):
             for c in monitor.next_combos(cfg, st, 4, dt.date(2026, 11, 5), None):
                 if monitor.trip_of(cfg, c["variant"])["id"] != "ID":
                     seen.add((c["variant"], c["out"], c["ret"]))
-        self.assertEqual(len(seen), 36)
-        self.assertIn(("A1", "2027-03-20", "2027-04-19"), seen)
+        active = [v for t in monitor.trips(cfg)[1:] for v in t["variants"] if int(v.get("weight", 1)) > 0]
+        self.assertEqual(len(seen), 3 * len(active))
+        self.assertIn(("PH1", "2027-03-20", "2027-04-19"), seen)
 
     def test_past_windows_dropped(self):
         plans = monitor.all_combos(full_cfg(), dt.date(2027, 4, 2))
-        self.assertEqual([c["out"] for c in plans["A1"]], ["2027-04-10"])
+        self.assertEqual([c["out"] for c in plans["PH1"]], ["2027-04-15"])
 
     def test_cursor_migration_keeps_progress(self):
         cfg = full_cfg()
@@ -465,8 +491,13 @@ class TestTrips(Base):
         self.assertGreaterEqual(st["cursor"]["trips"]["ID"]["variant"].get("V1", 7), 7)
 
     def test_params_new_trip(self):
-        p = monitor.base_params(full_cfg(), {"variant": "B1", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
+        p = monitor.base_params(full_cfg(), {"variant": "TH1", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
         self.assertEqual((p["type"], p["departure_id"], p["arrival_id"], p["stops"]), (1, "FRA,DUS,MUC,BER", "BKK", 3))
+        p = monitor.base_params(full_cfg(), {"variant": "PH2", "out": "2027-04-01", "ret": "2027-05-01"}, "k")
+        self.assertEqual((p["type"], p["arrival_id"]), (1, "CEB,DGT,MNL"))
+        p = monitor.base_params(full_cfg(), {"variant": "LF2", "out": "2027-05-01", "ret": "2027-05-31"}, "k")
+        legs = json.loads(p["multi_city_json"])
+        self.assertEqual((legs[0]["arrival_id"], legs[1]["departure_id"]), ("LOP,DPS", "LBJ,DPS"))
         p = monitor.base_params(CFG, {"variant": "V2", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
         self.assertEqual((p["departure_id"], p["stops"]), ("FRA", 2))
 
@@ -475,17 +506,17 @@ class TestTrips(Base):
 
     def test_relative_threshold(self):
         cfg = full_cfg()
-        e = monitor.evaluate(cfg, self.offer(780, [900, 1100]), "B1", None)   # 22 % unter 1000
+        e = monitor.evaluate(cfg, self.offer(780, [900, 1100]), "TH1", None)   # 22 % unter 1000
         self.assertEqual((e["tier"], e["notify"]), ("GUT", True))
-        e = monitor.evaluate(cfg, self.offer(850, [900, 1100]), "B1", None)   # 15 %
+        e = monitor.evaluate(cfg, self.offer(850, [900, 1100]), "TH1", None)   # 15 %
         self.assertFalse(e["notify"])
-        e = monitor.evaluate(cfg, self.offer(650, [900, 1100]), "B1", None)   # 35 %
+        e = monitor.evaluate(cfg, self.offer(650, [900, 1100]), "TH1", None)   # 35 %
         self.assertEqual(e["tier"], "EXTREM GUT")
-        e = monitor.evaluate(cfg, self.offer(780, [900, 1100], layover=12 * 60), "B1", None)  # schlechte Verbindung
+        e = monitor.evaluate(cfg, self.offer(780, [900, 1100], layover=12 * 60), "TH1", None)  # schlechte Verbindung
         self.assertFalse(e["notify"])
-        e = monitor.evaluate(cfg, self.offer(680, [900, 1100], layover=12 * 60), "B1", None)  # 32 % reicht
+        e = monitor.evaluate(cfg, self.offer(680, [900, 1100], layover=12 * 60), "TH1", None)  # 32 % reicht
         self.assertTrue(e["notify"])
-        e = monitor.evaluate(cfg, self.offer(500), "B1", None)                # kein Vergleichspreis
+        e = monitor.evaluate(cfg, self.offer(500), "TH1", None)                # kein Vergleichspreis
         self.assertFalse(e["notify"])
         self.assertTrue(any("Vergleichspreis" in i for i in e["issues"]))
 
@@ -527,10 +558,31 @@ class TestTrips(Base):
 
     def test_ground_costs(self):
         g = monitor.ground_for(full_cfg(), "D1")
-        self.assertEqual((g["min"], g["max"]), (70, 200))
+        self.assertEqual((g["min"], g["max"]), (9 + 60 + 9 + 40 + 4 + 11, 60 + 160 + 13 + 60 + 25 + 45))
         self.assertEqual(g["open"], [])
-        g = monitor.ground_for(full_cfg(), "A1")
+        g = monitor.ground_for(full_cfg(), "PH1")
         self.assertIn("Apo Island Tagesausflüge", g["open"])
+
+    def test_rank_score(self):
+        cfg = full_cfg()
+        o = self.offer(700, [900, 1100])
+        e = monitor.evaluate(cfg, o, "TH1", None)
+        g = monitor.ground_for(cfg, "TH1")
+        self.assertAlmostEqual(e["score"], e["effective"] + (g["min"] + g["max"]) / 2, places=1)
+        o2 = self.offer(700, [900, 1100], stops=2)
+        o2["leg"]["duration_min"] = 26 * 60
+        e2 = monitor.evaluate(cfg, o2, "TH1", None)
+        self.assertAlmostEqual(e2["score"] - e["score"], 40 + 60, places=1)
+
+    def test_prefer_airline_direct(self):
+        data = {"booking_options": [
+            {"together": {"book_with": "lastminute.com", "price": 637, "baggage_prices": []}},
+            {"together": {"book_with": "Etihad", "price": 655, "baggage_prices": ["1st checked bag free"]}}]}
+        b = monitor.parse_booking_options(data, False, ["Etihad"])
+        self.assertEqual((b["book_with"], b["direct"], b["cheapest_other"]["price"]), ("Etihad", True, 637))
+        data["booking_options"][1]["together"]["price"] = 704
+        b = monitor.parse_booking_options(data, False, ["Etihad"])
+        self.assertEqual(b["book_with"], "lastminute.com")
 
     def test_full_run_new_trip_with_discord(self):
         cfg = full_cfg()
@@ -548,8 +600,9 @@ class TestTrips(Base):
             os.environ.pop("DISCORD_WEBHOOK_URL")
         self.assertTrue(calls)
         titles = [e["title"] for p in calls for e in p["embeds"]]
-        self.assertTrue(any("🇹🇭" in t or "🇵🇭" in t or "🇲🇾" in t for t in titles), titles)
-        emb = next(e for p in calls for e in p["embeds"] if "🇲🇾" in e["title"] or "🇹🇭" in e["title"] or "🇵🇭" in e["title"])
+        flags = ("🇹🇭", "🇵🇭", "🇲🇾", "🇻🇳", "🦎")
+        self.assertTrue(any(any(f in t for f in flags) for t in titles), titles)
+        emb = next(e for p in calls for e in p["embeds"] if any(f in e["title"] for f in flags))
         names = [f["name"] for f in emb["fields"]]
         self.assertIn("🚤 Inland, Fähren & Transfers (Richtwerte)", names)
         self.assertIn("🌦️ Saison", names)

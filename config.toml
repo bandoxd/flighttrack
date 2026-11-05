@@ -5,7 +5,7 @@
 # Bisherige Suche: Indonesien flexibel (bleibt unverändert, Reise-ID "ID")
 name = "Indonesien flexibel (bisher)"
 emoji = "🇮🇩"
-share = 2                     # Anteil am Suchbudget im Vergleich zu den [[trips]] unten
+share = 1                     # Anteil am Suchbudget (Priorität niedrig – siehe [[trips]] unten)
 origin = "FRA"
 adults = 1
 currency = "EUR"
@@ -13,7 +13,7 @@ currency = "EUR"
 depart_from = "2027-03-01"
 depart_to   = "2027-05-15"
 # Abstand zwischen geprüften Abflugtagen (Tage). Kleinere Zahl = feiner, aber mehr Suchen.
-depart_step_days = 4
+depart_step_days = 7
 # Reisedauern (Tage), werden pro Abflugtag rotiert.
 durations = [27, 30, 33]
 max_stops = 1                 # max. Umstiege pro Richtung (SerpApi stops=2 => "1 Stopp oder weniger")
@@ -27,7 +27,7 @@ id = "V1"
 name = "Gabelflug FRA→SUB / DPS→FRA"
 outbound_to = "SUB"
 return_from = "DPS"
-weight = 3
+weight = 1
 penalty_eur = 0
 
 [[variants]]
@@ -51,7 +51,7 @@ id = "V4"
 name = "Gabelflug FRA→DPS / SUB→FRA (umgekehrt)"
 outbound_to = "DPS"
 return_from = "SUB"
-weight = 1
+weight = 0
 penalty_eur = 30
 
 [thresholds]
@@ -80,6 +80,14 @@ reserve_for_verification = 30   # für Detailprüfung von Deal-Kandidaten
 runs_per_day = 2
 max_searches_per_run = 6
 max_verifications_per_run = 2
+hot_boost = 2                   # Reisen mit aktuell GUT/EXTREM-Preisen (letzte 7 Tage) bekommen x-fachen Anteil
+
+[ranking]
+# Rangfolge = Gesamtkosten inkl. Inland/Fähren + Zuschläge für lange Reisezeit und viele Umstiege
+eur_per_hour_over = 10          # pro Stunde über hours_free je Richtung
+hours_free = 20
+eur_per_extra_stop = 40         # pro Umstieg über 1 je Richtung
+prefer_direct_within_eur = 25   # Airline-Direktbuchung bevorzugen, wenn höchstens so viel teurer
 
 [serpapi]
 gl = "de"
@@ -111,8 +119,8 @@ BER = 40
 id = "C"
 name = "Ostjava + Bali (Szenario C)"
 emoji = "🇮🇩"
-priority = "SEHR HOCH"
-share = 3
+priority = "NIEDRIG (nicht in Prioritätenliste)"
+share = 1
 origins = ["FRA", "DUS", "MUC", "BER"]
 windows = [["2027-05-05", "2027-06-04"], ["2027-05-15", "2027-06-14"], ["2027-04-20", "2027-05-20"]]
 max_stops = 2
@@ -134,7 +142,7 @@ id = "C2"
 name = "Hin & zurück DPS (Vergleich)"
 outbound_to = "DPS"
 return_from = "DPS"
-weight = 2
+weight = 0
 penalty_eur = 0
 ground = ["c_dps_sub", "c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
 
@@ -143,7 +151,7 @@ id = "C3"
 name = "Gabelflug → CGK / DPS →"
 outbound_to = "CGK"
 return_from = "DPS"
-weight = 2
+weight = 1
 penalty_eur = 0
 ground = ["c_cgk_sub", "c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
 
@@ -182,167 +190,151 @@ id = "c_cgk_sub"
 name = "Jakarta → Surabaya (Zug/Inlandsflug)"
 source = "nicht recherchiert"
 
-# ------------------------------------------------------------------ Szenario A: Philippinen
+# ------------------------------------------------------------------ Priorität 1: Philippinen
 [[trips]]
-id = "A"
-name = "Philippinen Negros + Cebu (Szenario A)"
+id = "PH"
+name = "Philippinen Cebu + Negros"
 emoji = "🇵🇭"
-priority = "HOCH"
-share = 2
+priority = "1"
+share = 5
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-03-20", "2027-04-19"], ["2027-04-01", "2027-05-01"], ["2027-04-10", "2027-05-10"]]
+windows = [["2027-03-20", "2027-04-19"], ["2027-04-01", "2027-05-01"], ["2027-04-15", "2027-05-15"]]
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
 relative_pct = 20
-season = "Trockenzeit: Cebu/Dumaguete/Apo am besten ca. Dez–Mai (Dumaguete v. a. März–Mai), Mai etwas feuchter. Karwoche 21.–28.3.2027 (Ostern 28.3.) und Schulferien April–Mai: Fähren und Inlandsflüge voller."
+season = "Trockenzeit; Cebu/Dumaguete/Apo am besten ca. Dez–Mai (Dumaguete v. a. März–Mai), Mai etwas feuchter. Karwoche 21.–28.3.2027 (Ostern 28.3.) und Schulferien April–Mai: Fähren und Inlandsflüge voller. DGT hat nur Inlandsflüge – ab Europa immer über Manila/Cebu."
 
 [[trips.routes]]
-id = "A1"
-name = "Hin & zurück CEB"
+id = "PH1"
+name = "Gabelflug → Cebu / Dumaguete →"
 outbound_to = "CEB"
-return_from = "CEB"
+return_from = "DGT"
 weight = 3
-ground = ["a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_ceb"]
+ground = ["ph_ceb_moal", "ph_moal_dgt", "ph_apo", "ph_siq"]
 
 [[trips.routes]]
-id = "A2"
-name = "Gabelflug → CEB / MNL →"
-outbound_to = "CEB"
-return_from = "MNL"
+id = "PH2"
+name = "Hin & zurück, beliebig CEB/DGT/MNL"
+outbound_to = "CEB,DGT,MNL"
+return_from = "CEB,DGT,MNL"
 weight = 2
-ground = ["a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_mnl"]
+ground = ["ph_ceb_moal", "ph_moal_dgt", "ph_apo", "ph_siq", "ph_dgt_ceb"]
 
 [[trips.routes]]
-id = "A3"
-name = "Hin & zurück MNL"
+id = "PH3"
+name = "Gabelflug → Manila / Cebu oder Dumaguete →"
 outbound_to = "MNL"
-return_from = "MNL"
+return_from = "CEB,DGT"
 weight = 1
-ground = ["a_mnl_ceb", "a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_mnl"]
+ground = ["ph_mnl_ceb", "ph_ceb_moal", "ph_moal_dgt", "ph_apo", "ph_siq"]
 
 [[trips.ground]]
-id = "a_ceb_moal"
+id = "ph_ceb_moal"
 name = "Flughafen Cebu → Moalboal (Bus/Taxi)"
 source = "nicht recherchiert"
 [[trips.ground]]
-id = "a_moal_dgt"
+id = "ph_moal_dgt"
 name = "Moalboal → Dumaguete (Bus + Fähre über Liloan)"
 min = 4
 max = 8
 source = "geckoroutes/rome2rio: ca. ₱320–435"
 [[trips.ground]]
-id = "a_apo"
+id = "ph_apo"
 name = "Apo Island Tagesausflüge"
 source = "nicht recherchiert (meist über Tauchschule)"
 [[trips.ground]]
-id = "a_siq"
+id = "ph_siq"
 name = "Dumaguete ⇄ Siquijor Fähre (hin + zurück)"
 min = 8
 max = 20
 source = "rome2rio: ₱270–689 pro Strecke"
 [[trips.ground]]
-id = "a_dgt_ceb"
-name = "Dumaguete → Cebu (Bus ~7 €, Fähre ~25 €, Flug ~36 €)"
+id = "ph_dgt_ceb"
+name = "Dumaguete → Cebu (Bus ~7 €, Fähre ~25 €, Flug ~36 €; nur falls Rückflug ab CEB)"
 min = 7
 max = 36
 source = "12go/pamasahe: Bus ~₱450, OceanJet ₱1.700, Flug Ø ₱2.500"
 [[trips.ground]]
-id = "a_dgt_mnl"
-name = "Dumaguete/Cebu → Manila (Inlandsflug)"
-source = "nicht recherchiert"
-[[trips.ground]]
-id = "a_mnl_ceb"
+id = "ph_mnl_ceb"
 name = "Manila → Cebu (Inlandsflug)"
 source = "nicht recherchiert"
 
-# ------------------------------------------------------------------ Szenario B: Thailand
+# ------------------------------------------------------------------ Priorität 2: Lombok + Flores
 [[trips]]
-id = "B"
-name = "Thailand Koh Tao + Süden (Szenario B)"
-emoji = "🇹🇭"
-priority = "HOCH"
-share = 2
+id = "LF"
+name = "Indonesien Lombok + Flores"
+emoji = "🦎"
+priority = "2"
+share = 4
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-04-05", "2027-05-05"], ["2027-03-15", "2027-04-14"], ["2027-04-20", "2027-05-20"]]
+windows = [["2027-05-01", "2027-05-31"], ["2027-05-10", "2027-06-09"], ["2027-05-20", "2027-06-19"]]
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
 relative_pct = 20
-season = "Koh Tao (Golfküste) März–Juni gut, beste Tauchsicht ab April. Krabi/Phuket (Andaman) trocken bis April, ab Mai Südwest-Monsun mit Schauern und rauer See. Songkran 13.–15. April: Verkehr voll, Preise höher."
+season = "Mai–Juni: Trockenzeit in Lombok/Flores, gute Bedingungen für Komodo-Bootstouren. Feiertage 2027: Idul Adha 17.5. (+18.5.), Waisak 20.5. (+19.5.) – Inlandsflüge/Boote dann voller."
 
 [[trips.routes]]
-id = "B1"
-name = "Hin & zurück BKK"
-outbound_to = "BKK"
-return_from = "BKK"
+id = "LF1"
+name = "Gabelflug → Lombok / Labuan Bajo →"
+outbound_to = "LOP"
+return_from = "LBJ"
 weight = 3
-ground = ["b_bkk_tao", "b_tao_main", "b_main_kbv", "b_kbv_bkk"]
+ground = ["lf_lop_bangsal", "lf_gili", "lf_lop_lbj", "lf_komodo"]
 
 [[trips.routes]]
-id = "B2"
-name = "Gabelflug → HKT / BKK →"
-outbound_to = "HKT"
-return_from = "BKK"
+id = "LF2"
+name = "Gabelflug → Lombok oder Bali / Labuan Bajo oder Bali →"
+outbound_to = "LOP,DPS"
+return_from = "LBJ,DPS"
 weight = 2
-ground = ["b_hkt_kbv", "b_main_kbv", "b_main_tao", "b_tao_bkk"]
+ground = ["lf_lop_bangsal", "lf_gili", "lf_lop_lbj", "lf_komodo", "lf_lbj_dps"]
 
 [[trips.routes]]
-id = "B3"
-name = "Gabelflug → URT / BKK →"
-outbound_to = "URT"
-return_from = "BKK"
+id = "LF3"
+name = "Gabelflug → Lombok / Bali → (mit Bali-Stopp)"
+outbound_to = "LOP"
+return_from = "DPS"
 weight = 1
-ground = ["b_main_tao", "b_tao_main", "b_main_kbv", "b_kbv_bkk"]
+ground = ["lf_lop_bangsal", "lf_gili", "lf_lop_lbj", "lf_komodo", "lf_lbj_dps"]
 
 [[trips.ground]]
-id = "b_bkk_tao"
-name = "Bangkok → Koh Tao (Lomprayah Bus + Katamaran)"
-min = 33
-max = 42
-source = "ferryadvice/visitthailandtoday: ฿1.225–1.550"
-[[trips.ground]]
-id = "b_tao_main"
-name = "Koh Tao → Chumphon/Surat Thani (Fähre)"
-min = 18
+id = "lf_lop_bangsal"
+name = "Flughafen Lombok → Hafen Bangsal (Taxi/Shuttle)"
+min = 13
 max = 21
-source = "12go: ฿650–750"
+source = "goasia.cc: IDR 250.000–400.000"
 [[trips.ground]]
-id = "b_main_kbv"
-name = "Surat Thani → Khao Sok → Krabi (Bus/Van)"
-min = 7
-max = 17
-source = "12go: Bus/Van Surat Thani–Krabi ca. 8–19 USD"
+id = "lf_gili"
+name = "Bangsal ⇄ Gili Air Boot (hin + zurück, öffentlich bis Schnellboot)"
+min = 1
+max = 10
+source = "lomboknetwork/travelfish: IDR 8.000–85.000 pro Strecke"
 [[trips.ground]]
-id = "b_kbv_bkk"
-name = "Krabi → Bangkok (Bus ~21 € oder Inlandsflug ~25–130 €)"
-min = 21
-max = 130
-source = "abrotherabroad/north-vietnam.com: Bus ฿770, Flug 25–150 USD"
-[[trips.ground]]
-id = "b_hkt_kbv"
-name = "Phuket → Krabi"
+id = "lf_lop_lbj"
+name = "Lombok → Labuan Bajo (Inlandsflug, meist über Bali)"
 source = "nicht recherchiert"
 [[trips.ground]]
-id = "b_main_tao"
-name = "Surat Thani/Chumphon → Koh Tao (Fähre)"
-min = 18
-max = 21
-source = "12go: ฿650–750 (Gegenrichtung)"
+id = "lf_komodo"
+name = "Komodo 3 Tage/2 Nächte Shared-Boot (ohne Parkgebühren)"
+min = 130
+max = 230
+source = "komodoisland.net/Jakarta Post: ab IDR 2,5–2,75 Mio., Expedia ca. IDR 4,3 Mio."
 [[trips.ground]]
-id = "b_tao_bkk"
-name = "Koh Tao → Bangkok (Lomprayah Fähre + Bus)"
-min = 28
-max = 31
-source = "12go: ฿1.050–1.150"
+id = "lf_lbj_dps"
+name = "Labuan Bajo → Bali (Inlandsflug)"
+min = 55
+max = 115
+source = "komodoresort.com: Hin+Rück 120–250 USD"
 
-# ------------------------------------------------------------------ Szenario D: Sabah
+# ------------------------------------------------------------------ Priorität 3: Sabah
 [[trips]]
 id = "D"
-name = "Malaysia Sabah / Borneo (Szenario D)"
+name = "Malaysia Sabah / Borneo"
 emoji = "🇲🇾"
-priority = "MITTEL"
-share = 1
+priority = "3"
+share = 3
 origins = ["FRA", "DUS", "MUC", "BER"]
 windows = [["2027-04-15", "2027-05-15"], ["2027-05-01", "2027-05-31"], ["2027-05-15", "2027-06-14"]]
 max_stops = 2
@@ -353,40 +345,46 @@ season = "Sabah-Trockenzeit ca. März–Sept; Tauchen Semporna/Sipadan Hauptsais
 
 [[trips.routes]]
 id = "D1"
-name = "Hin & zurück BKI"
+name = "Hin & zurück Kota Kinabalu"
 outbound_to = "BKI"
 return_from = "BKI"
 weight = 3
-ground = ["d_bki_twu", "d_twu_sem", "d_mabul", "d_sem_twu", "d_twu_bki"]
+ground = ["d_bki_sdk", "d_kinabatangan", "d_sdk_sem", "d_mabul", "d_sem_twu", "d_twu_bki"]
 
 [[trips.routes]]
 id = "D2"
-name = "Gabelflug → BKI / TWU →"
+name = "Gabelflug → Kota Kinabalu / Tawau →"
 outbound_to = "BKI"
 return_from = "TWU"
 weight = 2
-ground = ["d_bki_twu", "d_twu_sem", "d_mabul", "d_sem_twu"]
+ground = ["d_bki_sdk", "d_kinabatangan", "d_sdk_sem", "d_mabul", "d_sem_twu"]
 
 [[trips.routes]]
 id = "D3"
-name = "Hin & zurück TWU"
+name = "Hin & zurück Tawau"
 outbound_to = "TWU"
 return_from = "TWU"
-weight = 1
-ground = ["d_twu_sem", "d_mabul", "d_sem_twu", "d_twu_bki", "d_bki_twu"]
+weight = 0
+ground = ["d_twu_sem", "d_mabul", "d_sem_twu", "d_twu_bki", "d_bki_sdk", "d_kinabatangan"]
 
 [[trips.ground]]
-id = "d_bki_twu"
-name = "Kota Kinabalu → Tawau (Inlandsflug)"
-min = 11
-max = 45
-source = "Skyscanner/Cheapflights: ab RM 53–66, Ø ca. RM 200"
+id = "d_bki_sdk"
+name = "Kota Kinabalu → Sandakan/Sepilok (Bus ~9 € oder Flug)"
+min = 9
+max = 60
+source = "diveintomalaysia/goasia: Bus ca. RM 43–50, Flug RM 82–297"
 [[trips.ground]]
-id = "d_twu_bki"
-name = "Tawau → Kota Kinabalu (Inlandsflug)"
-min = 11
-max = 45
-source = "Skyscanner/Kayak: ab RM 53"
+id = "d_kinabatangan"
+name = "Kinabatangan-Flusstour (Tagestour bis Übernachtung)"
+min = 60
+max = 160
+source = "zafigo: 60–600 USD; Expedia Tagestour RM 594–769"
+[[trips.ground]]
+id = "d_sdk_sem"
+name = "Sandakan/Kinabatangan → Semporna (Bus)"
+min = 9
+max = 13
+source = "omio/rome2rio: ca. S$13–19 bzw. RM 54"
 [[trips.ground]]
 id = "d_twu_sem"
 name = "Flughafen Tawau → Semporna (Bus/Taxi)"
@@ -394,14 +392,138 @@ min = 4
 max = 25
 source = "trip.com: Bus RM 20–25, Taxi RM 100–120"
 [[trips.ground]]
+id = "d_mabul"
+name = "Semporna ⇄ Mabul Boot (hin + zurück)"
+min = 40
+max = 60
+source = "unchartedlens: RM 100–150 pro Strecke"
+[[trips.ground]]
 id = "d_sem_twu"
 name = "Semporna → Flughafen Tawau (Bus/Taxi)"
 min = 4
 max = 25
 source = "trip.com/unchartedlens"
 [[trips.ground]]
-id = "d_mabul"
-name = "Semporna ⇄ Mabul Boot (hin + zurück)"
-min = 40
-max = 60
-source = "unchartedlens: RM 100–150 pro Strecke"
+id = "d_twu_bki"
+name = "Tawau → Kota Kinabalu (Inlandsflug, nur bei Rückflug ab BKI)"
+min = 11
+max = 45
+source = "Skyscanner/Kayak: ab RM 53"
+
+# ------------------------------------------------------------------ Priorität 4: Vietnam
+[[trips]]
+id = "VN"
+name = "Vietnam Phong Nha → Nha Trang"
+emoji = "🇻🇳"
+priority = "4"
+share = 2
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-03-15", "2027-04-14"], ["2027-04-01", "2027-05-01"], ["2027-04-15", "2027-05-15"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "relative"
+relative_pct = 20
+season = "März–Mai: Zentralküste (Hue, Da Nang, Quy Nhon, Nha Trang) trocken und warm; Phong-Nha-Höhlen geöffnet. 30.4./1.5. Nationalfeiertage – Züge/Flüge voll und teurer."
+
+[[trips.routes]]
+id = "VN1"
+name = "Gabelflug → Hanoi / Ho-Chi-Minh-Stadt →"
+outbound_to = "HAN"
+return_from = "SGN"
+weight = 3
+ground = ["vn_han_vdh", "vn_vdh_dad", "vn_dad_uih", "vn_uih_cxr", "vn_cxr_sgn"]
+
+[[trips.routes]]
+id = "VN2"
+name = "Gabelflug, beliebig HAN/DAD/SGN"
+outbound_to = "HAN,DAD,SGN"
+return_from = "HAN,DAD,SGN"
+weight = 1
+ground = ["vn_han_vdh", "vn_vdh_dad", "vn_dad_uih", "vn_uih_cxr", "vn_cxr_sgn"]
+
+[[trips.ground]]
+id = "vn_han_vdh"
+name = "Hanoi → Dong Hoi/Phong Nha (Zug)"
+min = 21
+max = 39
+source = "vietnamtourism.com: VND 580.000–1.070.000"
+[[trips.ground]]
+id = "vn_vdh_dad"
+name = "Dong Hoi → Hue → Da Nang (Zug)"
+min = 7
+max = 12
+source = "baolau: VND 205.000–338.000"
+[[trips.ground]]
+id = "vn_dad_uih"
+name = "Da Nang → Quy Nhon (Zug/Bus)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "vn_uih_cxr"
+name = "Quy Nhon → Nha Trang (Bus/Zug)"
+min = 7
+max = 15
+source = "omio: Bus ab ca. £6"
+[[trips.ground]]
+id = "vn_cxr_sgn"
+name = "Nha Trang → Ho-Chi-Minh-Stadt (Zug ~10–14 € oder Flug ~40–130 €)"
+min = 10
+max = 130
+source = "north-vietnam.com: Zug ab 11–15 USD, Flug 45–150 USD"
+
+# ------------------------------------------------------------------ Priorität 5: Thailand
+[[trips]]
+id = "TH"
+name = "Thailand Khao Sok + Koh Kood/Koh Chang"
+emoji = "🇹🇭"
+priority = "5"
+share = 2
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-03-05", "2027-04-04"], ["2027-03-20", "2027-04-19"], ["2027-04-05", "2027-05-05"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "relative"
+relative_pct = 20
+season = "März–April: Koh Kood/Koh Chang (Ostküste) in guter Saison, ab Mai Regen. Songkran 13.–15. April: Verkehr voll, Preise höher. Achtung: Khao Sok liegt im Süden, Koh Kood/Chang im Osten – lange Überlandfahrt (ca. 1 Tag) oder Inlandsflug nötig."
+
+[[trips.routes]]
+id = "TH1"
+name = "Hin & zurück Bangkok"
+outbound_to = "BKK"
+return_from = "BKK"
+weight = 3
+ground = ["th_bkk_ks", "th_ks_trat", "th_trat_kood", "th_kood_chang", "th_chang_bkk"]
+
+[[trips.routes]]
+id = "TH2"
+name = "Gabelflug → Bangkok / Trat →"
+outbound_to = "BKK"
+return_from = "TDX"
+weight = 1
+ground = ["th_bkk_ks", "th_ks_trat", "th_trat_kood", "th_kood_chang"]
+
+[[trips.ground]]
+id = "th_bkk_ks"
+name = "Bangkok → Khao Sok (Bus/Zug + Van oder Inlandsflug)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "th_ks_trat"
+name = "Khao Sok → Trat (sehr lange Überlandfahrt oder Flug über Bangkok)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "th_trat_kood"
+name = "Trat → Koh Kood (Fähre inkl. Transfer)"
+min = 16
+max = 20
+source = "12go: EUR 15,84–18,48 bzw. USD 17–20"
+[[trips.ground]]
+id = "th_kood_chang"
+name = "Koh Kood → Koh Chang (Fähre)"
+min = 16
+max = 26
+source = "busonlineticket/rome2rio: ฿600–967"
+[[trips.ground]]
+id = "th_chang_bkk"
+name = "Koh Chang → Bangkok (Fähre + Bus/Van)"
+min = 12
+max = 30
+source = "12go/visitthailandtoday: Van/Bus+Fähre EUR 12–26, Autofähre ฿90"

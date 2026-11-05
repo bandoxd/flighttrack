@@ -112,24 +112,27 @@ Ab jetzt läuft alles automatisch um ca. 06:17 und 18:17 Uhr (Winterzeit). GitHu
 
 ---
 
-## Mehrere Reisen (Südostasien-Szenarien)
+## Mehrere Reisen (Prioritätenliste 2027)
 
-Zusätzlich zur bisherigen Indonesien-Suche (Reise „ID“, unverändert) überwacht der Monitor vier Szenarien mit festen Zeitfenstern:
+Der Monitor verteilt die 250 Gratis-Suchen pro Monat nach Priorität (`share`). Reisen, bei denen in den letzten 7 Tagen ein GUT/EXTREM-Preis gemessen wurde, bekommen automatisch doppelt so viele Suchen (`hot_boost`). Der aktuell günstigste Termin wird zusätzlich täglich nachgeprüft.
 
-| Reise | Routen | Meldung | Budget-Anteil |
-|---|---|---|---|
-| 🇮🇩 C Ostjava + Bali | SUB/DPS, DPS⇄DPS, CGK/DPS | wie bisher: < 750 € / 750–850 € bei guter Verbindung / −15 % | 3 |
-| 🇵🇭 A Philippinen | CEB⇄CEB, CEB/MNL, MNL⇄MNL | ≥ 20 % unter Googles Normalpreis | 2 |
-| 🇹🇭 B Thailand | BKK⇄BKK, HKT/BKK, URT/BKK | ≥ 20 % unter Googles Normalpreis | 2 |
-| 🇲🇾 D Sabah | BKI⇄BKI, BKI/TWU, TWU⇄TWU | ≥ 20 % unter Googles Normalpreis | 1 |
-| 🇮🇩 ID Indonesien flexibel (bisher) | V1–V4 | wie bisher | 2 |
+| Prio | Reise | Routen (Abflug FRA/DUS/MUC/BER) | Anteil | Prüfung je Termin / je Route |
+|---|---|---|---|---|
+| 1 | 🇵🇭 Philippinen Cebu + Negros | → CEB / DGT →, beliebig CEB/DGT/MNL, → MNL / CEB,DGT → | 5 | ~3–10 / ~1–3 Tage |
+| 2 | 🦎 Lombok + Flores | → LOP / LBJ →, → LOP,DPS / LBJ,DPS →, → LOP / DPS → | 4 | ~4–13 / ~1,5–4 Tage |
+| 3 | 🇲🇾 Sabah | BKI ⇄ BKI, → BKI / TWU → (TWU ⇄ TWU pausiert) | 3 | ~5–7 / ~2 Tage |
+| 4 | 🇻🇳 Vietnam | → HAN / SGN →, beliebig HAN/DAD/SGN | 2 | ~6–18 / ~2–6 Tage |
+| 5 | 🇹🇭 Thailand Khao Sok + Koh Kood/Chang | BKK ⇄ BKK, → BKK / TDX → | 2 | ~6–18 / ~2–6 Tage |
+| – | 🇮🇩 Ostjava + Bali (Szenario C) | → SUB / DPS →, → CGK / DPS → | 1 | selten |
+| – | 🇮🇩 Indonesien flexibel (bisher) | V1–V3 (V4 pausiert), Abflug alle 7 Tage | 1 | selten |
 
-- **Abflughäfen:** FRA, DUS, MUC und BER in einer Suche. Andere Flughäfen als FRA bekommen in der Bewertung einen Anreise-Aufschlag (`[airport_access]`, München 40 € pro Strecke). Lehnt SerpApi mehrere Flughäfen bei Gabelflügen ab, sucht der Monitor Gabelflüge automatisch nur noch ab FRA und vermerkt das im Dashboard.
-- **„Normalpreis“** = Mitte von Googles typischem Preisbereich für genau diese Suche. Verglichen wird der Preis inklusive Gepäck und Aufschlägen. Bei schlechter Verbindung (lange Umstiege, über Nacht) muss der Preis 30 % statt 20 % darunter liegen.
-- **Getrennte Tickets** sind bei den Szenarien erlaubt, werden aber in jeder Meldung deutlich als „kein Anschluss-Schutz“ markiert. Die bisherige Indonesien-Suche bleibt streng (nie getrennte Tickets).
-- **Inland, Fähren, Transfers:** recherchierte Richtwerte mit Quelle in `config.toml` (`[[trips.ground]]`, Stand Nov 2026). Keine Live-Preise. Posten ohne verlässliche Quelle stehen als „offen“ da.
-- **Häufigkeit** (250 Gratis-Suchen/Monat): C ≈ alle 4 Tage je Kombination, A/B ≈ alle 6 Tage, D ≈ alle 12 Tage. Die flexible Indonesien-Suche hat sehr viele Kombinationen und wird dadurch deutlich seltener geprüft als vorher. Der jeweils günstigste Termin wird zusätzlich täglich nachgeprüft.
-- Anteile änderst du über `share` pro Reise, die Häufigkeit einzelner Routen über `weight`.
+- **Mehrere Zielflughäfen in einer Suche** (z. B. „CEB,DGT,MNL“) decken viele Kombinationen mit einer einzigen Suche ab. Google liefert dann die günstigste davon.
+- **Meldung:** Indonesien flexibel und Ostjava wie bisher (< 750 € bzw. 750–850 € bei guter Verbindung). Alle anderen: mindestens 20 % unter Googles typischem Preis (bei schlechter Verbindung 30 %). Fehlt Googles Vergleichspreis, dient ab 6 Messungen das eigene beobachtete Niveau.
+- **Rangfolge** (Dashboard, Kandidaten): Flugpreis inkl. Gepäck und Anreise-Aufschlag + Mitte der Inland/Fähren-Richtwerte + 10 € je Stunde über 20 h Reisezeit pro Richtung + 40 € je zusätzlichem Umstieg. Einstellbar unter `[ranking]`.
+- **Direktbuchung:** Ist die Buchung direkt bei der Airline höchstens 25 € teurer als beim günstigsten Vermittler, wird sie bevorzugt; der Vermittler-Preis steht trotzdem in der Meldung.
+- **Getrennte Tickets** sind erlaubt (außer bei der alten Indonesien-Suche), werden aber immer als „kein Anschluss-Schutz“ markiert.
+- **Inland, Fähren, Transfers:** recherchierte Richtwerte mit Quelle in `config.toml` (`[[trips.ground]]`, Stand Nov 2026), keine Live-Preise. Unbekannte Posten stehen als „offen“ da.
+- Routen pausieren: `weight = 0`. Reise pausieren: `share = 0`.
 
 ## Anpassen (`config.toml`)
 - Reisezeitraum: `depart_from`, `depart_to`, `durations`, `depart_step_days`
