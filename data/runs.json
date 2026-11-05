@@ -882,5 +882,59 @@
    "discord"
   ],
   "budget_left": 188
+ },
+ {
+  "ts": "2026-11-05T22:41:14Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "185 Suchen übrig (SerpApi-Konto), 51 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "PH1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1524.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Austrian",
+     "EVA Air"
+    ]
+   },
+   {
+    "variant": "LF1",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "LF",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "C1",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 842.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates",
+     "Garuda Indonesia"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 185
  }
 ]
