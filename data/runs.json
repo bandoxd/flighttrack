@@ -768,5 +768,63 @@
    "discord"
   ],
   "budget_left": 194
+ },
+ {
+  "ts": "2026-11-05T19:02:43Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "191 Suchen übrig (SerpApi-Konto), 51 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "C1",
+    "out": "2027-05-05",
+    "ret": "2027-06-04",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 817.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates",
+     "Garuda Indonesia"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-04-10",
+    "ret": "2027-05-10",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 1201.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   },
+   {
+    "variant": "A1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "A",
+    "status": "ok",
+    "total": 1366.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Gulf Air",
+     "Philippine Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 191
  }
 ]

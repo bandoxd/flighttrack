@@ -1,11 +1,28 @@
 {
  "cursor": {
-  "pattern": 0,
-  "variant": {
-   "V1": 15,
-   "V2": 10,
-   "V3": 10,
-   "V4": 5
+  "trip_pattern": 3,
+  "trips": {
+   "ID": {
+    "pattern": 1,
+    "variant": {
+     "V1": 16,
+     "V2": 10,
+     "V3": 10,
+     "V4": 5
+    }
+   },
+   "C": {
+    "pattern": 1,
+    "variant": {
+     "C1": 1
+    }
+   },
+   "A": {
+    "pattern": 1,
+    "variant": {
+     "A1": 1
+    }
+   }
   }
  },
  "notified": {
@@ -48,8 +65,8 @@
  },
  "usage": {
   "2026-10": 26,
-  "2026-11": 41
+  "2026-11": 44
  },
  "fail_streak": 0,
- "last_run": "2026-11-05T13:14:11Z"
+ "last_run": "2026-11-05T19:02:43Z"
 }
