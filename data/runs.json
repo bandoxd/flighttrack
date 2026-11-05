@@ -826,5 +826,61 @@
    "discord"
   ],
   "budget_left": 191
+ },
+ {
+  "ts": "2026-11-05T20:16:47Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "188 Suchen übrig (SerpApi-Konto), 51 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 846.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "VN1",
+    "out": "2027-03-15",
+    "ret": "2027-04-14",
+    "recheck": false,
+    "trip": "VN",
+    "status": "ok",
+    "total": 755.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "TH1",
+    "out": "2027-03-05",
+    "ret": "2027-04-04",
+    "recheck": false,
+    "trip": "TH",
+    "status": "ok",
+    "total": 845.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 188
  }
 ]
