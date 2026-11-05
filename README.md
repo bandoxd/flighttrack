@@ -112,6 +112,25 @@ Ab jetzt läuft alles automatisch um ca. 06:17 und 18:17 Uhr (Winterzeit). GitHu
 
 ---
 
+## Mehrere Reisen (Südostasien-Szenarien)
+
+Zusätzlich zur bisherigen Indonesien-Suche (Reise „ID“, unverändert) überwacht der Monitor vier Szenarien mit festen Zeitfenstern:
+
+| Reise | Routen | Meldung | Budget-Anteil |
+|---|---|---|---|
+| 🇮🇩 C Ostjava + Bali | SUB/DPS, DPS⇄DPS, CGK/DPS | wie bisher: < 750 € / 750–850 € bei guter Verbindung / −15 % | 3 |
+| 🇵🇭 A Philippinen | CEB⇄CEB, CEB/MNL, MNL⇄MNL | ≥ 20 % unter Googles Normalpreis | 2 |
+| 🇹🇭 B Thailand | BKK⇄BKK, HKT/BKK, URT/BKK | ≥ 20 % unter Googles Normalpreis | 2 |
+| 🇲🇾 D Sabah | BKI⇄BKI, BKI/TWU, TWU⇄TWU | ≥ 20 % unter Googles Normalpreis | 1 |
+| 🇮🇩 ID Indonesien flexibel (bisher) | V1–V4 | wie bisher | 2 |
+
+- **Abflughäfen:** FRA, DUS, MUC und BER in einer Suche. Andere Flughäfen als FRA bekommen in der Bewertung einen Anreise-Aufschlag (`[airport_access]`, München 40 € pro Strecke). Lehnt SerpApi mehrere Flughäfen bei Gabelflügen ab, sucht der Monitor Gabelflüge automatisch nur noch ab FRA und vermerkt das im Dashboard.
+- **„Normalpreis“** = Mitte von Googles typischem Preisbereich für genau diese Suche. Verglichen wird der Preis inklusive Gepäck und Aufschlägen. Bei schlechter Verbindung (lange Umstiege, über Nacht) muss der Preis 30 % statt 20 % darunter liegen.
+- **Getrennte Tickets** sind bei den Szenarien erlaubt, werden aber in jeder Meldung deutlich als „kein Anschluss-Schutz“ markiert. Die bisherige Indonesien-Suche bleibt streng (nie getrennte Tickets).
+- **Inland, Fähren, Transfers:** recherchierte Richtwerte mit Quelle in `config.toml` (`[[trips.ground]]`, Stand Nov 2026). Keine Live-Preise. Posten ohne verlässliche Quelle stehen als „offen“ da.
+- **Häufigkeit** (250 Gratis-Suchen/Monat): C ≈ alle 4 Tage je Kombination, A/B ≈ alle 6 Tage, D ≈ alle 12 Tage. Die flexible Indonesien-Suche hat sehr viele Kombinationen und wird dadurch deutlich seltener geprüft als vorher. Der jeweils günstigste Termin wird zusätzlich täglich nachgeprüft.
+- Anteile änderst du über `share` pro Reise, die Häufigkeit einzelner Routen über `weight`.
+
 ## Anpassen (`config.toml`)
 - Reisezeitraum: `depart_from`, `depart_to`, `durations`, `depart_step_days`
 - Schwellen: Abschnitt `[thresholds]`

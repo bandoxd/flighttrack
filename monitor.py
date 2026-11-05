@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Indonesia Flight Deal Monitor.
+"""Flight Deal Monitor (Indonesien + Südostasien-Szenarien).
 
 Ressourcenschonender Flugpreis-Monitor ohne KI-Aufrufe:
   * Preisdaten: SerpApi Google Flights API (Free Plan 250 Suchen/Monat)
@@ -101,32 +101,113 @@ def append_observations(rows: list[dict]) -> None:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
+# --------------------------------------------------------------------------- trips
+def trips(cfg: dict) -> list[dict]:
+    """Normalisiert die Konfiguration zu einer Liste von Reisen.
+
+    * ``[trip]`` + ``[[variants]]`` = bisherige Indonesien-Suche (Reise "ID", flexibles Datumsraster)
+    * ``[[trips]]`` mit ``[[trips.routes]]`` = weitere Reisen mit festen Zeitfenstern
+    """
+    if "_trips" in cfg:
+        return cfg["_trips"]
+    t = cfg["trip"]
+    out = [{"id": "ID", "name": t.get("name", "Indonesien flexibel (bisher)"), "emoji": t.get("emoji", "🇮🇩"),
+            "priority": t.get("priority", "SEHR HOCH"), "share": int(t.get("share", 3)), "mode": "grid",
+            "origins": [t["origin"]], "max_stops": int(t.get("max_stops", 1)),
+            "max_leg_duration_h": t.get("max_leg_duration_h", 26), "max_layover_h": t.get("max_layover_h", 8),
+            "allow_separate_tickets": False, "threshold_mode": "absolute", "variants": cfg["variants"],
+            "ground": t.get("ground", []), "season": t.get("season", ""), "relative_pct": 20}]
+    for tr in cfg.get("trips", []):
+        d = {"mode": "windows", "threshold_mode": "relative", "relative_pct": 20, "allow_separate_tickets": False,
+             "max_stops": 2, "max_leg_duration_h": 30, "max_layover_h": 10, "share": 1, "emoji": "✈️",
+             "ground": [], "season": "", "origins": [t["origin"]], "priority": "", "windows": []}
+        d.update({k: v for k, v in tr.items() if k != "routes"})
+        d["variants"] = tr.get("routes", [])
+        out.append(d)
+    vmap = {}
+    for tr in out:
+        for v in tr["variants"]:
+            v.setdefault("trip", tr["id"])
+            vmap[v["id"]] = (v, tr)
+    cfg["_trips"], cfg["_vmap"] = out, vmap
+    return out
+
+
+def all_variants(cfg: dict) -> list[dict]:
+    return [v for tr in trips(cfg) for v in tr["variants"]]
+
+
+def variant_by_id(cfg: dict, vid: str) -> dict:
+    trips(cfg)
+    return cfg["_vmap"][vid][0]
+
+
+def trip_of(cfg: dict, vid: str) -> dict:
+    trips(cfg)
+    return cfg["_vmap"][vid][1]
+
+
+def ground_for(cfg: dict, vid: str) -> dict:
+    """Geschätzte Kosten für Inlandsflüge, Fähren und Transfers dieser Route (recherchierte Richtwerte)."""
+    v, tr = variant_by_id(cfg, vid), trip_of(cfg, vid)
+    items = {g["id"]: g for g in tr.get("ground", [])}
+    sel = [items[g] for g in v.get("ground", []) if g in items]
+    lo = sum(g["min"] for g in sel if g.get("min") is not None)
+    hi = sum(g["max"] for g in sel if g.get("max") is not None)
+    open_items = [g["name"] for g in sel if g.get("min") is None]
+    return {"min": lo, "max": hi, "items": sel, "open": open_items}
+
+
+def access_cost(cfg: dict, offer: dict) -> tuple[float, list[str]]:
+    """Anreise-Aufschlag für Flughäfen außer FRA (aus [airport_access], pro Strecke)."""
+    acc = cfg.get("airport_access", {})
+    cost, notes = 0.0, []
+    segs = offer["leg"]["segments"]
+    if segs:
+        a = segs[0]["from"]
+        if acc.get(a):
+            cost += float(acc[a])
+            notes.append(f"Abflug {a} (+{acc[a]} € Anreise)")
+    rl = offer.get("return_leg") or {}
+    if rl.get("segments"):
+        a = rl["segments"][-1]["to"]
+        if acc.get(a):
+            cost += float(acc[a])
+            notes.append(f"Ankunft {a} (+{acc[a]} € Heimreise)")
+    return cost, notes
+
+
 # --------------------------------------------------------------------------- search plan
 def all_combos(cfg: dict, today: dt.date) -> dict[str, list[dict]]:
-    """Alle (Variante, Abflug, Rückflug)-Kombinationen, je Variante gespreizt sortiert."""
-    t = cfg["trip"]
-    start = dt.date.fromisoformat(t["depart_from"])
-    end = dt.date.fromisoformat(t["depart_to"])
-    step = int(t.get("depart_step_days", 4))
-    durations = t["durations"]
-    dates = []
-    d, i = start, 0
-    while d <= end:
-        if d > today:
-            dates.append((d, durations[i % len(durations)]))
-        d += dt.timedelta(days=step)
-        i += 1
-    n = len(dates)
-    # Spreizung: Reihenfolge i*stride mod n, damit aufeinanderfolgende Suchen weit auseinander liegen
-    stride = next((s for s in (7, 5, 3, 11, 13, 1) if n and s < max(n, 2) and _gcd(s, n) == 1), 1)
-    order = [(k * stride) % n for k in range(n)] if n else []
+    """Alle (Variante, Abflug, Rückflug)-Kombinationen je Variante.
+
+    Raster-Reisen: gespreizt sortiert, damit aufeinanderfolgende Suchen weit auseinander liegen.
+    Zeitfenster-Reisen: die Fenster in der Reihenfolge der Konfiguration.
+    """
     plans = {}
-    for v in cfg["variants"]:
-        plans[v["id"]] = [
-            {"variant": v["id"], "out": dates[k][0].isoformat(),
-             "ret": (dates[k][0] + dt.timedelta(days=dates[k][1])).isoformat()}
-            for k in order
-        ]
+    for tr in trips(cfg):
+        if tr["mode"] == "grid":
+            t = cfg["trip"]
+            start = dt.date.fromisoformat(t["depart_from"])
+            end = dt.date.fromisoformat(t["depart_to"])
+            step = int(t.get("depart_step_days", 4))
+            durations = t["durations"]
+            dates = []
+            d, i = start, 0
+            while d <= end:
+                if d > today:
+                    dates.append((d, durations[i % len(durations)]))
+                d += dt.timedelta(days=step)
+                i += 1
+            n = len(dates)
+            stride = next((s for s in (7, 5, 3, 11, 13, 1) if n and s < max(n, 2) and _gcd(s, n) == 1), 1)
+            order = [(k * stride) % n for k in range(n)] if n else []
+            pairs = [(dates[k][0].isoformat(), (dates[k][0] + dt.timedelta(days=dates[k][1])).isoformat())
+                     for k in order]
+        else:
+            pairs = [(w[0], w[1]) for w in tr.get("windows", []) if w[0] > today.isoformat()]
+        for v in tr["variants"]:
+            plans[v["id"]] = [{"variant": v["id"], "out": o, "ret": r} for o, r in pairs]
     return plans
 
 
@@ -152,24 +233,38 @@ def weighted_pattern(variants: list[dict]) -> list[str]:
 
 
 def next_combos(cfg: dict, state: dict, k: int, today: dt.date, recheck: dict | None) -> list[dict]:
+    """Wählt k Kombinationen: erst Reise nach Anteil (share), dann Variante nach Gewicht (weight)."""
     plans = all_combos(cfg, today)
-    pattern = weighted_pattern(cfg["variants"])
-    if not pattern or not any(plans.values()):
+    trs = [tr for tr in trips(cfg) if any(plans.get(v["id"]) for v in tr["variants"])]
+    if not trs:
         return []
+    tpat = weighted_pattern([{"id": tr["id"], "weight": tr.get("share", 1)} for tr in trs])
+    vpats = {tr["id"]: weighted_pattern(tr["variants"]) for tr in trs}
     picked: list[dict] = []
-    if recheck and k >= 2:
+    if recheck and k >= 2 and recheck["variant"] in cfg["_vmap"]:
         picked.append({**recheck, "recheck": True})
-    cur = state.setdefault("cursor", {"pattern": 0, "variant": {}})
+    cur = state.setdefault("cursor", {})
+    if "trips" not in cur:  # Migration vom Format der ersten Version (Fortschritt der Indonesien-Suche bleibt)
+        old = dict(cur)
+        cur.clear()
+        cur.update({"trip_pattern": 0, "trips": {"ID": {"pattern": old.get("pattern", 0),
+                                                        "variant": old.get("variant", {})}}})
     guard = 0
-    while len(picked) < k and guard < 10 * len(pattern):
+    while len(picked) < k and guard < 40 * max(1, len(tpat)):
         guard += 1
-        vid = pattern[cur["pattern"] % len(pattern)]
-        cur["pattern"] = (cur["pattern"] + 1) % len(pattern)
+        tid = tpat[cur["trip_pattern"] % len(tpat)]
+        cur["trip_pattern"] = (cur["trip_pattern"] + 1) % len(tpat)
+        tc = cur["trips"].setdefault(tid, {"pattern": 0, "variant": {}})
+        vp = vpats[tid]
+        if not vp:
+            continue
+        vid = vp[tc["pattern"] % len(vp)]
+        tc["pattern"] = (tc["pattern"] + 1) % len(vp)
         lst = plans.get(vid) or []
         if not lst:
             continue
-        idx = cur["variant"].get(vid, 0) % len(lst)
-        cur["variant"][vid] = (idx + 1) % len(lst)
+        idx = tc["variant"].get(vid, 0) % len(lst)
+        tc["variant"][vid] = (idx + 1) % len(lst)
         c = lst[idx]
         if any(p["variant"] == c["variant"] and p["out"] == c["out"] and p["ret"] == c["ret"] for p in picked):
             continue
@@ -244,22 +339,27 @@ def serpapi_account(key: str) -> int | None:
         return None
 
 
-def base_params(cfg: dict, combo: dict, key: str) -> dict:
-    v = variant_by_id(cfg, combo["variant"])
+def base_params(cfg: dict, combo: dict, key: str, single_origin: bool = False) -> dict:
+    v, tr = variant_by_id(cfg, combo["variant"]), trip_of(cfg, combo["variant"])
     t = cfg["trip"]
+    multi = v["outbound_to"] != v["return_from"]
+    origins = tr["origins"]
+    if single_origin or (multi and cfg.get("_mc_single_origin")):
+        origins = origins[:1]
+    org = ",".join(origins)
     p = {
         "engine": "google_flights", "api_key": key,
         "currency": t.get("currency", "EUR"), "gl": cfg["serpapi"]["gl"], "hl": cfg["serpapi"]["hl"],
         "adults": t.get("adults", 1), "travel_class": 1,
-        "stops": {0: 1, 1: 2, 2: 3}.get(int(t.get("max_stops", 1)), 0),
+        "stops": {0: 1, 1: 2, 2: 3}.get(int(tr.get("max_stops", 1)), 0),
     }
-    if v["outbound_to"] == v["return_from"]:
-        p.update(type=1, departure_id=t["origin"], arrival_id=v["outbound_to"],
+    if not multi:
+        p.update(type=1, departure_id=org, arrival_id=v["outbound_to"],
                  outbound_date=combo["out"], return_date=combo["ret"])
     else:
         p.update(type=3, multi_city_json=json.dumps([
-            {"departure_id": t["origin"], "arrival_id": v["outbound_to"], "date": combo["out"]},
-            {"departure_id": v["return_from"], "arrival_id": t["origin"], "date": combo["ret"]},
+            {"departure_id": org, "arrival_id": v["outbound_to"], "date": combo["out"]},
+            {"departure_id": v["return_from"], "arrival_id": org, "date": combo["ret"]},
         ], separators=(",", ":")))
     return p
 
@@ -278,10 +378,6 @@ def serpapi_search(params: dict) -> dict:
 
 
 # --------------------------------------------------------------------------- parsing
-def variant_by_id(cfg: dict, vid: str) -> dict:
-    return next(v for v in cfg["variants"] if v["id"] == vid)
-
-
 def parse_leg(it: dict) -> dict:
     segs = []
     for s in it.get("flights") or []:
@@ -325,10 +421,10 @@ def parse_itineraries(data: dict) -> list[dict]:
     return out
 
 
-def leg_ok(cfg: dict, leg: dict | None) -> tuple[bool, list[str]]:
+def leg_ok(cfg: dict, leg: dict | None, trip: dict | None = None) -> tuple[bool, list[str]]:
     if not leg:
         return True, []
-    t = cfg["trip"]
+    t = trip or trips(cfg)[0]
     issues = []
     if leg["stops"] > int(t.get("max_stops", 1)):
         issues.append(f"{leg['stops']} Umstiege")
@@ -382,34 +478,63 @@ def baseline(cfg: dict, obs: list[dict], vid: str, now: dt.datetime) -> float | 
 
 
 def evaluate(cfg: dict, offer: dict, vid: str, base: float | None) -> dict:
-    v = variant_by_id(cfg, vid)
+    v, tr = variant_by_id(cfg, vid), trip_of(cfg, vid)
+    th = cfg["thresholds"]
     bag_cost, bag_note = offer.get("bag_cost"), offer.get("bag_note")
     if bag_cost is None:
         bag_cost, bag_note = baggage_estimate(cfg, offer["leg"]["airlines"])
     total = offer["price"] + bag_cost
-    eff = total + float(v.get("penalty_eur", 0))
-    tier = tier_for(cfg, eff)
-    ok_out, issues = leg_ok(cfg, offer["leg"])
-    ok_ret, issues_r = leg_ok(cfg, offer.get("return_leg"))
+    acc, acc_notes = access_cost(cfg, offer)
+    eff = total + float(v.get("penalty_eur", 0)) + acc
+    ok_out, issues = leg_ok(cfg, offer["leg"], tr)
+    ok_ret, issues_r = leg_ok(cfg, offer.get("return_leg"), tr)
     issues += [f"Rückflug: {i}" for i in issues_r]
-    good_conn = ok_out and ok_ret
-    pct_below = round((1 - total / base) * 100, 1) if base else None
-    reasons = []
-    th = cfg["thresholds"]
-    self_transfer = offer["leg"]["self_transfer"] or bool((offer.get("return_leg") or {}).get("self_transfer")) \
+    separate = offer["leg"]["self_transfer"] or bool((offer.get("return_leg") or {}).get("self_transfer")) \
         or bool(offer.get("separate_tickets"))
-    if tier == "EXTREM GUT":
-        reasons.append(f"unter {th['extreme']} €")
-    if tier == "GUT" and good_conn:
-        reasons.append(f"{th['extreme']}–{th['good']} € mit guter Verbindung")
-    if pct_below is not None and pct_below >= th["below_baseline_pct"] and eff < th["normal"]:
-        reasons.append(f"{pct_below:.0f} % unter beobachtetem Niveau (Median {base:.0f} €)")
-    notify = bool(reasons) and not self_transfer
-    if self_transfer and reasons:
+    allow_sep = bool(tr.get("allow_separate_tickets"))
+    if separate and allow_sep:
+        issues = [i for i in issues if "Self-Transfer" not in i]
+        issues.append("⚠️ GETRENNTE TICKETS – kein Anschluss-Schutz bei Verspätung")
+    good_conn = (ok_out and ok_ret) or (allow_sep and not [i for i in issues if not i.startswith("⚠️")])
+    pct_below = round((1 - total / base) * 100, 1) if base else None
+    reasons, ref = [], None
+    if tr.get("threshold_mode") == "relative":
+        rel = float(tr.get("relative_pct", 20))
+        typ = offer.get("typical") or []
+        if isinstance(typ, list) and len(typ) == 2 and all(isinstance(x, (int, float)) for x in typ):
+            ref = (typ[0] + typ[1]) / 2
+            ref_txt = f"Googles Normalpreis (typisch {typ[0]:.0f}–{typ[1]:.0f} €)"
+        elif base:
+            ref, ref_txt = base, f"beobachtetes Niveau (Median {base:.0f} €)"
+        pct = round((1 - eff / ref) * 100, 1) if ref else None
+        need = rel if good_conn else rel + 10
+        if pct is None:
+            tier = "NORMAL"
+            issues.append("noch kein Vergleichspreis – keine Meldung")
+        else:
+            tier = "EXTREM GUT" if pct >= rel + 10 else "GUT" if pct >= rel else "NORMAL" if pct >= 0 else "ZU TEUER"
+            if pct >= need:
+                reasons.append(f"{pct:.0f} % unter {ref_txt}")
+        pct_ref = pct
+    else:
+        tier = tier_for(cfg, eff)
+        if tier == "EXTREM GUT":
+            reasons.append(f"unter {th['extreme']} €")
+        if tier == "GUT" and good_conn:
+            reasons.append(f"{th['extreme']}–{th['good']} € mit guter Verbindung")
+        if pct_below is not None and pct_below >= th["below_baseline_pct"] and eff < th["normal"]:
+            reasons.append(f"{pct_below:.0f} % unter beobachtetem Niveau (Median {base:.0f} €)")
+        pct_ref = pct_below
+    notify = bool(reasons) and (not separate or allow_sep)
+    if separate and reasons and not allow_sep:
         issues.append("nicht gemeldet: Self-Transfer/getrennte Tickets")
+    g = ground_for(cfg, vid)
     return {"total": round(total, 2), "effective": round(eff, 2), "bag_cost": bag_cost, "bag_note": bag_note,
             "tier": tier, "good_connection": good_conn, "issues": issues, "pct_below_baseline": pct_below,
-            "baseline": base, "reasons": reasons, "notify": notify}
+            "pct_below_ref": pct_ref, "reference": round(ref, 2) if ref else None,
+            "baseline": base, "reasons": reasons, "notify": notify, "access_cost": acc, "access_notes": acc_notes,
+            "separate_tickets": bool(separate), "ground_min": g["min"], "ground_max": g["max"],
+            "ground_open": g["open"], "trip": tr["id"]}
 
 
 # --------------------------------------------------------------------------- verification
@@ -419,26 +544,36 @@ BAG_PRICE_RE = re.compile(r"(1st|first)?\s*checked bag[^0-9€]*?(?:€\s*(\d+(?
                           re.I)
 
 
-def parse_booking_options(data: dict) -> dict:
-    """Wertet SerpApi booking_options aus: günstigste Option, Gepäck, getrennte Tickets."""
+def parse_booking_options(data: dict, allow_separate: bool = False) -> dict:
+    """Wertet SerpApi booking_options aus: günstigste Option, Gepäck, getrennte Tickets.
+
+    Ohne allow_separate werden Optionen mit getrennten Tickets ("Separate tickets booked together")
+    übergangen; gibt es nur solche, wird separate_tickets gesetzt.
+    """
     opts = data.get("booking_options") or []
-    best, separate = None, False
+    best, separate_seen = None, False
     for o in opts:
         tog = o.get("together")
         if not tog:
             if o.get("departing") or o.get("returning") or o.get("separate_tickets"):
-                separate = True
+                separate_seen = True
             continue
         price = tog.get("price")
         if not isinstance(price, (int, float)):
             continue
+        txt = " ".join([str(tog.get("option_title", ""))] + [str(x) for x in (tog.get("extensions") or [])])
+        sep = bool(SELF_TRANSFER_RE.search(txt)) or bool(tog.get("separate_tickets"))
+        if sep:
+            separate_seen = True
+            if not allow_separate:
+                continue
         if best is None or price < best["price"]:
             best = {"price": float(price), "book_with": tog.get("book_with", ""),
-                    "option_title": tog.get("option_title", ""),
+                    "option_title": tog.get("option_title", ""), "is_separate": sep,
                     "baggage": [str(x) for x in (tog.get("baggage_prices") or [])],
                     "extensions": [str(x) for x in (tog.get("extensions") or [])]}
     if best is None:
-        return {"separate_tickets": separate, "found": False}
+        return {"separate_tickets": separate_seen, "found": False}
     text = " | ".join(best["baggage"] + best["extensions"])
     bag_cost, bag_note = None, None
     if BAG_FREE_RE.search(text):
@@ -450,8 +585,8 @@ def parse_booking_options(data: dict) -> dict:
             bag_cost, bag_note = per * 2, f"{per:.0f} € pro Strecke laut Anbieter (×2 angesetzt)"
         elif re.search(r"checked bag", text, re.I) and re.search(r"not included|no checked|0 checked", text, re.I):
             bag_cost, bag_note = None, "nicht inklusive, Preis unbekannt"
-    return {"found": True, "separate_tickets": False, "split_options_seen": separate, **best, "bag_cost": bag_cost,
-            "bag_note": bag_note, "baggage_text": text}
+    return {"found": True, "separate_tickets": best["is_separate"], "split_options_seen": separate_seen, **best,
+            "bag_cost": bag_cost, "bag_note": bag_note, "baggage_text": text}
 
 
 def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
@@ -462,7 +597,8 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
         budget[0] -= 1
         data = serpapi_search({**params, "departure_token": tok})
         rets = parse_itineraries(data)
-        valid = [r for r in rets if leg_ok(cfg, r["leg"])[0]] or rets
+        tr = trip_of(cfg, offer["_variant"]) if offer.get("_variant") else None
+        valid = [r for r in rets if leg_ok(cfg, r["leg"], tr)[0]] or rets
         if valid:
             r = valid[0]
             offer["return_leg"] = r["leg"]
@@ -478,7 +614,8 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
     if btok and budget[0] > 0:
         budget[0] -= 1
         data = serpapi_search({**params, "booking_token": btok})  # SerpApi verlangt die Original-Suchparameter
-        b = parse_booking_options(data)
+        allow = bool(trip_of(cfg, offer["_variant"]).get("allow_separate_tickets")) if offer.get("_variant") else False
+        b = parse_booking_options(data, allow)
         offer["booking"] = b
         if b.get("found"):
             offer["price"] = b["price"]
@@ -487,7 +624,7 @@ def verify(cfg: dict, params: dict, offer: dict, budget: list[int]) -> dict:
             elif b.get("bag_note"):  # laut Anbieter nicht inklusive, Preis unbekannt -> Pauschale ansetzen
                 sc = float(cfg["baggage"]["surcharge_unknown_eur"])
                 offer["bag_cost"], offer["bag_note"] = sc, f"laut Anbieter NICHT inklusive – {sc:.0f} € Pauschale angesetzt"
-        if b.get("separate_tickets") and not b.get("found"):
+        if b.get("separate_tickets"):
             offer["separate_tickets"] = True
     elif btok:
         notes.append("Budget: Buchungsoptionen nicht abgefragt")
@@ -556,25 +693,46 @@ def leg_lines(leg: dict | None, title: str) -> list[str]:
     return out
 
 
+def ground_lines(cfg: dict, d: dict) -> list[str]:
+    e = d["eval"]
+    g = ground_for(cfg, d["variant"])
+    if not g["items"]:
+        return []
+    out = [f"🚤 Inland/Fähren/Transfers geschätzt: {g['min']:.0f}–{g['max']:.0f} €"
+           + (f" (+ offen: {', '.join(g['open'])})" if g["open"] else "")]
+    out.append(f"🧮 Alle Segmente zusammen ≈ {e['total'] + g['min'] + e.get('access_cost', 0):.0f}–"
+               f"{e['total'] + g['max'] + e.get('access_cost', 0):.0f} € (Richtwerte, Stand Recherche)")
+    return out
+
+
 def format_deal(cfg: dict, d: dict) -> str:
     e, o = d["eval"], d["offer"]
-    v = variant_by_id(cfg, d["variant"])
+    v, tr = variant_by_id(cfg, d["variant"]), trip_of(cfg, d["variant"])
     icon = {"EXTREM GUT": "🔥", "GUT": "✅"}.get(e["tier"], "📉")
-    lines = [f"{icon} <b>{e['tier']}: {e['total']:.0f} € gesamt</b>",
+    lines = [f"{icon} <b>{tr['emoji']} {escape(tr['name'])} – {e['tier']}: {e['total']:.0f} € Flug gesamt</b>",
              f"{escape(v['name'])}",
              f"📅 {d['out']} → {d['ret']} ({(dt.date.fromisoformat(d['ret']) - dt.date.fromisoformat(d['out'])).days} Tage)",
              f"✈️ {escape(', '.join(o['leg']['airlines']))}"]
     lines += leg_lines(o["leg"], "Hinflug")
     lines += leg_lines(o.get("return_leg"), "Rückflug")
     lines.append(f"🧳 Gepäck: {escape(e['bag_note'])}")
+    extra = []
+    if v.get("penalty_eur"):
+        extra.append(f"{v['penalty_eur']} € Varianten-Aufschlag")
+    if e.get("access_cost"):
+        extra.append(f"{e['access_cost']:.0f} € Anreise-Aufschlag")
     lines.append(f"💶 Ticket {o['price']:.0f} € + Gepäck {e['bag_cost']:.0f} € = <b>{e['total']:.0f} €</b>"
-                 + (f" (Bewertung inkl. {v['penalty_eur']} € Varianten-Aufschlag: {e['effective']:.0f} €)"
-                    if v.get("penalty_eur") else ""))
+                 + (f" (Bewertung inkl. {' + '.join(extra)}: {e['effective']:.0f} €)" if extra else ""))
+    lines += [escape(x) for x in ground_lines(cfg, d)]
     lines.append("Grund: " + escape("; ".join(e["reasons"])))
+    if e.get("access_notes"):
+        lines.append("🛫 " + escape("; ".join(e["access_notes"])))
     if e["issues"]:
         lines.append("⚠️ " + escape("; ".join(e["issues"])))
     for n in o.get("verify_notes") or []:
         lines.append("ℹ️ " + escape(n))
+    if tr.get("season"):
+        lines.append("🌦️ " + escape(tr["season"]))
     b = o.get("booking") or {}
     if b.get("book_with"):
         lines.append(f"🏷️ Buchbar bei: {escape(b['book_with'])}" + (f" ({escape(b['option_title'])})" if b.get("option_title") else ""))
@@ -643,25 +801,39 @@ def md_leg(leg: dict | None) -> str:
 
 def discord_embed(cfg: dict, d: dict) -> dict:
     e, o = d["eval"], d["offer"]
-    v = variant_by_id(cfg, d["variant"])
+    v, tr = variant_by_id(cfg, d["variant"]), trip_of(cfg, d["variant"])
     days = (dt.date.fromisoformat(d["ret"]) - dt.date.fromisoformat(d["out"])).days
     icon = {"EXTREM GUT": "🔥", "GUT": "✅"}.get(e["tier"], "📉")
-    desc = [f"📅 **{d['out']} → {d['ret']}** ({days} Tage)", f"✈️ {', '.join(o['leg']['airlines'])}",
-            f"💡 {'; '.join(e['reasons'])}"]
+    desc = [f"**{v['name']}**", f"📅 **{d['out']} → {d['ret']}** ({days} Tage)",
+            f"✈️ {', '.join(o['leg']['airlines'])}", f"💡 {'; '.join(e['reasons'])}"]
     b = o.get("booking") or {}
     if b.get("book_with"):
         desc.append(f"🏷️ Buchbar bei {b['book_with']}" + (f" ({b['option_title']})" if b.get("option_title") else ""))
+    extra = []
+    if v.get("penalty_eur"):
+        extra.append(f"{v['penalty_eur']} € Varianten-Aufschlag")
+    if e.get("access_cost"):
+        extra.append(f"{e['access_cost']:.0f} € Anreise ({', '.join(e.get('access_notes', []))})")
     fields = [
         {"name": "🛫 Hinflug", "value": md_leg(o["leg"]), "inline": False},
         {"name": "🛬 Rückflug", "value": md_leg(o.get("return_leg")), "inline": False},
-        {"name": "💶 Preis", "value": f"Ticket {o['price']:.0f} € + Gepäck {e['bag_cost']:.0f} € = **{e['total']:.0f} €**"
-                                       + (f"\n(Bewertung inkl. {v['penalty_eur']} € Varianten-Aufschlag)" if v.get("penalty_eur") else ""),
+        {"name": "💶 Flugpreis", "value": f"Ticket {o['price']:.0f} € + Gepäck {e['bag_cost']:.0f} € = **{e['total']:.0f} €**"
+                                          + (f"\n(Bewertung inkl. {' + '.join(extra)})" if extra else ""),
          "inline": True},
         {"name": "🧳 Gepäck", "value": e["bag_note"][:1024], "inline": True},
     ]
+    gl = ground_lines(cfg, d)
+    if gl:
+        g = ground_for(cfg, d["variant"])
+        detail = "\n".join(f"• {x['name']}: " + (f"{x['min']:.0f}–{x['max']:.0f} €" if x.get("min") is not None else "offen")
+                           for x in g["items"])
+        fields.append({"name": "🚤 Inland, Fähren & Transfers (Richtwerte)", "value": (detail + "\n" + gl[-1])[:1024],
+                       "inline": False})
     warn = e["issues"] + (o.get("verify_notes") or [])
     if warn:
         fields.append({"name": "⚠️ Hinweise", "value": "\n".join(f"• {w}" for w in warn)[:1024], "inline": False})
+    if tr.get("season"):
+        fields.append({"name": "🌦️ Saison", "value": tr["season"][:1024], "inline": False})
     links = []
     if o.get("google_flights_url"):
         links.append(f"[Google Flights öffnen]({o['google_flights_url']})")
@@ -669,8 +841,9 @@ def discord_embed(cfg: dict, d: dict) -> dict:
         links.append(f"[Dashboard]({cfg['notify']['dashboard_url']})")
     if links:
         fields.append({"name": "🔗 Links", "value": " · ".join(links), "inline": False})
-    emb = {"title": f"{icon} {e['tier']}: {e['total']:.0f} € – {v['name']}"[:256], "description": "\n".join(desc)[:4000],
-           "color": TIER_COLOR.get(e["tier"], 0x77766F), "fields": fields,
+    emb = {"title": f"{icon} {tr['emoji']} {tr['name']} – {e['tier']}: {e['total']:.0f} €"[:256],
+           "description": "\n".join(desc)[:4000],
+           "color": TIER_COLOR.get(e["tier"], 0x77766F), "fields": fields[:25],
            "footer": {"text": "Preise ändern sich laufend – vor Buchung prüfen. Es wird nie automatisch gebucht."},
            "timestamp": d["ts"].replace("Z", "+00:00")}
     if o.get("google_flights_url"):
@@ -773,6 +946,9 @@ def run(cfg: dict) -> dict:
     runs = read_json("runs.json", [])
     deals = read_json("deals.json", [])
     key = os.environ.get("SERPAPI_KEY", "").strip()
+    trips(cfg)
+    if state.get("mc_single_origin"):
+        cfg["_mc_single_origin"] = True
     rec = {"ts": iso(now), "status": "ok", "searches": 0, "verifications": 0, "errors": [], "notes": [],
            "results": [], "notified": [], "channels": channels()}
 
@@ -793,12 +969,28 @@ def run(cfg: dict) -> dict:
         ver_budget = [max_ver * 2]
         new_obs, candidates = [], []
         for c in combos:
-            res = {"variant": c["variant"], "out": c["out"], "ret": c["ret"], "recheck": bool(c.get("recheck"))}
+            res = {"variant": c["variant"], "out": c["out"], "ret": c["ret"], "recheck": bool(c.get("recheck")),
+                   "trip": trip_of(cfg, c["variant"])["id"]}
             o = {"ts": iso(now), **res, "status": "ok", "best_total": None}
             params = base_params(cfg, c, key)
+            tr = trip_of(cfg, c["variant"])
             try:
                 rec["searches"] += 1
-                data = serpapi_search(params)
+                try:
+                    data = serpapi_search(params)
+                except SourceError as e:
+                    # Mehrere Abflughäfen in Gabelflug-Suchen evtl. nicht unterstützt -> einmalig auf ersten Flughafen
+                    if params.get("type") == 3 and len(tr["origins"]) > 1 and "HTTP 4" in str(e) \
+                            and not cfg.get("_mc_single_origin"):
+                        cfg["_mc_single_origin"] = True
+                        state["mc_single_origin"] = True
+                        rec["notes"].append(f"Gabelflug mit mehreren Abflughäfen abgelehnt ({e}) – "
+                                            f"suche Gabelflüge künftig nur ab {tr['origins'][0]}")
+                        params = base_params(cfg, c, key)
+                        rec["searches"] += 1
+                        data = serpapi_search(params)
+                    else:
+                        raise
                 gf_url = (data.get("search_metadata") or {}).get("google_flights_url")
                 if data.get("_no_results"):
                     o["status"] = res["status"] = "no_results"
@@ -815,11 +1007,17 @@ def run(cfg: dict) -> dict:
                         evals = []
                         for it in its[:8]:
                             it["google_flights_url"] = gf_url
+                            it["typical"] = pi.get("typical_price_range")
+                            it["_variant"] = c["variant"]
                             evals.append((evaluate(cfg, it, c["variant"], base), it))
-                        valid = [x for x in evals if "Self-Transfer" not in " ".join(x[0]["issues"])] or evals
+                        valid = evals if tr.get("allow_separate_tickets") else \
+                            ([x for x in evals if not x[0]["separate_tickets"]] or evals)
                         valid.sort(key=lambda x: x[0]["effective"])
                         ev, best = valid[0]
                         o.update(best_total=ev["total"], best_price=best["price"], tier=ev["tier"],
+                                 effective=ev["effective"], reference=ev["reference"],
+                                 pct_below_ref=ev["pct_below_ref"], separate=ev["separate_tickets"],
+                                 trip=tr["id"],
                                  leg=best["leg"], bag_note=ev["bag_note"], bag_cost=ev["bag_cost"],
                                  airlines=best["leg"]["airlines"], stops=best["leg"]["stops"],
                                  duration_min=best["leg"]["duration_min"], google_flights_url=gf_url,
@@ -901,6 +1099,7 @@ def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now, late
     to_send, verified_variants, slots = [], set(), 0
     for _, c, params, offer, base in candidates:
         offer = json.loads(json.dumps(offer))  # Kopie
+        offer["_variant"] = c["variant"]
         active = slots < MAX_DEALS_PER_MESSAGE and c["variant"] not in verified_variants
         if active:
             slots += 1
@@ -939,7 +1138,9 @@ def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now, late
     to_send.sort(key=lambda d: d["eval"]["effective"])
     text = "\n\n━━━━━━━━━━\n\n".join(format_deal(cfg, d) for d in to_send)
     top = to_send[0]["eval"]
-    subj = f"Flug-Deal {top['tier']}: ab {top['total']:.0f} € ({len(to_send)} Angebot{'e' if len(to_send) > 1 else ''})"
+    names = sorted({trip_of(cfg, d["variant"])["emoji"] + " " + trip_of(cfg, d["variant"])["name"] for d in to_send})
+    subj = (f"Flug-Deal {top['tier']}: ab {top['total']:.0f} € ({len(to_send)} Angebot{'e' if len(to_send) > 1 else ''})"
+            f" – {', '.join(names)}")
     sent, errs = notify(subj, text, to_send, cfg)
     rec["errors"] += errs
     if sent:
@@ -954,11 +1155,12 @@ def process_candidates(cfg, state, rec, deals, candidates, ver_budget, now, late
 def weekly_status(cfg, state, rec, now):
     obs = [o for o in read_observations() if o.get("best_total") and parse_iso(o["ts"]) >= now - dt.timedelta(days=7)]
     lines = ["📊 <b>Flug-Monitor Wochenstatus</b>"]
-    for v in cfg["variants"]:
-        vs = [o for o in obs if o["variant"] == v["id"]]
+    for tr in trips(cfg):
+        vs = [o for o in obs if o["variant"] in {v["id"] for v in tr["variants"]}]
         if vs:
             b = min(vs, key=lambda o: o["best_total"])
-            lines.append(f"{escape(v['name'])}: ab {b['best_total']:.0f} € ({b['out']}→{b['ret']})")
+            lines.append(f"{tr['emoji']} {escape(tr['name'])}: ab {b['best_total']:.0f} € "
+                         f"({escape(variant_by_id(cfg, b['variant'])['name'])}, {b['out']}→{b['ret']})")
     sent, errs = notify("Flug-Monitor Wochenstatus", "\n".join(lines))
     if sent:
         state["last_weekly"] = iso(now)
@@ -993,7 +1195,7 @@ def main(argv: list[str]) -> int:
         if not channels():
             print("Kein Kanal konfiguriert (DISCORD_WEBHOOK_URL bzw. DISCORD_BOT_TOKEN+DISCORD_CHANNEL_ID, Telegram oder SMTP).")
             return 1
-        sent, errs = notify("Flug-Monitor Test", "✅ <b>Testnachricht</b>\nDer Indonesia Flight Deal Monitor kann dich erreichen. Echte Deals kommen nur, wenn ein Angebot deine Kriterien erfüllt.")
+        sent, errs = notify("Flug-Monitor Test", "✅ <b>Testnachricht</b>\nDer Flight Deal Monitor kann dich erreichen. Echte Deals kommen nur, wenn ein Angebot deine Kriterien erfüllt.")
         print("gesendet:", sent, "Fehler:", errs)
         return 0 if sent and not errs else 1
     if cmd == "telegram-chat-id":

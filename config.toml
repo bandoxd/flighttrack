@@ -2,6 +2,10 @@
 # Alle Preise in EUR, 1 Erwachsener, Economy.
 
 [trip]
+# Bisherige Suche: Indonesien flexibel (bleibt unverändert, Reise-ID "ID")
+name = "Indonesien flexibel (bisher)"
+emoji = "🇮🇩"
+share = 2                     # Anteil am Suchbudget im Vergleich zu den [[trips]] unten
 origin = "FRA"
 adults = 1
 currency = "EUR"
@@ -85,3 +89,319 @@ hl = "en"          # Englisch für zuverlässiges Auslesen der Gepäck-Texte
 failure_alert_after_runs = 3    # Systemwarnung nach so vielen fehlgeschlagenen Läufen in Folge
 weekly_status = false           # optional: wöchentliche Statusmeldung
 dashboard_url = "https://bandoxd.github.io/flighttrack/"              # z. B. https://<user>.github.io/<repo>/ (für Links in Meldungen)
+
+# ============================================================================================
+# Südostasien-Szenarien 2027 (Erweiterung). Feste Zeitfenster, mehrere Abflughäfen.
+# share = Anteil am Suchbudget, weight = Häufigkeit der Route innerhalb der Reise.
+# threshold_mode "relative": Meldung nur, wenn der Preis (inkl. Gepäck + Aufschläge) mindestens
+# relative_pct % unter Googles typischem Preis liegt (bei schlechter Verbindung +10 Prozentpunkte).
+# ground = recherchierte Richtwerte (EUR, gerundet, Stand Nov 2026) – keine Live-Preise.
+# ============================================================================================
+
+[airport_access]
+# Zusätzliche Anreisekosten pro Strecke gegenüber Frankfurt (deine Angabe: München ca. 40 €).
+# DUS und BER sind Platzhalter – bitte anpassen.
+FRA = 0
+MUC = 40
+DUS = 40
+BER = 40
+
+# ------------------------------------------------------------------ Szenario C: Indonesien
+[[trips]]
+id = "C"
+name = "Ostjava + Bali (Szenario C)"
+emoji = "🇮🇩"
+priority = "SEHR HOCH"
+share = 3
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-05-05", "2027-06-04"], ["2027-05-15", "2027-06-14"], ["2027-04-20", "2027-05-20"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "absolute"          # gleiche Grenzen wie die bisherige Indonesien-Suche (750/850/950 €)
+season = "Mai–Juni: Beginn der Trockenzeit auf Java/Bali. Feiertage 2027: Idul Adha 17.5. mit Brückentag 18.5., Waisak-Brückentag 19.5. – Züge/Fähren dann voller."
+
+[[trips.routes]]
+id = "C1"
+name = "Gabelflug → SUB / DPS →"
+outbound_to = "SUB"
+return_from = "DPS"
+weight = 3
+penalty_eur = 0
+ground = ["c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
+
+[[trips.routes]]
+id = "C2"
+name = "Hin & zurück DPS (Vergleich)"
+outbound_to = "DPS"
+return_from = "DPS"
+weight = 2
+penalty_eur = 0
+ground = ["c_dps_sub", "c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
+
+[[trips.routes]]
+id = "C3"
+name = "Gabelflug → CGK / DPS →"
+outbound_to = "CGK"
+return_from = "DPS"
+weight = 2
+penalty_eur = 0
+ground = ["c_cgk_sub", "c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
+
+[[trips.ground]]
+id = "c_sub_mlg"
+name = "Surabaya → Malang (Zug: Pendlerzug bis Executive)"
+min = 1
+max = 22
+source = "trip.com / tiket.com: IDR 12.000–420.000"
+[[trips.ground]]
+id = "c_tour"
+name = "Malang → Tumpak Sewu → Bromo → Ijen → Ketapang (3-Tage-Privattour inkl. 2 Nächte, Eintritte, Jeep)"
+min = 300
+max = 550
+source = "Tour-Anbieter (theabroadguide, Travelocity): ca. 345–590 USD p. P."
+[[trips.ground]]
+id = "c_ferry"
+name = "Fähre Ketapang → Gilimanuk"
+min = 1
+max = 8
+source = "ASDP-Tarif Rp 10.600; über Ticket-Händler deutlich mehr"
+[[trips.ground]]
+id = "c_gil_pem"
+name = "Gilimanuk → Pemuteran (Transfer)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "c_pem_dps"
+name = "Pemuteran → Denpasar (Transfer)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "c_dps_sub"
+name = "Bali → Surabaya (Inlandsflug/Zug, für Start auf Java)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "c_cgk_sub"
+name = "Jakarta → Surabaya (Zug/Inlandsflug)"
+source = "nicht recherchiert"
+
+# ------------------------------------------------------------------ Szenario A: Philippinen
+[[trips]]
+id = "A"
+name = "Philippinen Negros + Cebu (Szenario A)"
+emoji = "🇵🇭"
+priority = "HOCH"
+share = 2
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-03-20", "2027-04-19"], ["2027-04-01", "2027-05-01"], ["2027-04-10", "2027-05-10"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "relative"
+relative_pct = 20
+season = "Trockenzeit: Cebu/Dumaguete/Apo am besten ca. Dez–Mai (Dumaguete v. a. März–Mai), Mai etwas feuchter. Karwoche 21.–28.3.2027 (Ostern 28.3.) und Schulferien April–Mai: Fähren und Inlandsflüge voller."
+
+[[trips.routes]]
+id = "A1"
+name = "Hin & zurück CEB"
+outbound_to = "CEB"
+return_from = "CEB"
+weight = 3
+ground = ["a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_ceb"]
+
+[[trips.routes]]
+id = "A2"
+name = "Gabelflug → CEB / MNL →"
+outbound_to = "CEB"
+return_from = "MNL"
+weight = 2
+ground = ["a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_mnl"]
+
+[[trips.routes]]
+id = "A3"
+name = "Hin & zurück MNL"
+outbound_to = "MNL"
+return_from = "MNL"
+weight = 1
+ground = ["a_mnl_ceb", "a_ceb_moal", "a_moal_dgt", "a_apo", "a_siq", "a_dgt_mnl"]
+
+[[trips.ground]]
+id = "a_ceb_moal"
+name = "Flughafen Cebu → Moalboal (Bus/Taxi)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "a_moal_dgt"
+name = "Moalboal → Dumaguete (Bus + Fähre über Liloan)"
+min = 4
+max = 8
+source = "geckoroutes/rome2rio: ca. ₱320–435"
+[[trips.ground]]
+id = "a_apo"
+name = "Apo Island Tagesausflüge"
+source = "nicht recherchiert (meist über Tauchschule)"
+[[trips.ground]]
+id = "a_siq"
+name = "Dumaguete ⇄ Siquijor Fähre (hin + zurück)"
+min = 8
+max = 20
+source = "rome2rio: ₱270–689 pro Strecke"
+[[trips.ground]]
+id = "a_dgt_ceb"
+name = "Dumaguete → Cebu (Bus ~7 €, Fähre ~25 €, Flug ~36 €)"
+min = 7
+max = 36
+source = "12go/pamasahe: Bus ~₱450, OceanJet ₱1.700, Flug Ø ₱2.500"
+[[trips.ground]]
+id = "a_dgt_mnl"
+name = "Dumaguete/Cebu → Manila (Inlandsflug)"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "a_mnl_ceb"
+name = "Manila → Cebu (Inlandsflug)"
+source = "nicht recherchiert"
+
+# ------------------------------------------------------------------ Szenario B: Thailand
+[[trips]]
+id = "B"
+name = "Thailand Koh Tao + Süden (Szenario B)"
+emoji = "🇹🇭"
+priority = "HOCH"
+share = 2
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-04-05", "2027-05-05"], ["2027-03-15", "2027-04-14"], ["2027-04-20", "2027-05-20"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "relative"
+relative_pct = 20
+season = "Koh Tao (Golfküste) März–Juni gut, beste Tauchsicht ab April. Krabi/Phuket (Andaman) trocken bis April, ab Mai Südwest-Monsun mit Schauern und rauer See. Songkran 13.–15. April: Verkehr voll, Preise höher."
+
+[[trips.routes]]
+id = "B1"
+name = "Hin & zurück BKK"
+outbound_to = "BKK"
+return_from = "BKK"
+weight = 3
+ground = ["b_bkk_tao", "b_tao_main", "b_main_kbv", "b_kbv_bkk"]
+
+[[trips.routes]]
+id = "B2"
+name = "Gabelflug → HKT / BKK →"
+outbound_to = "HKT"
+return_from = "BKK"
+weight = 2
+ground = ["b_hkt_kbv", "b_main_kbv", "b_main_tao", "b_tao_bkk"]
+
+[[trips.routes]]
+id = "B3"
+name = "Gabelflug → URT / BKK →"
+outbound_to = "URT"
+return_from = "BKK"
+weight = 1
+ground = ["b_main_tao", "b_tao_main", "b_main_kbv", "b_kbv_bkk"]
+
+[[trips.ground]]
+id = "b_bkk_tao"
+name = "Bangkok → Koh Tao (Lomprayah Bus + Katamaran)"
+min = 33
+max = 42
+source = "ferryadvice/visitthailandtoday: ฿1.225–1.550"
+[[trips.ground]]
+id = "b_tao_main"
+name = "Koh Tao → Chumphon/Surat Thani (Fähre)"
+min = 18
+max = 21
+source = "12go: ฿650–750"
+[[trips.ground]]
+id = "b_main_kbv"
+name = "Surat Thani → Khao Sok → Krabi (Bus/Van)"
+min = 7
+max = 17
+source = "12go: Bus/Van Surat Thani–Krabi ca. 8–19 USD"
+[[trips.ground]]
+id = "b_kbv_bkk"
+name = "Krabi → Bangkok (Bus ~21 € oder Inlandsflug ~25–130 €)"
+min = 21
+max = 130
+source = "abrotherabroad/north-vietnam.com: Bus ฿770, Flug 25–150 USD"
+[[trips.ground]]
+id = "b_hkt_kbv"
+name = "Phuket → Krabi"
+source = "nicht recherchiert"
+[[trips.ground]]
+id = "b_main_tao"
+name = "Surat Thani/Chumphon → Koh Tao (Fähre)"
+min = 18
+max = 21
+source = "12go: ฿650–750 (Gegenrichtung)"
+[[trips.ground]]
+id = "b_tao_bkk"
+name = "Koh Tao → Bangkok (Lomprayah Fähre + Bus)"
+min = 28
+max = 31
+source = "12go: ฿1.050–1.150"
+
+# ------------------------------------------------------------------ Szenario D: Sabah
+[[trips]]
+id = "D"
+name = "Malaysia Sabah / Borneo (Szenario D)"
+emoji = "🇲🇾"
+priority = "MITTEL"
+share = 1
+origins = ["FRA", "DUS", "MUC", "BER"]
+windows = [["2027-04-15", "2027-05-15"], ["2027-05-01", "2027-05-31"], ["2027-05-15", "2027-06-14"]]
+max_stops = 2
+allow_separate_tickets = true
+threshold_mode = "relative"
+relative_pct = 20
+season = "Sabah-Trockenzeit ca. März–Sept; Tauchen Semporna/Sipadan Hauptsaison ab April. Sipadan nur mit begrenzten Tages-Permits über Resorts/Tauchschulen."
+
+[[trips.routes]]
+id = "D1"
+name = "Hin & zurück BKI"
+outbound_to = "BKI"
+return_from = "BKI"
+weight = 3
+ground = ["d_bki_twu", "d_twu_sem", "d_mabul", "d_sem_twu", "d_twu_bki"]
+
+[[trips.routes]]
+id = "D2"
+name = "Gabelflug → BKI / TWU →"
+outbound_to = "BKI"
+return_from = "TWU"
+weight = 2
+ground = ["d_bki_twu", "d_twu_sem", "d_mabul", "d_sem_twu"]
+
+[[trips.routes]]
+id = "D3"
+name = "Hin & zurück TWU"
+outbound_to = "TWU"
+return_from = "TWU"
+weight = 1
+ground = ["d_twu_sem", "d_mabul", "d_sem_twu", "d_twu_bki", "d_bki_twu"]
+
+[[trips.ground]]
+id = "d_bki_twu"
+name = "Kota Kinabalu → Tawau (Inlandsflug)"
+min = 11
+max = 45
+source = "Skyscanner/Cheapflights: ab RM 53–66, Ø ca. RM 200"
+[[trips.ground]]
+id = "d_twu_bki"
+name = "Tawau → Kota Kinabalu (Inlandsflug)"
+min = 11
+max = 45
+source = "Skyscanner/Kayak: ab RM 53"
+[[trips.ground]]
+id = "d_twu_sem"
+name = "Flughafen Tawau → Semporna (Bus/Taxi)"
+min = 4
+max = 25
+source = "trip.com: Bus RM 20–25, Taxi RM 100–120"
+[[trips.ground]]
+id = "d_sem_twu"
+name = "Semporna → Flughafen Tawau (Bus/Taxi)"
+min = 4
+max = 25
+source = "trip.com/unchartedlens"
+[[trips.ground]]
+id = "d_mabul"
+name = "Semporna ⇄ Mabul Boot (hin + zurück)"
+min = 40
+max = 60
+source = "unchartedlens: RM 100–150 pro Strecke"

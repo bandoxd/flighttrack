@@ -13,7 +13,15 @@ sys.path.insert(0, str(ROOT))
 
 import monitor  # noqa: E402
 
-CFG = monitor.load_config(ROOT / "config.toml")
+import copy
+
+CFG_FULL = monitor.load_config(ROOT / "config.toml")
+# Alte Tests laufen mit der reinen Indonesien-Konfiguration -> prüft, dass sich das bisherige Verhalten nicht ändert
+CFG = copy.deepcopy({k: v for k, v in CFG_FULL.items() if k not in ("trips", "airport_access")})
+
+
+def full_cfg():
+    return copy.deepcopy(CFG_FULL)
 
 
 def seg(airline, fn, a, b, dep, arr, d):
@@ -64,10 +72,12 @@ def booking_resp(price, bags=("1 free carry-on", "1st checked bag free")):
 class FakeSerp:
     """Simuliert SerpApi anhand der Parameter."""
 
-    def __init__(self, first_price=690, ret_price=None, book_price=None, fail=False, bags=None):
+    def __init__(self, first_price=690, ret_price=None, book_price=None, fail=False, bags=None, typical=None,
+                 reject_multi_origin=False):
         self.first, self.ret = first_price, ret_price or first_price
         self.book = book_price or self.ret
-        self.fail, self.bags = fail, bags
+        self.fail, self.bags, self.typical = fail, bags, typical
+        self.reject_multi_origin = reject_multi_origin
         self.calls = []
 
     def __call__(self, url, params, retries=1):
@@ -78,9 +88,14 @@ class FakeSerp:
             raise monitor.SourceError("HTTP 503: Service unavailable")
         if "booking_token" in params:
             return booking_resp(self.book, self.bags) if self.bags is not None else booking_resp(self.book)
+        if self.reject_multi_origin and params.get("type") == 3 and "FRA,DUS" in params.get("multi_city_json", ""):
+            raise monitor.SourceError("HTTP 400: Unsupported departure_id in multi_city_json")
         if "departure_token" in params:
             return return_resp(self.ret)
-        return search_resp([itin(self.first), itin(self.first + 180, airline="Lufthansa")])
+        r = search_resp([itin(self.first), itin(self.first + 180, airline="Lufthansa")])
+        if self.typical:
+            r["price_insights"]["typical_price_range"] = list(self.typical)
+        return r
 
 
 class Base(unittest.TestCase):
@@ -221,6 +236,44 @@ class TestBooking(unittest.TestCase):
         self.assertFalse(b["found"])
 
 
+class TestDedupeStale(Base):
+    def test_stale_notification_does_not_block(self):
+        cfgd = CFG
+        state = {"notified": {
+            "old": {"total": 694.0, "tier": "EXTREM GUT", "ts": "2026-11-09T05:00:00Z", "variant": "V2"},
+            "k2": {"total": 700.0, "tier": "EXTREM GUT", "ts": "2026-11-09T05:00:00Z", "variant": "V2",
+                   "out": "2027-03-01", "ret": "2027-03-28"}}}
+        d = {"key": "new", "variant": "V2", "out": "2027-04-14", "ret": "2027-05-17", "ts": "2026-11-10T05:17:00Z",
+             "eval": {"tier": "GUT", "total": 752.0}}
+        now = dt.datetime(2026, 11, 10, 5, 17, tzinfo=dt.timezone.utc)
+        # gültige frühere EXTREM-Meldung blockiert eine schlechtere GUT-Meldung
+        self.assertFalse(monitor.should_notify(cfgd, state, d, now, {("V2", "2027-03-01", "2027-03-28"): 700.0}))
+        # wurde der frühere Termin inzwischen teurer gemessen (z. B. Gepäck nicht inklusive) -> blockiert nicht mehr
+        self.assertTrue(monitor.should_notify(cfgd, state, d, now, {("V2", "2027-03-01", "2027-03-28"): 824.0}))
+
+    def test_booking_call_uses_full_params(self):
+        fake = FakeSerp(690, 690, 690)
+        with mock.patch.object(monitor, "http_get_json", fake):
+            monitor.run(CFG)
+        bcalls = [c for c in fake.calls if "booking_token" in c]
+        self.assertTrue(bcalls)
+        for c in bcalls:
+            self.assertTrue("departure_id" in c or "multi_city_json" in c)
+            self.assertNotIn("departure_token", c)
+
+
+class TestNoBag(Base):
+    def test_booking_says_no_checked_bag(self):
+        fake = FakeSerp(690, 690, 690, bags=["1 free carry-on", "No checked bags"])
+        with mock.patch.object(monitor, "http_get_json", fake):
+            monitor.run(CFG)
+        deals = json.loads((monitor.DATA / "deals.json").read_text())
+        d = [x for x in deals if x["offer"].get("booking")][0]
+        self.assertEqual(d["eval"]["bag_cost"], 120.0)
+        self.assertEqual(d["eval"]["total"], 810.0)
+        self.assertIn("NICHT inklusive", d["eval"]["bag_note"])
+
+
 class TestRun(Base):
     def test_full_run_notifies_once_and_dedupes(self):
         fake = FakeSerp(first_price=690, ret_price=705, book_price=705)
@@ -343,7 +396,7 @@ class TestDiscord(Base):
         emb = p["embeds"][0]
         self.assertIn("EXTREM GUT", emb["title"])
         names = [f["name"] for f in emb["fields"]]
-        for n in ("🛫 Hinflug", "🛬 Rückflug", "💶 Preis", "🧳 Gepäck", "🔗 Links"):
+        for n in ("🛫 Hinflug", "🛬 Rückflug", "💶 Flugpreis", "🧳 Gepäck", "🔗 Links"):
             self.assertIn(n, names)
         hin = emb["fields"][0]["value"]
         self.assertIn("FRA → SUB", hin)
@@ -377,6 +430,148 @@ class TestDiscord(Base):
         monitor.send_discord("S", "", big)
         self.assertEqual(len(self.calls), 3)
         self.assertEqual(self.calls[1][2]["content"], "")
+
+
+class TestTrips(Base):
+    def test_trips_and_budget_shares(self):
+        cfg = full_cfg()
+        ids = [t["id"] for t in monitor.trips(cfg)]
+        self.assertEqual(ids, ["ID", "C", "A", "B", "D"])
+        from collections import Counter
+        cnt, st = Counter(), {}
+        for _ in range(110):
+            for c in monitor.next_combos(cfg, st, 2, dt.date(2026, 11, 5), None):
+                cnt[monitor.trip_of(cfg, c["variant"])["id"]] += 1
+        self.assertEqual(cnt, Counter({"C": 66, "ID": 44, "A": 44, "B": 44, "D": 22}))
+
+    def test_all_fixed_windows_visited(self):
+        cfg, st, seen = full_cfg(), {}, set()
+        for _ in range(60):
+            for c in monitor.next_combos(cfg, st, 4, dt.date(2026, 11, 5), None):
+                if monitor.trip_of(cfg, c["variant"])["id"] != "ID":
+                    seen.add((c["variant"], c["out"], c["ret"]))
+        self.assertEqual(len(seen), 36)
+        self.assertIn(("A1", "2027-03-20", "2027-04-19"), seen)
+
+    def test_past_windows_dropped(self):
+        plans = monitor.all_combos(full_cfg(), dt.date(2027, 4, 2))
+        self.assertEqual([c["out"] for c in plans["A1"]], ["2027-04-10"])
+
+    def test_cursor_migration_keeps_progress(self):
+        cfg = full_cfg()
+        st = {"cursor": {"pattern": 5, "variant": {"V1": 7}}}
+        monitor.next_combos(cfg, st, 1, dt.date(2026, 11, 5), None)
+        self.assertIn("trips", st["cursor"])
+        self.assertGreaterEqual(st["cursor"]["trips"]["ID"]["variant"].get("V1", 7), 7)
+
+    def test_params_new_trip(self):
+        p = monitor.base_params(full_cfg(), {"variant": "B1", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
+        self.assertEqual((p["type"], p["departure_id"], p["arrival_id"], p["stops"]), (1, "FRA,DUS,MUC,BER", "BKK", 3))
+        p = monitor.base_params(CFG, {"variant": "V2", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
+        self.assertEqual((p["departure_id"], p["stops"]), ("FRA", 2))
+
+    def offer(self, price, typical=None, **kw):
+        return {"price": price, "leg": monitor.parse_leg(itin(price, **kw)), "typical": typical}
+
+    def test_relative_threshold(self):
+        cfg = full_cfg()
+        e = monitor.evaluate(cfg, self.offer(780, [900, 1100]), "B1", None)   # 22 % unter 1000
+        self.assertEqual((e["tier"], e["notify"]), ("GUT", True))
+        e = monitor.evaluate(cfg, self.offer(850, [900, 1100]), "B1", None)   # 15 %
+        self.assertFalse(e["notify"])
+        e = monitor.evaluate(cfg, self.offer(650, [900, 1100]), "B1", None)   # 35 %
+        self.assertEqual(e["tier"], "EXTREM GUT")
+        e = monitor.evaluate(cfg, self.offer(780, [900, 1100], layover=12 * 60), "B1", None)  # schlechte Verbindung
+        self.assertFalse(e["notify"])
+        e = monitor.evaluate(cfg, self.offer(680, [900, 1100], layover=12 * 60), "B1", None)  # 32 % reicht
+        self.assertTrue(e["notify"])
+        e = monitor.evaluate(cfg, self.offer(500), "B1", None)                # kein Vergleichspreis
+        self.assertFalse(e["notify"])
+        self.assertTrue(any("Vergleichspreis" in i for i in e["issues"]))
+
+    def test_absolute_for_scenario_c(self):
+        e = monitor.evaluate(full_cfg(), self.offer(700), "C1", None)
+        self.assertEqual((e["tier"], e["notify"]), ("EXTREM GUT", True))
+
+    def test_access_cost_for_munich(self):
+        cfg = full_cfg()
+        o = self.offer(700)
+        o["leg"]["segments"][0]["from"] = "MUC"
+        e = monitor.evaluate(cfg, o, "C1", None)
+        self.assertEqual(e["total"], 700)
+        self.assertEqual(e["effective"], 740)
+        self.assertIn("MUC", e["access_notes"][0])
+        o["return_leg"] = monitor.parse_leg(itin(1))
+        o["return_leg"]["segments"][-1]["to"] = "MUC"
+        e = monitor.evaluate(cfg, o, "C1", None)
+        self.assertEqual(e["effective"], 780)
+        self.assertEqual(e["tier"], "GUT")
+
+    def test_separate_tickets_allowed_with_warning(self):
+        cfg = full_cfg()
+        e = monitor.evaluate(cfg, self.offer(600, ext=["Separate tickets booked together"]), "C1", None)
+        self.assertTrue(e["notify"])
+        self.assertTrue(any("kein Anschluss-Schutz" in i for i in e["issues"]))
+        e = monitor.evaluate(CFG, self.offer(600, ext=["Separate tickets booked together"]), "V1", None)
+        self.assertFalse(e["notify"])
+
+    def test_booking_options_separate(self):
+        data = {"booking_options": [
+            {"together": {"book_with": "Expedia", "price": 500, "option_title": "Separate tickets booked together",
+                          "baggage_prices": []}},
+            {"together": {"book_with": "Qatar Airways", "price": 640, "baggage_prices": ["1st checked bag free"]}}]}
+        b = monitor.parse_booking_options(data, allow_separate=False)
+        self.assertEqual((b["book_with"], b["separate_tickets"]), ("Qatar Airways", False))
+        b = monitor.parse_booking_options(data, allow_separate=True)
+        self.assertEqual((b["book_with"], b["separate_tickets"]), ("Expedia", True))
+
+    def test_ground_costs(self):
+        g = monitor.ground_for(full_cfg(), "D1")
+        self.assertEqual((g["min"], g["max"]), (70, 200))
+        self.assertEqual(g["open"], [])
+        g = monitor.ground_for(full_cfg(), "A1")
+        self.assertIn("Apo Island Tagesausflüge", g["open"])
+
+    def test_full_run_new_trip_with_discord(self):
+        cfg = full_cfg()
+        os.environ.pop("TELEGRAM_BOT_TOKEN")
+        os.environ["DISCORD_WEBHOOK_URL"] = "https://discord.com/api/webhooks/1/abc"
+        calls = []
+        try:
+            with mock.patch.object(monitor, "_discord_request", side_effect=lambda m, u, p, bot: calls.append(p) or {}), \
+                    mock.patch.object(monitor, "http_get_json", FakeSerp(560, 560, 560, typical=(900, 1100))):
+                # mehrere Läufe, damit auch Szenarien A/B/D an die Reihe kommen
+                for i in range(4):
+                    os.environ["FDM_NOW"] = f"2026-11-1{i}T05:17:00+00:00"
+                    monitor.run(cfg)
+        finally:
+            os.environ.pop("DISCORD_WEBHOOK_URL")
+        self.assertTrue(calls)
+        titles = [e["title"] for p in calls for e in p["embeds"]]
+        self.assertTrue(any("🇹🇭" in t or "🇵🇭" in t or "🇲🇾" in t for t in titles), titles)
+        emb = next(e for p in calls for e in p["embeds"] if "🇲🇾" in e["title"] or "🇹🇭" in e["title"] or "🇵🇭" in e["title"])
+        names = [f["name"] for f in emb["fields"]]
+        self.assertIn("🚤 Inland, Fähren & Transfers (Richtwerte)", names)
+        self.assertIn("🌦️ Saison", names)
+        for p in calls:
+            self.assertLessEqual(len(json.dumps(p["embeds"], ensure_ascii=False)), 6000)
+        self.assertTrue((monitor.DOCS / "index.html").exists())
+
+    def test_multi_origin_fallback(self):
+        cfg = full_cfg()
+        fake = FakeSerp(1500, typical=(900, 1100), reject_multi_origin=True)
+        with mock.patch.object(monitor, "http_get_json", fake):
+            for i in range(3):
+                os.environ["FDM_NOW"] = f"2026-11-1{i}T05:17:00+00:00"
+                rec = monitor.run(cfg)
+        st = json.loads((monitor.DATA / "state.json").read_text())
+        self.assertTrue(st.get("mc_single_origin"))
+        mc = [c for c in fake.calls if c.get("type") == 3]
+        self.assertTrue(any("FRA,DUS" in c["multi_city_json"] for c in mc))
+        self.assertTrue(any('"departure_id":"FRA"' in c["multi_city_json"] for c in mc))
+        runs = json.loads((monitor.DATA / "runs.json").read_text())
+        self.assertTrue(any("nur ab FRA" in n for r in runs for n in r["notes"]))
+        self.assertNotEqual(rec["status"], "error")
 
 
 if __name__ == "__main__":
