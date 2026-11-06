@@ -993,5 +993,62 @@
    "discord"
   ],
   "budget_left": 182
+ },
+ {
+  "ts": "2026-11-06T22:08:10Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "179 Suchen übrig (SerpApi-Konto), 49 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "LF2",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 769.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1142.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Philippine Airlines",
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V1",
+    "out": "2027-03-15",
+    "ret": "2027-04-17",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 1718.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Singapore Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 179
  }
 ]
