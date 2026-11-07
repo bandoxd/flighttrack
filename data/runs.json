@@ -1108,5 +1108,58 @@
    "discord"
   ],
   "budget_left": 176
+ },
+ {
+  "ts": "2026-11-07T20:54:17Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "171 Suchen übrig (SerpApi-Konto), 47 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "D2",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1170.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Malaysia Airlines",
+     "Turkish Airlines"
+    ]
+   },
+   {
+    "variant": "LF1",
+    "out": "2027-05-10",
+    "ret": "2027-06-09",
+    "recheck": false,
+    "trip": "LF",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "PH3",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1099.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 171
  }
 ]
