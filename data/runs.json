@@ -1275,5 +1275,120 @@
    "discord"
   ],
   "budget_left": 165
+ },
+ {
+  "ts": "2026-11-08T21:25:45Z",
+  "status": "ok",
+  "kind": "recheck",
+  "searches": 10,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "Deal-Nachprüfung: 7 noch verfügbar, 4 aussortiert (10 Termine geprüft)"
+  ],
+  "results": [
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 997.0,
+    "tier": "ZU TEUER"
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 814.0,
+    "tier": "NORMAL"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-03-29",
+    "ret": "2027-04-28",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V2",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 769.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-04-06",
+    "ret": "2027-05-03",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 815.0,
+    "tier": "NORMAL"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-05-04",
+    "ret": "2027-06-03",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V2",
+    "out": "2027-04-14",
+    "ret": "2027-05-17",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-04-14",
+    "ret": "2027-05-17",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V2",
+    "out": "2027-05-12",
+    "ret": "2027-06-08",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 774.0,
+    "tier": "GUT"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-05-12",
+    "ret": "2027-06-08",
+    "trip": "ID",
+    "recheck": true,
+    "status": "ok",
+    "total": 782.0,
+    "tier": "GUT"
+   }
+  ],
+  "notified": [],
+  "channels": []
  }
 ]

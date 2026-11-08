@@ -104,7 +104,14 @@
   "key": "d939bd33333e00a2",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "weg",
+   "current_total": null,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTAzLTAxKAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wMy0yOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  },
+  "expired": true
  },
  {
   "ts": "2026-10-31T01:54:21Z",
@@ -213,7 +220,14 @@
   "key": "1e529e658db0d75e",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "teurer",
+   "current_total": 944.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTAzLTAxKAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wMy0yOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ"
+  },
+  "expired": true
  },
  {
   "ts": "2026-10-31T10:57:26Z",
@@ -318,7 +332,13 @@
   },
   "notified": false,
   "key": "70496f588d3bb501",
-  "duplicate": true
+  "duplicate": true,
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTAzLTI5KAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wNC0yOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-10-31T20:27:30Z",
@@ -423,7 +443,13 @@
   },
   "notified": false,
   "key": "5e86b90ca8946790",
-  "duplicate": true
+  "duplicate": true,
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA0LTA2KAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wNS0wMygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-11-01T11:52:17Z",
@@ -528,7 +554,13 @@
   },
   "notified": false,
   "key": "94ef52b59ac41714",
-  "duplicate": true
+  "duplicate": true,
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 815.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA0LTA2KAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wNS0wMygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-11-01T21:12:19Z",
@@ -735,7 +767,13 @@
   },
   "notified": false,
   "key": "b5eca5163dbdf082",
-  "duplicate": true
+  "duplicate": true,
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA1LTA0KAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wNi0wMygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-11-03T12:50:04Z",
@@ -840,7 +878,14 @@
   },
   "notified": false,
   "key": "9324d72b4df9fa82",
-  "duplicate": true
+  "duplicate": true,
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "teurer",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA0LTE0KAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wNS0xNygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ"
+  },
+  "expired": true
  },
  {
   "ts": "2026-11-03T22:19:17Z",
@@ -964,7 +1009,13 @@
   "key": "a02b4ad4c0e828a7",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 815.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA0LTE0KAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wNS0xNygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-11-04T13:00:55Z",
@@ -1085,7 +1136,14 @@
   "key": "6c8edcf6a9f9ab83",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "teurer",
+   "current_total": 774.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA1LTEyKAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wNi0wOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ"
+  },
+  "expired": true
  },
  {
   "ts": "2026-11-04T13:00:55Z",
@@ -1209,7 +1267,13 @@
   "key": "a32bf722439a4268",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA1LTEyKAFqBwgBEgNGUkFyBwgBEgNDR0saIBIKMjAyNy0wNi0wOCgBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAED&tfu=EgIIAQ"
+  }
  },
  {
   "ts": "2026-11-07T11:44:55Z",
@@ -1352,6 +1416,12 @@
   "key": "9324d72b4df9fa82",
   "channels": [
    "discord"
-  ]
+  ],
+  "recheck": {
+   "ts": "2026-11-08T21:25:45Z",
+   "status": "verfügbar",
+   "current_total": 782.0,
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhogEgoyMDI3LTA0LTE0KAFqBwgBEgNGUkFyBwgBEgNEUFMaIBIKMjAyNy0wNS0xNygBagcIARIDRFBTcgcIARIDRlJBQAFIAXABmAEB&tfu=EgIIAQ"
+  }
  }
 ]
