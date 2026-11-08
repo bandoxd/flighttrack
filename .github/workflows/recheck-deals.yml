@@ -1,0 +1,38 @@
+name: Deals nachprüfen
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flight-monitor
+  cancel-in-progress: false
+
+jobs:
+  recheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Deals nachprüfen
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python monitor.py recheck-deals
+      - name: Daten & Dashboard speichern
+        if: always()
+        run: |
+          git config user.name "flight-monitor-bot"
+          git config user.email "flight-monitor-bot@users.noreply.github.com"
+          git add data docs
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen."
+          else
+            git commit -m "Deal-Nachprüfung $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash || true
+            git push
+          fi

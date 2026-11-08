@@ -157,7 +157,7 @@ function groundBlock(vid, flightTotal){
 }
 function connCard(c){
   const v = V(c.variant), t = T(v.trip), origin = (t.origins || ['FRA'])[0];
-  const status = c.kind === 'deal' ? (c.notified ? `<span class="badge">🔔 gemeldet</span>` : c.duplicate ? '<span class="meta">bereits gemeldet</span>' : '') : '';
+  const status = (c.kind === 'deal' ? (c.notified ? `<span class="badge">🔔 gemeldet</span>` : c.duplicate ? '<span class="meta">bereits gemeldet</span>' : '') : '') + (c.recheck && c.recheck.status === 'verfügbar' ? ` <span class="badge"><i style="background:var(--good)"></i>✓ ${fdt(c.recheck.ts)} noch verfügbar${c.recheck.current_total ? ' (' + eur(c.recheck.current_total) + ')' : ''}</span>` : '');
   return `<details class="conn"><summary>
     <div class="price">${eur(c.total)}<small>${c.kind === 'deal' && c.verified ? 'geprüft' : 'Flug inkl. Gepäck'}</small></div>
     <div class="route">
@@ -184,7 +184,7 @@ function connCard(c){
 const fromDeal = d => ({kind:'deal', score:d.eval.score, variant:d.variant, trip:d.trip, out:d.out, ret:d.ret, ts:d.ts, tier:d.eval.tier, total:d.eval.total, price:d.offer.price,
   bag_cost:d.eval.bag_cost, bag_note:d.eval.bag_note, leg:d.offer.leg, return_leg:d.offer.return_leg || null, airlines:d.offer.leg.airlines,
   url:d.offer.google_flights_url, reasons:d.eval.reasons, issues:(d.eval.issues||[]).concat(d.offer.verify_notes||[]), notified:d.notified,
-  duplicate:d.duplicate, verified:d.offer.verified, book_with:(d.offer.booking||{}).book_with, effective:d.eval.effective,
+  duplicate:d.duplicate, verified:d.offer.verified, recheck:d.recheck, book_with:(d.offer.booking||{}).book_with, effective:d.eval.effective,
   reference:d.eval.reference, pct:d.eval.pct_below_ref, separate:d.eval.separate_tickets});
 const fromObs = o => ({kind:'obs', score:o.score, variant:o.variant, trip:o.trip, out:o.out, ret:o.ret, ts:o.ts, tier:o.tier, total:o.best_total, price:o.best_price,
   bag_cost:o.bag_cost, bag_note:o.bag_note, leg:o.leg, airlines:o.airlines, url:o.google_flights_url, effective:o.effective,
@@ -235,8 +235,9 @@ function render(){
   if (TRIP !== 'all') h += `<div class="chips" role="group" aria-label="Route filtern" style="margin-top:-4px"><button class="chip" data-v="all" aria-pressed="${VAR === 'all'}">Alle Routen</button>` +
     T(TRIP).variants.map(v => `<button class="chip" data-v="${v.id}" aria-pressed="${VAR === v.id}">${esc(v.name)}${v.weight === 0 ? ' <span class="muted">(pausiert)</span>' : ''}</button>`).join('') + `</div>`;
   // Deals
-  const deals = D.deals.filter(d => d.eval.notify && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => (a.eval.score ?? a.eval.effective) - (b.eval.score ?? b.eval.effective));
-  h += `<div class="sechead"><h2>🔔 Deals</h2><span class="meta">Angebote, die deine Kriterien erfüllen (letzte 21 Tage)</span></div>`;
+  const laterHigher = d => D.obs.some(o => o.variant === d.variant && o.out === d.out && o.ret === d.ret && o.ts > d.ts && o.best_total && o.best_total > d.eval.total + (th.renotify_drop_eur || 25) && !(d.recheck && d.recheck.ts > o.ts && d.recheck.status === 'verfügbar'));
+  const deals = D.deals.filter(d => d.eval.notify && !d.expired && !laterHigher(d) && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => (a.eval.score ?? a.eval.effective) - (b.eval.score ?? b.eval.effective));
+  h += `<div class="sechead"><h2>🔔 Deals</h2><span class="meta">Angebote, die deine Kriterien erfüllen (letzte 21 Tage) · nicht mehr verfügbare werden automatisch aussortiert</span></div>`;
   h += deals.length ? `<div class="conns">${deals.slice(0, 8).map(d => connCard(fromDeal(d))).join('')}</div>` : `<div class="card empty">Noch kein Angebot unter deinen Schwellen – sobald eins auftaucht, erscheint es hier und du bekommst eine Nachricht.</div>`;
   // Verbindungen
   const conns = Object.values(latestAll).filter(inF).sort((a,b) => (a.score ?? a.effective ?? a.best_total) - (b.score ?? b.effective ?? b.best_total));

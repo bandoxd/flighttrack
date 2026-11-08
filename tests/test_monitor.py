@@ -627,5 +627,45 @@ class TestTrips(Base):
         self.assertNotEqual(rec["status"], "error")
 
 
+class TestRecheck(Base):
+    def test_recheck_marks_available_and_gone(self):
+        with mock.patch.object(monitor, "http_get_json", FakeSerp(690, 705, 705)):
+            monitor.run(CFG)
+        deals = json.loads((monitor.DATA / "deals.json").read_text())
+        n_active = len(monitor.active_deals(deals, monitor.now_utc()))
+        self.assertGreater(n_active, 0)
+        # gleicher Flug, gleicher Preis -> verfügbar
+        with mock.patch.object(monitor, "http_get_json", FakeSerp(705)):
+            rec = monitor.recheck_deals(CFG)
+        deals = json.loads((monitor.DATA / "deals.json").read_text())
+        act = [d for d in deals if d.get("recheck")]
+        self.assertTrue(act)
+        self.assertTrue(all(d["recheck"]["status"] == "verfügbar" for d in act))
+        self.assertIn("noch verfügbar", rec["notes"][0])
+        # deutlich teurer -> aussortiert
+        with mock.patch.object(monitor, "http_get_json", FakeSerp(900)):
+            monitor.recheck_deals(CFG)
+        deals = json.loads((monitor.DATA / "deals.json").read_text())
+        self.assertTrue(all(d.get("expired") for d in deals if d.get("recheck")))
+        self.assertEqual(monitor.active_deals(deals, monitor.now_utc()), [])
+
+    def test_recheck_flight_gone(self):
+        with mock.patch.object(monitor, "http_get_json", FakeSerp(690, 705, 705)):
+            monitor.run(CFG)
+        class Other(FakeSerp):
+            def __call__(s, url, params, retries=1):
+                r = super().__call__(url, params, retries)
+                for g in ("best_flights", "other_flights"):
+                    for it in r.get(g) or []:
+                        for f in it.get("flights", []):
+                            f["flight_number"] = "XX 999"
+                return r
+        with mock.patch.object(monitor, "http_get_json", Other(600)):
+            monitor.recheck_deals(CFG)
+        deals = json.loads((monitor.DATA / "deals.json").read_text())
+        st = {d["recheck"]["status"] for d in deals if d.get("recheck")}
+        self.assertEqual(st, {"weg"})
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

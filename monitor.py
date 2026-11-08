@@ -10,6 +10,7 @@ Ressourcenschonender Flugpreis-Monitor ohne KI-Aufrufe:
 Nur Python-Standardbibliothek (>= 3.11). Befehle:
   python monitor.py run                # ein Suchlauf (Standard)
   python monitor.py dashboard          # nur Dashboard neu erzeugen
+  python monitor.py recheck-deals      # alle aktiven Deals erneut prüfen, nicht mehr verfügbare aussortieren
   python monitor.py test-notify        # Testnachricht an alle Kanäle
   python monitor.py telegram-chat-id   # Chat-ID des Telegram-Bots ermitteln (optional)
 """
@@ -1226,6 +1227,97 @@ def weekly_status(cfg, state, rec, now):
     rec["errors"] += errs
 
 
+# --------------------------------------------------------------------------- Deals nachprüfen
+def active_deals(deals: list[dict], now: dt.datetime, days: int = 21) -> list[dict]:
+    return [d for d in deals if d.get("eval", {}).get("notify") and not d.get("expired")
+            and now - parse_iso(d["ts"]) <= dt.timedelta(days=days)]
+
+
+def recheck_deals(cfg: dict) -> dict:
+    """Prüft alle aktiven Deals erneut (1 Suche je Termin) und sortiert nicht mehr verfügbare aus.
+
+    verfügbar = gleicher Hinflug (Flugnummern) wird noch angeboten und Gesamtpreis höchstens
+    renotify_drop_eur teurer als gemeldet. Sonst: "teurer" oder "weg" -> expired.
+    """
+    now = now_utc()
+    trips(cfg)
+    state = read_json("state.json", {})
+    deals = read_json("deals.json", [])
+    runs = read_json("runs.json", [])
+    key = os.environ.get("SERPAPI_KEY", "").strip()
+    tol = float(cfg["thresholds"]["renotify_drop_eur"])
+    rec = {"ts": iso(now), "status": "ok", "kind": "recheck", "searches": 0, "verifications": 0, "errors": [],
+           "notes": [], "results": [], "notified": [], "channels": channels()}
+    groups: dict[tuple, list[dict]] = {}
+    for d in active_deals(deals, now):
+        if d["variant"] in cfg["_vmap"] and d["out"] > now.date().isoformat():
+            groups.setdefault((d["variant"], d["out"], d["ret"]), []).append(d)
+        elif d["out"] <= now.date().isoformat():
+            d["expired"], d["recheck"] = True, {"ts": iso(now), "status": "abgelaufen"}
+    if not key:
+        rec["status"] = "error"
+        rec["errors"].append("SERPAPI_KEY ist nicht gesetzt – Nachprüfung nicht möglich.")
+    new_obs, kept, gone = [], 0, 0
+    for (vid, out, ret), ds in groups.items() if key else []:
+        c = {"variant": vid, "out": out, "ret": ret}
+        res = {"variant": vid, "out": out, "ret": ret, "trip": trip_of(cfg, vid)["id"], "recheck": True}
+        try:
+            rec["searches"] += 1
+            data = serpapi_search(base_params(cfg, c, key))
+            its = [] if data.get("_no_results") else parse_itineraries(data)
+            gf = (data.get("search_metadata") or {}).get("google_flights_url")
+            pi = data.get("price_insights") or {}
+            evals = []
+            for it in its[:10]:
+                it.update(google_flights_url=gf, typical=pi.get("typical_price_range"), _variant=vid)
+                evals.append((evaluate(cfg, it, vid, None), it))
+            if evals:
+                ev0, b0 = min(evals, key=lambda x: x[0]["effective"])
+                new_obs.append({"ts": iso(now), "variant": vid, "out": out, "ret": ret, "status": "ok",
+                                "best_total": ev0["total"], "best_price": b0["price"], "tier": ev0["tier"],
+                                "effective": ev0["effective"], "reference": ev0["reference"], "score": ev0["score"],
+                                "pct_below_ref": ev0["pct_below_ref"], "separate": ev0["separate_tickets"],
+                                "trip": res["trip"], "leg": b0["leg"], "bag_note": ev0["bag_note"],
+                                "bag_cost": ev0["bag_cost"], "airlines": b0["leg"]["airlines"],
+                                "stops": b0["leg"]["stops"], "duration_min": b0["leg"]["duration_min"],
+                                "google_flights_url": gf, "recheck": True})
+                res.update(status="ok", total=ev0["total"], tier=ev0["tier"])
+            else:
+                res.update(status="no_results", message="keine Flüge mehr gefunden")
+            for d in ds:
+                fns = [x["flight_number"] for x in d["offer"]["leg"]["segments"]]
+                match = next((it for _, it in evals if [x["flight_number"] for x in it["leg"]["segments"]] == fns), None)
+                bag = float(d["eval"].get("bag_cost") or 0)
+                if match is None:
+                    st, cur = "weg", None
+                else:
+                    cur = round(match["price"] + bag, 2)
+                    st = "verfügbar" if cur <= d["eval"]["total"] + tol else "teurer"
+                d["recheck"] = {"ts": iso(now), "status": st, "current_total": cur, "google_flights_url": gf}
+                if st == "verfügbar":
+                    kept += 1
+                else:
+                    d["expired"] = True
+                    gone += 1
+        except SourceError as e:
+            res.update(status="error", message=str(e))
+            rec["errors"].append(f"{vid} {out}→{ret}: {e}")
+        rec["results"].append(res)
+    append_observations(new_obs)
+    rec["notes"].append(f"Deal-Nachprüfung: {kept} noch verfügbar, {gone} aussortiert ({len(groups)} Termine geprüft)")
+    month = now.strftime("%Y-%m")
+    state.setdefault("usage", {})[month] = state.get("usage", {}).get(month, 0) + rec["searches"]
+    if groups and rec["errors"] and len(rec["errors"]) == len(groups):
+        rec["status"] = "error"
+    runs.append(rec)
+    write_json("runs.json", runs[-400:])
+    write_json("deals.json", deals[-100:])
+    write_json("state.json", state)
+    import dashboard
+    dashboard.build(cfg, DATA, DOCS)
+    return rec
+
+
 # --------------------------------------------------------------------------- CLI
 def main(argv: list[str]) -> int:
     cmd = argv[1] if len(argv) > 1 else "run"
@@ -1244,6 +1336,11 @@ def main(argv: list[str]) -> int:
             raise
         print(json.dumps({k: rec[k] for k in ("ts", "status", "searches", "verifications", "errors", "notes",
                                               "notified")}, ensure_ascii=False, indent=1))
+        return 0
+    if cmd == "recheck-deals":
+        rec = recheck_deals(cfg)
+        print(json.dumps({k: rec[k] for k in ("ts", "status", "searches", "errors", "notes", "results")},
+                         ensure_ascii=False, indent=1))
         return 0
     if cmd == "dashboard":
         import dashboard
