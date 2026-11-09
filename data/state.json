@@ -1,6 +1,6 @@
 {
  "cursor": {
-  "trip_pattern": 5,
+  "trip_pattern": 8,
   "trips": {
    "ID": {
     "pattern": 4,
@@ -31,24 +31,25 @@
     }
    },
    "TH": {
-    "pattern": 2,
+    "pattern": 3,
     "variant": {
-     "TH1": 2
+     "TH1": 2,
+     "TH2": 1
     }
    },
    "PH": {
-    "pattern": 5,
+    "pattern": 0,
     "variant": {
-     "PH1": 2,
+     "PH1": 0,
      "PH2": 2,
      "PH3": 1
     }
    },
    "LF": {
-    "pattern": 4,
+    "pattern": 5,
     "variant": {
      "LF1": 2,
-     "LF2": 1,
+     "LF2": 2,
      "LF3": 1
     }
    },
@@ -109,8 +110,8 @@
  },
  "usage": {
   "2026-10": 26,
-  "2026-11": 80
+  "2026-11": 83
  },
  "fail_streak": 0,
- "last_run": "2026-11-08T21:11:54Z"
+ "last_run": "2026-11-09T13:56:31Z"
 }
