@@ -1557,5 +1557,48 @@
    "discord"
   ],
   "budget_left": 144
+ },
+ {
+  "ts": "2026-11-10T22:23:02Z",
+  "status": "ok",
+  "searches": 2,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "141 Suchen übrig (SerpApi-Konto), 41 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "VN2",
+    "out": "2027-03-15",
+    "ret": "2027-04-14",
+    "recheck": true,
+    "trip": "VN",
+    "status": "ok",
+    "total": 752.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "PH2",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 661.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Air India"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 141
  }
 ]
