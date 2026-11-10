@@ -1504,5 +1504,58 @@
    "discord"
   ],
   "budget_left": 149
+ },
+ {
+  "ts": "2026-11-10T13:29:27Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "144 Suchen übrig (SerpApi-Konto), 41 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "D2",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 983.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Etihad",
+     "Malaysia Airlines"
+    ]
+   },
+   {
+    "variant": "LF1",
+    "out": "2027-05-20",
+    "ret": "2027-06-19",
+    "recheck": false,
+    "trip": "LF",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "V3",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 863.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 144
  }
 ]
