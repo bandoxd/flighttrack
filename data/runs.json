@@ -1446,5 +1446,63 @@
    "discord"
   ],
   "budget_left": 152
+ },
+ {
+  "ts": "2026-11-10T00:42:30Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "149 Suchen übrig (SerpApi-Konto), 42 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "VN2",
+    "out": "2027-03-15",
+    "ret": "2027-04-14",
+    "recheck": true,
+    "trip": "VN",
+    "status": "ok",
+    "total": 752.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "C3",
+    "out": "2027-05-05",
+    "ret": "2027-06-04",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 760.0,
+    "tier": "GUT",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1715.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Cathay Pacific"
+    ]
+   }
+  ],
+  "notified": [
+   "007960f6fd533605"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 149
  }
 ]
