@@ -1753,5 +1753,62 @@
    "discord"
   ],
   "budget_left": 134
+ },
+ {
+  "ts": "2026-11-12T22:44:44Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "131 Suchen übrig (SerpApi-Konto), 37 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "LF2",
+    "out": "2027-05-20",
+    "ret": "2027-06-19",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 793.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "D1",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1226.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Etihad",
+     "Malaysia Airlines"
+    ]
+   },
+   {
+    "variant": "V2",
+    "out": "2027-03-01",
+    "ret": "2027-03-28",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 905.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 131
  }
 ]
