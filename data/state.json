@@ -1,6 +1,6 @@
 {
  "cursor": {
-  "trip_pattern": 19,
+  "trip_pattern": 1,
   "trips": {
    "ID": {
     "pattern": 0,
@@ -39,11 +39,11 @@
     }
    },
    "PH": {
-    "pattern": 2,
+    "pattern": 4,
     "variant": {
-     "PH1": 1,
+     "PH1": 2,
      "PH2": 0,
-     "PH3": 1
+     "PH3": 2
     }
    },
    "LF": {
@@ -119,8 +119,8 @@
  },
  "usage": {
   "2026-10": 26,
-  "2026-11": 98
+  "2026-11": 101
  },
  "fail_streak": 0,
- "last_run": "2026-11-11T23:28:18Z"
+ "last_run": "2026-11-12T13:47:08Z"
 }
