@@ -1867,5 +1867,57 @@
    "discord"
   ],
   "budget_left": 128
+ },
+ {
+  "ts": "2026-11-13T22:39:31Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "125 Suchen übrig (SerpApi-Konto), 35 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "PH2",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1034.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Air India"
+    ]
+   },
+   {
+    "variant": "TH1",
+    "out": "2027-03-05",
+    "ret": "2027-04-04",
+    "recheck": false,
+    "trip": "TH",
+    "status": "ok",
+    "total": 705.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "LF1",
+    "out": "2027-05-10",
+    "ret": "2027-06-09",
+    "recheck": false,
+    "trip": "LF",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 125
  }
 ]
