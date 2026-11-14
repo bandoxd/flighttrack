@@ -1976,5 +1976,65 @@
    "discord"
   ],
   "budget_left": 122
+ },
+ {
+  "ts": "2026-11-14T21:31:35Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "119 Suchen übrig (SerpApi-Konto), 33 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "LF3",
+    "out": "2027-05-10",
+    "ret": "2027-06-09",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 871.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Garuda Indonesia",
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "V3",
+    "out": "2027-04-19",
+    "ret": "2027-05-19",
+    "recheck": false,
+    "trip": "ID",
+    "status": "ok",
+    "total": 783.0,
+    "tier": "GUT",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1520.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Austrian",
+     "EVA Air"
+    ]
+   }
+  ],
+  "notified": [
+   "a21ad2ae6576aecf"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 119
  }
 ]

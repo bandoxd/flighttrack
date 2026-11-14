@@ -1571,5 +1571,144 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-11-14T21:31:35Z",
+  "variant": "V3",
+  "out": "2027-04-19",
+  "ret": "2027-05-19",
+  "offer": {
+   "price": 783.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 46",
+      "from": "FRA",
+      "dep": "2027-04-19 15:15",
+      "to": "DXB",
+      "arr": "2027-04-19 23:35",
+      "duration_min": 380,
+      "overnight": false
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 356",
+      "from": "DXB",
+      "dep": "2027-04-20 04:10",
+      "to": "CGK",
+      "arr": "2027-04-20 15:30",
+      "duration_min": 500,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 275,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1155,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA0LTE5Ih4KA0ZSQRIKMjAyNy0wNC0xORoDRFhCKgJFSzICNDYiHwoDRFhCEgoyMDI3LTA0LTIwGgNDR0sqAkVLMgMzNTYoAWoHCAESA0ZSQXIHCAESA0NHSxogEgoyMDI3LTA1LTE5KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQM&tfu=EgIIAQ",
+   "typical": null,
+   "_variant": "V3",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 399",
+      "from": "DPS",
+      "dep": "2027-05-19 00:35",
+      "to": "DXB",
+      "arr": "2027-05-19 05:35",
+      "duration_min": 540,
+      "overnight": true
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 45",
+      "from": "DXB",
+      "dep": "2027-05-19 08:25",
+      "to": "FRA",
+      "arr": "2027-05-19 13:15",
+      "duration_min": 410,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 170,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1120,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 783.0,
+    "book_with": "Emirates",
+    "option_title": "",
+    "is_separate": false,
+    "direct": true,
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 823.0,
+   "score_parts": [],
+   "total": 783.0,
+   "effective": 823.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": 3.9,
+   "pct_below_ref": 3.9,
+   "reference": null,
+   "baseline": 814.5,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true,
+   "access_cost": 0.0,
+   "access_notes": [],
+   "separate_tickets": false,
+   "ground_min": 0,
+   "ground_max": 0,
+   "ground_open": [],
+   "trip": "ID"
+  },
+  "notified": true,
+  "key": "a21ad2ae6576aecf",
+  "channels": [
+   "discord"
+  ]
  }
 ]
