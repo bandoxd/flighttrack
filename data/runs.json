@@ -1919,5 +1919,62 @@
    "discord"
   ],
   "budget_left": 125
+ },
+ {
+  "ts": "2026-11-14T12:13:40Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "122 Suchen übrig (SerpApi-Konto), 33 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "ok",
+    "total": 537.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 4521.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "D2",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1171.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Malaysia Airlines",
+     "Turkish Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 122
  }
 ]
