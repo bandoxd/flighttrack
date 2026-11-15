@@ -2093,5 +2093,57 @@
    "discord"
   ],
   "budget_left": 114
+ },
+ {
+  "ts": "2026-11-15T21:50:50Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "111 Suchen übrig (SerpApi-Konto), 31 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "TH",
+    "status": "ok",
+    "total": 888.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "D1",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "D",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "LF2",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 857.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Etihad"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 111
  }
 ]
