@@ -2036,5 +2036,62 @@
    "discord"
   ],
   "budget_left": 119
+ },
+ {
+  "ts": "2026-11-15T12:45:36Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "114 Suchen übrig (SerpApi-Konto), 31 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "ok",
+    "total": 537.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "C1",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 842.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates",
+     "Garuda Indonesia"
+    ]
+   },
+   {
+    "variant": "VN1",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "VN",
+    "status": "ok",
+    "total": 1054.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Vietnam Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 114
  }
 ]
