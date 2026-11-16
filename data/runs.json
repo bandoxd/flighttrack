@@ -2145,5 +2145,53 @@
    "discord"
   ],
   "budget_left": 111
+ },
+ {
+  "ts": "2026-11-16T13:41:20Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "108 Suchen übrig (SerpApi-Konto), 29 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "PH2",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "PH",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1167.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 108
  }
 ]
