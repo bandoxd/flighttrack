@@ -1710,5 +1710,157 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-11-18T23:24:04Z",
+  "variant": "C3",
+  "out": "2027-05-15",
+  "ret": "2027-06-14",
+  "offer": {
+   "price": 745.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 88",
+      "from": "DUS",
+      "dep": "2027-05-15 09:20",
+      "to": "DOH",
+      "arr": "2027-05-15 16:25",
+      "duration_min": 365,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 958",
+      "from": "DOH",
+      "dep": "2027-05-15 18:30",
+      "to": "CGK",
+      "arr": "2027-05-16 07:30",
+      "duration_min": 540,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 125,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1030,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhp8EgoyMDI3LTA1LTE1Ih4KA0RVUxIKMjAyNy0wNS0xNRoDRE9IKgJRUjICODgiHwoDRE9IEgoyMDI3LTA1LTE1GgNDR0sqAlFSMgM5NTgoAmoHCAESA0ZSQWoHCAESA0RVU2oHCAESA01VQ2oHCAESA0JFUnIHCAESA0NHSxo7EgoyMDI3LTA2LTE0KAJqBwgBEgNEUFNyBwgBEgNGUkFyBwgBEgNEVVNyBwgBEgNNVUNyBwgBEgNCRVJAAUgBcAGYAQM&tfu=EgIIAQ",
+   "typical": null,
+   "_variant": "C3",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 961",
+      "from": "DPS",
+      "dep": "2027-06-14 00:35",
+      "to": "DOH",
+      "arr": "2027-06-14 04:45",
+      "duration_min": 550,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 71",
+      "from": "DOH",
+      "dep": "2027-06-14 14:35",
+      "to": "FRA",
+      "arr": "2027-06-14 19:55",
+      "duration_min": 380,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 590,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1520,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 745.0,
+    "book_with": "Qatar Airways",
+    "option_title": "",
+    "is_separate": false,
+    "direct": true,
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "cheapest_other": {
+     "book_with": "Flightnetwork",
+     "price": 737.0
+    },
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 1279.33,
+   "score_parts": [
+    "+441 € Inland/Fähren (Mitte)",
+    "+53 € Reisezeit 25 h 20 min"
+   ],
+   "total": 745.0,
+   "effective": 785.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": null,
+   "pct_below_ref": null,
+   "reference": null,
+   "baseline": null,
+   "reasons": [
+    "750–850 € mit guter Verbindung"
+   ],
+   "notify": true,
+   "access_cost": 40.0,
+   "access_notes": [
+    "Abflug DUS (+40 € Anreise)"
+   ],
+   "separate_tickets": false,
+   "ground_min": 302,
+   "ground_max": 580,
+   "ground_open": [
+    "Jakarta → Surabaya (Zug/Inlandsflug)",
+    "Gilimanuk → Pemuteran (Transfer)",
+    "Pemuteran → Denpasar (Transfer)"
+   ],
+   "trip": "C"
+  },
+  "notified": true,
+  "key": "e28005b69dda379a",
+  "channels": [
+   "discord"
+  ]
  }
 ]

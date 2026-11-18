@@ -2410,5 +2410,64 @@
    "discord"
   ],
   "budget_left": 96
+ },
+ {
+  "ts": "2026-11-18T23:24:04Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "93 Suchen übrig (SerpApi-Konto), 25 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "C3",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 791.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "D1",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1189.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Malaysia Airlines",
+     "Turkish Airlines"
+    ]
+   },
+   {
+    "variant": "PH2",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1039.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Air India"
+    ]
+   }
+  ],
+  "notified": [
+   "e28005b69dda379a"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 93
  }
 ]
