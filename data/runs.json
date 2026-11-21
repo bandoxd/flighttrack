@@ -2692,5 +2692,63 @@
    "discord"
   ],
   "budget_left": 79
+ },
+ {
+  "ts": "2026-11-21T13:29:23Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "76 Suchen übrig (SerpApi-Konto), 19 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "ok",
+    "total": 532.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-03-20",
+    "ret": "2027-04-19",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1648.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Cathay Pacific",
+     "Lufthansa"
+    ]
+   },
+   {
+    "variant": "LF3",
+    "out": "2027-05-20",
+    "ret": "2027-06-19",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 846.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Garuda Indonesia",
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 76
  }
 ]
