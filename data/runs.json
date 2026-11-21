@@ -2750,5 +2750,63 @@
    "discord"
   ],
   "budget_left": 76
+ },
+ {
+  "ts": "2026-11-21T22:11:48Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "73 Suchen übrig (SerpApi-Konto), 19 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "D2",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1053.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Malaysia Airlines",
+     "Turkish Airlines"
+    ]
+   },
+   {
+    "variant": "PH2",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 765.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Saudia"
+    ]
+   },
+   {
+    "variant": "C1",
+    "out": "2027-05-05",
+    "ret": "2027-06-04",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 817.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Emirates",
+     "Garuda Indonesia"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 73
  }
 ]
