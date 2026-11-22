@@ -2866,5 +2866,61 @@
    "discord"
   ],
   "budget_left": 70
+ },
+ {
+  "ts": "2026-11-22T22:28:37Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "67 Suchen übrig (SerpApi-Konto), 17 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-03-05",
+    "ret": "2027-04-04",
+    "recheck": false,
+    "trip": "TH",
+    "status": "ok",
+    "total": 701.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "PH3",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 993.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "LF2",
+    "out": "2027-05-20",
+    "ret": "2027-06-19",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 788.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 67
  }
 ]
