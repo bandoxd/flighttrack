@@ -2808,5 +2808,63 @@
    "discord"
   ],
   "budget_left": 73
+ },
+ {
+  "ts": "2026-11-22T13:23:22Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "70 Suchen übrig (SerpApi-Konto), 17 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "ok",
+    "total": 532.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-04-01",
+    "ret": "2027-05-01",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1180.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Condor",
+     "Etihad",
+     "Philippine Airlines"
+    ]
+   },
+   {
+    "variant": "VN1",
+    "out": "2027-03-15",
+    "ret": "2027-04-14",
+    "recheck": false,
+    "trip": "VN",
+    "status": "ok",
+    "total": 1060.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Vietnam Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 70
  }
 ]
