@@ -10,8 +10,8 @@ origin = "FRA"
 adults = 1
 currency = "EUR"
 # Abflugfenster (inkl.). März/April 2027, alternativ etwas später -> bis Mitte Mai.
-depart_from = "2027-03-01"
-depart_to   = "2027-05-15"
+depart_from = "2027-04-20"   # Reisezeit nur April–Juli, Java/Bali ab Mai trocken
+depart_to   = "2027-06-25"
 # Abstand zwischen geprüften Abflugtagen (Tage). Kleinere Zahl = feiner, aber mehr Suchen.
 depart_step_days = 7
 # Reisedauern (Tage), werden pro Abflugtag rotiert.
@@ -117,12 +117,12 @@ BER = 40
 # ------------------------------------------------------------------ Szenario C: Indonesien
 [[trips]]
 id = "C"
-name = "Ostjava + Bali (Szenario C)"
+name = "Ostjava + Bali-Nord (Malang, Amed, Batur)"
 emoji = "🇮🇩"
-priority = "NIEDRIG (nicht in Prioritätenliste)"
-share = 1
+priority = "HOCH (Malang, Amed/Mount Batur – dein Favorit Ostjava)"
+share = 3
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-05-05", "2027-06-04"], ["2027-05-15", "2027-06-14"], ["2027-04-20", "2027-05-20"]]
+windows = [["2027-05-05", "2027-06-04"], ["2027-05-15", "2027-06-14"], ["2027-06-15", "2027-07-15"]]   # Trockenzeit; ohne April (Ende Regenzeit)
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "absolute"          # gleiche Grenzen wie die bisherige Indonesien-Suche (750/850/950 €)
@@ -196,14 +196,14 @@ id = "PH"
 name = "Philippinen Cebu + Negros"
 emoji = "🇵🇭"
 priority = "1"
-share = 5
+share = 4
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-03-20", "2027-04-19"], ["2027-04-01", "2027-05-01"], ["2027-04-15", "2027-05-15"]]
+windows = [["2027-04-01", "2027-05-01"], ["2027-04-15", "2027-05-15"], ["2027-05-01", "2027-05-31"]]   # nur April–Mai (ab Juni Regenzeit)
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
 relative_pct = 20
-season = "Trockenzeit; Cebu/Dumaguete/Apo am besten ca. Dez–Mai (Dumaguete v. a. März–Mai), Mai etwas feuchter. Karwoche 21.–28.3.2027 (Ostern 28.3.) und Schulferien April–Mai: Fähren und Inlandsflüge voller. DGT hat nur Inlandsflüge – ab Europa immer über Manila/Cebu."
+season = "Nur April–Mai gesucht (ab Juni Regenzeit); Cebu/Mactan, Dumaguete/Apo, Moalboal, Puerto Galera am besten ca. Dez–Mai (Dumaguete v. a. März–Mai), Mai etwas feuchter. Karwoche 21.–28.3.2027 (Ostern 28.3.) und Schulferien April–Mai: Fähren und Inlandsflüge voller. DGT hat nur Inlandsflüge – ab Europa immer über Manila/Cebu."
 
 [[trips.routes]]
 id = "PH1"
@@ -268,7 +268,7 @@ emoji = "🦎"
 priority = "2"
 share = 4
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-05-01", "2027-05-31"], ["2027-05-10", "2027-06-09"], ["2027-05-20", "2027-06-19"]]
+windows = [["2027-05-01", "2027-05-31"], ["2027-05-20", "2027-06-19"], ["2027-06-15", "2027-07-15"]]   # Trockenzeit Mai–Juli
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
@@ -336,7 +336,7 @@ emoji = "🇲🇾"
 priority = "3"
 share = 3
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-04-15", "2027-05-15"], ["2027-05-01", "2027-05-31"], ["2027-05-15", "2027-06-14"]]
+windows = [["2027-04-15", "2027-05-15"], ["2027-05-15", "2027-06-14"], ["2027-06-15", "2027-07-15"]]   # April–Juli, nur vereinzelte Schauer
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
@@ -413,33 +413,42 @@ source = "Skyscanner/Kayak: ab RM 53"
 # ------------------------------------------------------------------ Priorität 4: Vietnam
 [[trips]]
 id = "VN"
-name = "Vietnam Phong Nha → Nha Trang"
+name = "Vietnam Da Nang / Nha Trang"
 emoji = "🇻🇳"
 priority = "4"
-share = 2
+share = 3
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-03-15", "2027-04-14"], ["2027-04-01", "2027-05-01"], ["2027-04-15", "2027-05-15"]]
+windows = [["2027-04-01", "2027-05-01"], ["2027-05-01", "2027-05-31"], ["2027-06-01", "2027-07-01"], ["2027-06-25", "2027-07-25"]]   # Zentralküste April–Juli trocken
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
 relative_pct = 20
-season = "März–Mai: Zentralküste (Hue, Da Nang, Quy Nhon, Nha Trang) trocken und warm; Phong-Nha-Höhlen geöffnet. 30.4./1.5. Nationalfeiertage – Züge/Flüge voll und teurer."
+season = "April–Juli: Zentralküste (Da Nang/Son Tra, Hoi An, Nha Trang) trocken und warm, gute Tauchsicht; Saigon ab Juni Regenzeit (darum Route Hanoi→Saigon nur April–Mai). 30.4./1.5. Feiertage – Züge/Flüge voll."
 
 [[trips.routes]]
 id = "VN1"
 name = "Gabelflug → Hanoi / Ho-Chi-Minh-Stadt →"
 outbound_to = "HAN"
 return_from = "SGN"
-weight = 3
+weight = 2
+windows = [["2027-04-01", "2027-05-01"], ["2027-05-01", "2027-05-31"]]   # Saigon ab Juni Regenzeit
 ground = ["vn_han_vdh", "vn_vdh_dad", "vn_dad_uih", "vn_uih_cxr", "vn_cxr_sgn"]
 
 [[trips.routes]]
 id = "VN2"
-name = "Gabelflug, beliebig HAN/DAD/SGN"
-outbound_to = "HAN,DAD,SGN"
-return_from = "HAN,DAD,SGN"
+name = "Gabelflug, beliebig HAN/DAD/SGN/CXR"
+outbound_to = "HAN,DAD,SGN,CXR"
+return_from = "HAN,DAD,SGN,CXR"
 weight = 1
 ground = ["vn_han_vdh", "vn_vdh_dad", "vn_dad_uih", "vn_uih_cxr", "vn_cxr_sgn"]
+
+[[trips.routes]]
+id = "VN3"
+name = "Hin & zurück Da Nang oder Nha Trang (Basis-Aufenthalt)"
+outbound_to = "DAD,CXR"
+return_from = "DAD,CXR"
+weight = 3
+ground = []
 
 [[trips.ground]]
 id = "vn_han_vdh"
@@ -476,14 +485,14 @@ id = "TH"
 name = "Thailand Khao Sok + Koh Kood/Koh Chang"
 emoji = "🇹🇭"
 priority = "5"
-share = 2
+share = 1
 origins = ["FRA", "DUS", "MUC", "BER"]
-windows = [["2027-03-05", "2027-04-04"], ["2027-03-20", "2027-04-19"], ["2027-04-05", "2027-05-05"]]
+windows = [["2027-04-01", "2027-05-01"], ["2027-04-05", "2027-05-05"]]   # nur April (ab Mai Regen an Ost- & Andamanküste)
 max_stops = 2
 allow_separate_tickets = true
 threshold_mode = "relative"
 relative_pct = 20
-season = "März–April: Koh Kood/Koh Chang (Ostküste) in guter Saison, ab Mai Regen. Songkran 13.–15. April: Verkehr voll, Preise höher. Achtung: Khao Sok liegt im Süden, Koh Kood/Chang im Osten – lange Überlandfahrt (ca. 1 Tag) oder Inlandsflug nötig."
+season = "Nur April gesucht: Koh Kood/Koh Chang und Krabi ab Mai Regen, Pattaya/Hua Hin ab Juni Schauer. Songkran 13.–15. April: Verkehr voll, Preise höher. Achtung: Khao Sok liegt im Süden, Koh Kood/Chang im Osten – lange Überlandfahrt (ca. 1 Tag) oder Inlandsflug nötig."
 
 [[trips.routes]]
 id = "TH1"

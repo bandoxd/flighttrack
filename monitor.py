@@ -232,7 +232,10 @@ def all_combos(cfg: dict, today: dt.date) -> dict[str, list[dict]]:
         else:
             pairs = [(w[0], w[1]) for w in tr.get("windows", []) if w[0] > today.isoformat()]
         for v in tr["variants"]:
-            plans[v["id"]] = [{"variant": v["id"], "out": o, "ret": r} for o, r in pairs]
+            vp = pairs
+            if tr["mode"] != "grid" and v.get("windows"):  # routenspezifische Zeitfenster (z. B. Regenzeit)
+                vp = [(w[0], w[1]) for w in v["windows"] if w[0] > today.isoformat()]
+            plans[v["id"]] = [{"variant": v["id"], "out": o, "ret": r} for o, r in vp]
     return plans
 
 
