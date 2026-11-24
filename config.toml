@@ -139,10 +139,10 @@ ground = ["c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
 
 [[trips.routes]]
 id = "C2"
-name = "Hin & zurück DPS (Vergleich)"
+name = "Hin & zurück Bali (Basis Amed / Mount Batur)"
 outbound_to = "DPS"
 return_from = "DPS"
-weight = 0
+weight = 2
 penalty_eur = 0
 ground = ["c_dps_sub", "c_sub_mlg", "c_tour", "c_ferry", "c_gil_pem", "c_pem_dps"]
 
@@ -285,9 +285,9 @@ ground = ["lf_lop_bangsal", "lf_gili", "lf_lop_lbj", "lf_komodo"]
 
 [[trips.routes]]
 id = "LF2"
-name = "Gabelflug → Lombok oder Bali / Labuan Bajo oder Bali →"
+name = "Lombok oder Bali hin / Labuan Bajo, Bali oder Lombok zurück (inkl. Basis Kuta Lombok)"
 outbound_to = "LOP,DPS"
-return_from = "LBJ,DPS"
+return_from = "LBJ,DPS,LOP"
 weight = 2
 ground = ["lf_lop_bangsal", "lf_gili", "lf_lop_lbj", "lf_komodo", "lf_lbj_dps"]
 

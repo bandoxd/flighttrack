@@ -457,7 +457,7 @@ class TestTrips(Base):
         for _ in range(200):
             for c in monitor.next_combos(cfg, st, 3, dt.date(2026, 11, 5), None):
                 seen.add(c["variant"])
-        self.assertFalse(seen & {"V4", "C2", "D3"})
+        self.assertFalse(seen & {"V4", "D3"})
 
     def test_hot_trip_gets_double_share(self):
         cfg = full_cfg()
@@ -518,7 +518,7 @@ class TestTrips(Base):
         self.assertEqual((p["type"], p["arrival_id"]), (1, "CEB,DGT,MNL"))
         p = monitor.base_params(full_cfg(), {"variant": "LF2", "out": "2027-05-01", "ret": "2027-05-31"}, "k")
         legs = json.loads(p["multi_city_json"])
-        self.assertEqual((legs[0]["arrival_id"], legs[1]["departure_id"]), ("LOP,DPS", "LBJ,DPS"))
+        self.assertEqual((legs[0]["arrival_id"], legs[1]["departure_id"]), ("LOP,DPS", "LBJ,DPS,LOP"))
         p = monitor.base_params(CFG, {"variant": "V2", "out": "2027-04-05", "ret": "2027-05-05"}, "k")
         self.assertEqual((p["departure_id"], p["stops"]), ("FRA", 2))
 
