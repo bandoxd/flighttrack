@@ -1,6 +1,6 @@
 {
  "cursor": {
-  "trip_pattern": 12,
+  "trip_pattern": 15,
   "trips": {
    "ID": {
     "pattern": 0,
@@ -25,9 +25,9 @@
     }
    },
    "VN": {
-    "pattern": 1,
+    "pattern": 2,
     "variant": {
-     "VN1": 1,
+     "VN1": 0,
      "VN2": 2
     }
    },
@@ -39,9 +39,9 @@
     }
    },
    "PH": {
-    "pattern": 5,
+    "pattern": 0,
     "variant": {
-     "PH1": 2,
+     "PH1": 0,
      "PH2": 1,
      "PH3": 2
     }
@@ -55,9 +55,9 @@
     }
    },
    "D": {
-    "pattern": 2,
+    "pattern": 3,
     "variant": {
-     "D1": 1,
+     "D1": 2,
      "D2": 2
     }
    }
@@ -131,12 +131,20 @@
    "variant": "C3",
    "out": "2027-05-15",
    "ret": "2027-06-14"
+  },
+  "88f635c0224c16c0": {
+   "total": 953.0,
+   "tier": "EXTREM GUT",
+   "ts": "2026-11-24T03:20:19Z",
+   "variant": "PH1",
+   "out": "2027-05-01",
+   "ret": "2027-05-31"
   }
  },
  "usage": {
   "2026-10": 26,
-  "2026-11": 171
+  "2026-11": 176
  },
  "fail_streak": 0,
- "last_run": "2026-11-23T16:00:23Z"
+ "last_run": "2026-11-24T03:20:19Z"
 }

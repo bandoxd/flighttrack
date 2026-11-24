@@ -2978,5 +2978,64 @@
    "discord"
   ],
   "budget_left": 64
+ },
+ {
+  "ts": "2026-11-24T03:20:19Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "61 Suchen übrig (SerpApi-Konto), 14 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "D1",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1170.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Lufthansa",
+     "Malaysia Airlines"
+    ]
+   },
+   {
+    "variant": "VN1",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "VN",
+    "status": "ok",
+    "total": 656.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 953.0,
+    "tier": "EXTREM GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [
+   "88f635c0224c16c0"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 61
  }
 ]
