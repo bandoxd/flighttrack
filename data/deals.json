@@ -2031,5 +2031,153 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-11-24T15:54:56Z",
+  "variant": "C2",
+  "out": "2027-05-05",
+  "ret": "2027-06-04",
+  "offer": {
+   "price": 809.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 50",
+      "from": "MUC",
+      "dep": "2027-05-05 15:40",
+      "to": "DXB",
+      "arr": "2027-05-05 23:40",
+      "duration_min": 360,
+      "overnight": false
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 368",
+      "from": "DXB",
+      "dep": "2027-05-06 03:25",
+      "to": "DPS",
+      "arr": "2027-05-06 16:35",
+      "duration_min": 550,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 225,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1135,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhp8EgoyMDI3LTA1LTA1Ih4KA01VQxIKMjAyNy0wNS0wNRoDRFhCKgJFSzICNTAiHwoDRFhCEgoyMDI3LTA1LTA2GgNEUFMqAkVLMgMzNjgoAmoHCAESA0ZSQWoHCAESA0RVU2oHCAESA01VQ2oHCAESA0JFUnIHCAESA0RQUxo7EgoyMDI3LTA2LTA0KAJqBwgBEgNEUFNyBwgBEgNGUkFyBwgBEgNEVVNyBwgBEgNNVUNyBwgBEgNCRVJAAUgBcAGYAQE&tfu=EgIIAQ",
+   "typical": null,
+   "_variant": "C2",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 369",
+      "from": "DPS",
+      "dep": "2027-06-04 19:45",
+      "to": "DXB",
+      "arr": "2027-06-05 00:45",
+      "duration_min": 540,
+      "overnight": false
+     },
+     {
+      "airline": "Emirates",
+      "flight_number": "EK 49",
+      "from": "DXB",
+      "dep": "2027-06-05 08:50",
+      "to": "MUC",
+      "arr": "2027-06-05 13:15",
+      "duration_min": 385,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DXB",
+      "duration_min": 485,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1410,
+    "airlines": [
+     "Emirates"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 809.0,
+    "book_with": "Emirates",
+    "option_title": "",
+    "is_separate": false,
+    "direct": true,
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "cheapest_other": {
+     "book_with": "Oojo x Dreampass",
+     "price": 787.0
+    },
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 1365.0,
+   "score_parts": [
+    "+441 € Inland/Fähren (Mitte)",
+    "+35 € Reisezeit 23 h 30 min"
+   ],
+   "total": 809.0,
+   "effective": 889.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "NORMAL",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": null,
+   "pct_below_ref": null,
+   "reference": null,
+   "baseline": null,
+   "reasons": [],
+   "notify": false,
+   "access_cost": 80.0,
+   "access_notes": [
+    "Abflug MUC (+40 € Anreise)",
+    "Ankunft MUC (+40 € Heimreise)"
+   ],
+   "separate_tickets": false,
+   "ground_min": 302,
+   "ground_max": 580,
+   "ground_open": [
+    "Bali → Surabaya (Inlandsflug/Zug, für Start auf Java)",
+    "Gilimanuk → Pemuteran (Transfer)",
+    "Pemuteran → Denpasar (Transfer)"
+   ],
+   "trip": "C"
+  },
+  "notified": false,
+  "key": "f6572c839a90366e"
  }
 ]
