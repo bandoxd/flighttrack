@@ -239,6 +239,22 @@ function render(){
   const deals = D.deals.filter(d => d.eval.notify && !d.expired && !laterHigher(d) && Date.parse(d.ts) >= REF - 21*864e5).filter(inF).sort((a,b) => (a.eval.score ?? a.eval.effective) - (b.eval.score ?? b.eval.effective));
   h += `<div class="sechead"><h2>🔔 Deals</h2><span class="meta">Angebote, die deine Kriterien erfüllen (letzte 21 Tage) · nicht mehr verfügbare werden automatisch aussortiert</span></div>`;
   h += deals.length ? `<div class="conns">${deals.slice(0, 8).map(d => connCard(fromDeal(d))).join('')}</div>` : `<div class="card empty">Noch kein Angebot unter deinen Schwellen – sobald eins auftaucht, erscheint es hier und du bekommst eine Nachricht.</div>`;
+  // Airbnb-Pakete
+  const AB = (D.airbnb || []).filter(p => TRIP === 'all' || p.trips.includes(TRIP));
+  if (AB.length) {
+    const withList = AB.filter(p => p.has_list).length;
+    h += `<div class="sechead"><h2>🏠 Airbnb-Pakete</h2><span class="meta">${withList}/${AB.length} Orte mit Merkliste · freie Fenster 20–35 Nächte · Flug + Airbnb + Transfer</span></div>`;
+    h += `<section class="card scroll"><table><thead><tr><th>Ort</th><th>Zeitraum</th><th>Bestes Airbnb</th><th class="num">Airbnb</th><th class="num">Flug</th><th class="num">Paket ≈</th></tr></thead><tbody>` +
+      AB.map(p => {
+        if (!p.has_list) return `<tr><td>${esc(p.name)}</td><td colspan="5" class="muted">Merkliste fehlt noch (${esc(p.range[0])} – ${esc(p.range[1])})</td></tr>`;
+        if (!p.windows.length) return `<tr><td>${esc(p.name)}</td><td colspan="5" class="muted">${p.checked ? 'kein freies Fenster gefunden' : 'wird beim nächsten Airbnb-Check geprüft'} · ${p.listings} Unterkünfte</td></tr>`;
+        return p.windows.map((w, i) => `<tr><td>${i ? '' : esc(p.name)}</td><td>${esc(w.check_in)} → ${esc(w.check_out)} (${w.nights} N)</td>` +
+          `<td>${w.best ? `<a href="${esc(w.best.url)}" target="_blank" rel="noopener">${esc(w.best.name)}</a>` : '<span class="muted">nichts ≤ Budget</span>'}` +
+          (w.stays.length > 1 ? `<div class="muted">${w.stays.filter(s => !w.best || s.id !== w.best.id).slice(0,4).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name.slice(0,28))}</a> ${s.total != null ? eur(s.total) : 'Preis unbekannt'}`).join(' · ')}</div>` : '') + `</td>` +
+          `<td class="num">${w.best ? eur(w.best.total) : '—'}</td><td class="num">${w.flight ? (w.flight.url ? `<a href="${esc(w.flight.url)}" target="_blank" rel="noopener">${eur(w.flight.total)}</a>` : eur(w.flight.total)) : '<span class="muted">wird gesucht</span>'}</td>` +
+          `<td class="num"><b>${w.package != null ? eur(w.package) : '—'}</b></td></tr>`).join('');
+      }).join('') + `</tbody></table></section>`;
+  }
   // Verbindungen
   const conns = Object.values(latestAll).filter(inF).sort((a,b) => (a.score ?? a.effective ?? a.best_total) - (b.score ?? b.effective ?? b.best_total));
   h += `<div class="sechead"><h2>✈️ Günstigste Verbindungen</h2><span class="meta">${conns.length} Termine (letzte 14 Tage) · sortiert nach Gesamtkosten inkl. Inland, Reisezeit & Umstiegen · antippen für Details</span></div>`;

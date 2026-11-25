@@ -1,0 +1,49 @@
+name: Airbnb Merklisten
+
+# Täglich kurz prüfen; abgefragt wird nur, wenn ein Ort neu ist, sein Link geändert wurde
+# oder die letzte Prüfung >= 7 Tage her ist (refresh_days). Manuell: "Run workflow" → force = true
+# liest alle Merklisten sofort neu (z. B. nachdem du neue Herzen gesetzt hast).
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Alle Merklisten jetzt neu lesen"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flight-monitor
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Merklisten, Kalender & Preise
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          AIRBNB_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '0' }}
+        run: python airbnb.py refresh
+      - name: Speichern
+        if: always()
+        run: |
+          git config user.name "flight-monitor-bot"
+          git config user.email "flight-monitor-bot@users.noreply.github.com"
+          git add data docs
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen."
+          else
+            git commit -m "Airbnb-Check $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash || true
+            git push
+          fi

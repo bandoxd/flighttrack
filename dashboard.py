@@ -66,11 +66,41 @@ def build(cfg: dict, data_dir: Path, docs_dir: Path) -> Path:
                 for o in obs[-4000:] if o.get("variant") in vtrip],
         "deals": [d | {"trip": vtrip.get(d.get("variant"), "?")} for d in deals[-80:] if d.get("variant") in vtrip],
     }
+    payload["airbnb"] = airbnb_payload(cfg, obs)
     html = TEMPLATE.replace("/*__DATA__*/null", json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"))
     docs_dir.mkdir(parents=True, exist_ok=True)
     out = docs_dir / "index.html"
     out.write_text(html, "utf-8")
     (docs_dir / ".nojekyll").write_text("")
+    return out
+
+
+def airbnb_payload(cfg: dict, obs: list[dict]) -> list[dict]:
+    """Orte mit Merkliste, freien Fenstern, bestem Airbnb und (falls gesucht) passendem Flug."""
+    if not cfg.get("airbnb"):
+        return []
+    import airbnb
+    data = (cfg.get("_airbnb") or {}).get("stays", {}).get("places", {})
+    cut = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=14)).isoformat()[:19]
+    out = []
+    for p in airbnb.settings(cfg)["places"]:
+        pd = data.get(p["id"]) or {}
+        tr = p.get("transfer_eur", [0, 0])
+        wins = []
+        for w in pd.get("windows", []):
+            b = airbnb.best_stay(w)
+            fl = [o for o in obs if o.get("variant") == f"AB-{p['id']}" and o.get("ret") == w["check_out"]
+                  and o.get("best_total") and o["ts"] >= cut]
+            f = min(fl, key=lambda o: o["best_total"]) if fl else None
+            wins.append({"check_in": w["check_in"], "check_out": w["check_out"], "nights": w["nights"],
+                         "best": b, "stays": w.get("stays", [])[:6],
+                         "flight": {"total": f["best_total"], "out": f["out"], "url": f.get("google_flights_url"),
+                                    "airlines": f.get("airlines")} if f else None,
+                         "package": (f["best_total"] + b["total"] + sum(tr) / 2) if f and b else None})
+        out.append({"id": p["id"], "name": p["name"], "trips": p.get("trips", []), "airports": p.get("airports", []),
+                    "has_list": bool(p.get("wishlist_url") or p.get("listings")), "listings": pd.get("listings", 0),
+                    "checked": pd.get("ts"), "range": [p.get("check_in_from"), p.get("check_out_to")],
+                    "transfer": tr, "windows": wins})
     return out
 
 

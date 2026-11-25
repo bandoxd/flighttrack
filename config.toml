@@ -536,3 +536,172 @@ name = "Koh Chang → Bangkok (Fähre + Bus/Van)"
 min = 12
 max = 30
 source = "12go/visitthailandtoday: Van/Bus+Fähre EUR 12–26, Autofähre ฿90"
+
+# ============================================================================================
+# Airbnb-Merklisten (Modul airbnb.py). Pro Ort eine Merkliste: in Airbnb Merkliste öffnen →
+# Teilen → „Link kopieren“ (view-only, …/wishlists/v/…) und bei wishlist_url eintragen.
+# Alternativ/zusätzlich einzelne Unterkünfte: listings = ["https://www.airbnb.com/rooms/123", …]
+# Neue Herzen in einer eingetragenen Merkliste werden beim wöchentlichen Check automatisch übernommen.
+# transfer_eur = Richtwert Flughafen ⇄ Unterkunft (hin + zurück, Stand Recherche Nov 2026).
+# check_in_from / check_out_to = regenfreie Zeit des Orts (nur April–Juli 2027).
+# ============================================================================================
+[airbnb]
+enabled = true
+max_total_eur = 450            # Gesamtpreis des Aufenthalts (inkl. Gebühren laut Airbnb-Abfrage)
+min_nights = 20
+max_nights = 35
+preferred_nights = [30, 25, 21]
+refresh_days = 7               # Merklisten, Kalender und Preise werden wöchentlich neu geprüft
+windows_per_place = 2          # beste freie Zeitfenster pro Ort (bekommen gezielte Flugsuchen)
+max_listings_per_place = 10
+max_price_checks_per_refresh = 60   # Deckel für Apify-Kosten (≈ 0,12 $ pro Woche)
+
+[[airbnb.places]]
+id = "danang"
+name = "Da Nang / Son Tra"
+trips = ["VN"]
+airports = ["DAD"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-07-31"
+transfer_eur = [10, 20]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "nhatrang"
+name = "Nha Trang"
+trips = ["VN"]
+airports = ["CXR"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-07-31"
+transfer_eur = [15, 30]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "malang"
+name = "Malang"
+trips = ["C", "ID"]
+airports = ["SUB"]
+check_in_from = "2027-05-01"
+check_out_to = "2027-07-31"
+transfer_eur = [10, 40]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "amed"
+name = "Amed (Bali)"
+trips = ["C", "ID"]
+airports = ["DPS"]
+check_in_from = "2027-05-01"
+check_out_to = "2027-07-31"
+transfer_eur = [40, 70]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "kutalombok"
+name = "Kuta Lombok"
+trips = ["LF"]
+airports = ["LOP"]
+check_in_from = "2027-05-01"
+check_out_to = "2027-07-31"
+transfer_eur = [10, 25]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "giliair"
+name = "Gili Air"
+trips = ["LF"]
+airports = ["LOP"]
+check_in_from = "2027-05-01"
+check_out_to = "2027-07-31"
+transfer_eur = [30, 70]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "labuanbajo"
+name = "Labuan Bajo (Flores)"
+trips = ["LF"]
+airports = ["LBJ"]
+check_in_from = "2027-05-01"
+check_out_to = "2027-07-31"
+transfer_eur = [5, 15]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "cebu"
+name = "Cebu City / Mactan"
+trips = ["PH"]
+airports = ["CEB"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-05-31"
+transfer_eur = [5, 20]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "moalboal"
+name = "Moalboal"
+trips = ["PH"]
+airports = ["CEB"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-05-31"
+transfer_eur = [20, 80]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "dauin"
+name = "Dauin / Dumaguete"
+trips = ["PH"]
+airports = ["DGT"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-05-31"
+transfer_eur = [10, 30]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "puertogalera"
+name = "Puerto Galera"
+trips = ["PH"]
+airports = ["MNL"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-05-31"
+transfer_eur = [30, 70]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "kotakinabalu"
+name = "Kota Kinabalu"
+trips = ["D"]
+airports = ["BKI"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-07-31"
+transfer_eur = [5, 15]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "semporna"
+name = "Semporna"
+trips = ["D"]
+airports = ["TWU"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-07-31"
+transfer_eur = [15, 40]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "pattaya"
+name = "Pattaya / Jomtien"
+trips = ["TH"]
+airports = ["BKK"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-04-30"
+transfer_eur = [20, 60]
+wishlist_url = ""
+
+[[airbnb.places]]
+id = "huahin"
+name = "Hua Hin"
+trips = ["TH"]
+airports = ["BKK"]
+check_in_from = "2027-04-01"
+check_out_to = "2027-05-31"
+transfer_eur = [30, 70]
+wishlist_url = ""

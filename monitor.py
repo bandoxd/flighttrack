@@ -125,6 +125,12 @@ def trips(cfg: dict) -> list[dict]:
         d.update({k: v for k, v in tr.items() if k != "routes"})
         d["variants"] = tr.get("routes", [])
         out.append(d)
+    if cfg.get("_airbnb"):  # gezielte Flugsuchen zu gefundenen Airbnb-Zeitfenstern (Routen "AB-<Ort>")
+        import airbnb
+        extra = airbnb.synthetic_routes(cfg)
+        for tr in out:
+            if tr["mode"] == "windows" and extra.get(tr["id"]):
+                tr["variants"] = list(tr["variants"]) + extra[tr["id"]]
     vmap = {}
     for tr in out:
         for v in tr["variants"]:
@@ -777,6 +783,8 @@ def format_deal(cfg: dict, d: dict) -> str:
         lines.append("ℹ️ " + escape(n))
     if tr.get("season"):
         lines.append("🌦️ " + escape(tr["season"]))
+    for ln in airbnb_lines(cfg, d)[0]:
+        lines.append(escape(re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1 (\2)", ln).replace("**", "")))
     b = o.get("booking") or {}
     if b.get("cheapest_other"):
         lines.append(f"ℹ️ Direktbuchung bei der Airline gewählt (günstigster Vermittler: "
@@ -884,6 +892,12 @@ def discord_embed(cfg: dict, d: dict) -> dict:
     warn = e["issues"] + (o.get("verify_notes") or [])
     if warn:
         fields.append({"name": "⚠️ Hinweise", "value": "\n".join(f"• {w}" for w in warn)[:1024], "inline": False})
+    ab, pkg = airbnb_lines(cfg, d)
+    if ab:
+        fields.append({"name": "🏠 Airbnb (deine Merklisten)", "value": "\n".join(ab)[:1024], "inline": False})
+    if pkg:
+        desc.insert(1, f"🧮 **Paket: Flug {e['total']:.0f} € + Airbnb {pkg['stay']['total']:.0f} € "
+                       f"+ Transfer ~{pkg['transfer']:.0f} € = {pkg['total']:.0f} €**")
     if tr.get("season"):
         fields.append({"name": "🌦️ Saison", "value": tr["season"][:1024], "inline": False})
     links = []
@@ -901,6 +915,18 @@ def discord_embed(cfg: dict, d: dict) -> dict:
     if o.get("google_flights_url"):
         emb["url"] = o["google_flights_url"]
     return emb
+
+
+def airbnb_lines(cfg: dict, d: dict) -> tuple[list[str], dict | None]:
+    """Airbnb-Zeilen (Platzhalter, bestes passendes Airbnb, Vergleich) für diesen Flug-Deal."""
+    if not cfg.get("airbnb"):
+        return [], None
+    import airbnb
+    v, tr = variant_by_id(cfg, d["variant"]), trip_of(cfg, d["variant"])
+    try:
+        return airbnb.package_lines(cfg, tr["id"], d["out"], d["ret"], d["eval"]["total"], v.get("airbnb_place"))
+    except (KeyError, ValueError, TypeError) as ex:  # Airbnb-Daten dürfen nie eine Flugmeldung verhindern
+        return [f"🏠 Airbnb-Daten nicht lesbar ({type(ex).__name__})"], None
 
 
 def html_to_md(s: str) -> str:
@@ -1325,6 +1351,9 @@ def recheck_deals(cfg: dict) -> dict:
 def main(argv: list[str]) -> int:
     cmd = argv[1] if len(argv) > 1 else "run"
     cfg = load_config()
+    if cfg.get("airbnb"):
+        import airbnb
+        airbnb.attach(cfg)
     if cmd == "run":
         try:
             rec = run(cfg)
