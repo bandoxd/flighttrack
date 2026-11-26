@@ -3274,5 +3274,63 @@
    "discord"
   ],
   "budget_left": 45
+ },
+ {
+  "ts": "2026-11-26T15:20:05Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "39 Suchen übrig (SerpApi-Konto), 9 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "ok",
+    "total": 532.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Oman Air"
+    ]
+   },
+   {
+    "variant": "C2",
+    "out": "2027-05-15",
+    "ret": "2027-06-14",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 789.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "LF2",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "LF",
+    "status": "ok",
+    "total": 789.0,
+    "tier": "ZU TEUER",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   }
+  ],
+  "notified": [
+   "c3f9236cdd4bf997"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 39
  }
 ]
