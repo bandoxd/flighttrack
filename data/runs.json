@@ -3207,5 +3207,72 @@
    "discord"
   ],
   "budget_left": 48
+ },
+ {
+  "ts": "2026-11-26T01:00:00Z",
+  "status": "ok",
+  "searches": 4,
+  "verifications": 2,
+  "errors": [],
+  "notes": [
+   "45 Suchen übrig (SerpApi-Konto), 10 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "LF1",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "LF",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "C3",
+    "out": "2027-06-15",
+    "ret": "2027-07-15",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 777.0,
+    "tier": "GUT",
+    "airlines": [
+     "Emirates"
+    ]
+   },
+   {
+    "variant": "PH1",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 1031.0,
+    "tier": "GUT",
+    "airlines": [
+     "Qatar Airways"
+    ]
+   },
+   {
+    "variant": "PH3",
+    "out": "2027-05-01",
+    "ret": "2027-05-31",
+    "recheck": false,
+    "trip": "PH",
+    "status": "ok",
+    "total": 994.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "EVA Air"
+    ]
+   }
+  ],
+  "notified": [
+   "042dd0bc7e4de4f6"
+  ],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 45
  }
 ]
