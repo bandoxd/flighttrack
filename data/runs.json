@@ -3388,5 +3388,59 @@
    "discord"
   ],
   "budget_left": 34
+ },
+ {
+  "ts": "2026-11-27T15:07:51Z",
+  "status": "ok",
+  "searches": 3,
+  "verifications": 0,
+  "errors": [],
+  "notes": [
+   "29 Suchen übrig (SerpApi-Konto), 7 Läufe bis Monatsende"
+  ],
+  "results": [
+   {
+    "variant": "TH1",
+    "out": "2027-04-05",
+    "ret": "2027-05-05",
+    "recheck": true,
+    "trip": "TH",
+    "status": "no_results",
+    "message": "Keine Flüge gefunden"
+   },
+   {
+    "variant": "C1",
+    "out": "2027-06-15",
+    "ret": "2027-07-15",
+    "recheck": false,
+    "trip": "C",
+    "status": "ok",
+    "total": 769.0,
+    "tier": "GUT",
+    "airlines": [
+     "China Southern"
+    ]
+   },
+   {
+    "variant": "D1",
+    "out": "2027-04-15",
+    "ret": "2027-05-15",
+    "recheck": false,
+    "trip": "D",
+    "status": "ok",
+    "total": 1080.0,
+    "tier": "NORMAL",
+    "airlines": [
+     "Condor",
+     "Etihad",
+     "Malaysia Airlines"
+    ]
+   }
+  ],
+  "notified": [],
+  "channels": [
+   "discord"
+  ],
+  "budget_left": 29
  }
 ]
