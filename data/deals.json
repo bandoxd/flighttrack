@@ -2456,5 +2456,156 @@
   "channels": [
    "discord"
   ]
+ },
+ {
+  "ts": "2026-11-27T01:01:29Z",
+  "variant": "D1",
+  "out": "2027-06-15",
+  "ret": "2027-07-15",
+  "offer": {
+   "price": 1197.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "China Southern",
+      "flight_number": "CZ 332",
+      "from": "FRA",
+      "dep": "2027-06-15 14:05",
+      "to": "CAN",
+      "arr": "2027-06-16 07:30",
+      "duration_min": 685,
+      "overnight": true
+     },
+     {
+      "airline": "China Southern",
+      "flight_number": "CZ 8335",
+      "from": "CAN",
+      "dep": "2027-06-16 15:10",
+      "to": "BKI",
+      "arr": "2027-06-16 18:20",
+      "duration_min": 190,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "CAN",
+      "duration_min": 460,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1335,
+    "airlines": [
+     "China Southern"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhp-EgoyMDI3LTA2LTE1Ih8KA0ZSQRIKMjAyNy0wNi0xNRoDQ0FOKgJDWjIDMzMyIiAKA0NBThIKMjAyNy0wNi0xNhoDQktJKgJDWjIEODMzNSgCagcIARIDRlJBagcIARIDRFVTagcIARIDTVVDagcIARIDQkVScgcIARIDQktJGjsSCjIwMjctMDctMTUoAmoHCAESA0JLSXIHCAESA0ZSQXIHCAESA0RVU3IHCAESA01VQ3IHCAESA0JFUkABSAFwAZgBAQ&tfu=EgIIAQ",
+   "typical": null,
+   "_variant": "D1",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "China Southern",
+      "flight_number": "CZ 8336",
+      "from": "BKI",
+      "dep": "2027-07-15 19:20",
+      "to": "CAN",
+      "arr": "2027-07-15 22:45",
+      "duration_min": 205,
+      "overnight": false
+     },
+     {
+      "airline": "China Southern",
+      "flight_number": "CZ 6041",
+      "from": "CAN",
+      "dep": "2027-07-16 08:10",
+      "to": "URC",
+      "arr": "2027-07-16 13:10",
+      "duration_min": 300,
+      "overnight": false
+     },
+     {
+      "airline": "China Southern",
+      "flight_number": "CZ 6041",
+      "from": "URC",
+      "dep": "2027-07-16 15:15",
+      "to": "FRA",
+      "arr": "2027-07-16 17:20",
+      "duration_min": 485,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "CAN",
+      "duration_min": 565,
+      "overnight": false
+     },
+     {
+      "airport": "URC",
+      "duration_min": 125,
+      "overnight": false
+     }
+    ],
+    "stops": 2,
+    "duration_min": 1680,
+    "airlines": [
+     "China Southern"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 1197.0,
+    "book_with": "Mytrip",
+    "option_title": "",
+    "is_separate": false,
+    "direct": false,
+    "baggage": [
+     "1 free carry-on"
+    ],
+    "extensions": [],
+    "bag_cost": null,
+    "bag_note": null,
+    "baggage_text": "1 free carry-on"
+   },
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 1707.5,
+   "score_parts": [
+    "+248 € Inland/Fähren (Mitte)",
+    "+22 € Reisezeit 22 h 15 min",
+    "+80 € Reisezeit 28 h 00 min",
+    "+40 € 2 Umstiege"
+   ],
+   "total": 1317.0,
+   "effective": 1317.0,
+   "bag_cost": 120.0,
+   "bag_note": "unbekannt – 120 € Zuschlag angesetzt",
+   "tier": "ZU TEUER",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": -10.8,
+   "pct_below_ref": -10.8,
+   "reference": 1189.0,
+   "baseline": 1189.0,
+   "reasons": [],
+   "notify": false,
+   "access_cost": 0.0,
+   "access_notes": [],
+   "separate_tickets": false,
+   "ground_min": 133,
+   "ground_max": 363,
+   "ground_open": [],
+   "trip": "D"
+  },
+  "notified": false,
+  "key": "f671429d45763810"
  }
 ]
