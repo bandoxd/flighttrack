@@ -2607,5 +2607,315 @@
   },
   "notified": false,
   "key": "f671429d45763810"
+ },
+ {
+  "ts": "2026-11-28T00:32:49Z",
+  "variant": "V2",
+  "out": "2027-05-18",
+  "ret": "2027-06-17",
+  "offer": {
+   "price": 689.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 68",
+      "from": "FRA",
+      "dep": "2027-05-18 17:15",
+      "to": "DOH",
+      "arr": "2027-05-19 00:15",
+      "duration_min": 360,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 960",
+      "from": "DOH",
+      "dep": "2027-05-19 07:50",
+      "to": "DPS",
+      "arr": "2027-05-19 22:40",
+      "duration_min": 590,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 455,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1405,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhphEgoyMDI3LTA1LTE4Ih4KA0ZSQRIKMjAyNy0wNS0xOBoDRE9IKgJRUjICNjgiHwoDRE9IEgoyMDI3LTA1LTE5GgNEUFMqAlFSMgM5NjAoAWoHCAESA0ZSQXIHCAESA0RQUxogEgoyMDI3LTA2LTE3KAFqBwgBEgNEUFNyBwgBEgNGUkFAAUgBcAGYAQE&tfu=EgIIAQ",
+   "typical": [
+    730,
+    990
+   ],
+   "_variant": "V2",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 961",
+      "from": "DPS",
+      "dep": "2027-06-17 00:35",
+      "to": "DOH",
+      "arr": "2027-06-17 04:45",
+      "duration_min": 550,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 67",
+      "from": "DOH",
+      "dep": "2027-06-17 09:15",
+      "to": "FRA",
+      "arr": "2027-06-17 14:35",
+      "duration_min": 380,
+      "overnight": false
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 270,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 1200,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 689.0,
+    "book_with": "lastminute.com",
+    "option_title": "",
+    "is_separate": false,
+    "direct": false,
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 763.17,
+   "score_parts": [
+    "+34 € Reisezeit 23 h 25 min"
+   ],
+   "total": 689.0,
+   "effective": 729.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "EXTREM GUT",
+   "good_connection": true,
+   "issues": [],
+   "pct_below_baseline": 12.1,
+   "pct_below_ref": 12.1,
+   "reference": null,
+   "baseline": 784.0,
+   "reasons": [
+    "unter 750 €"
+   ],
+   "notify": true,
+   "access_cost": 0.0,
+   "access_notes": [],
+   "separate_tickets": false,
+   "ground_min": 0,
+   "ground_max": 0,
+   "ground_open": [],
+   "trip": "ID"
+  },
+  "notified": true,
+  "key": "a5750b2ce493944f",
+  "channels": [
+   "discord"
+  ]
+ },
+ {
+  "ts": "2026-11-28T00:32:49Z",
+  "variant": "PH1",
+  "out": "2027-05-01",
+  "ret": "2027-05-31",
+  "offer": {
+   "price": 963.0,
+   "leg": {
+    "segments": [
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 84",
+      "from": "BER",
+      "dep": "2027-05-01 22:30",
+      "to": "DOH",
+      "arr": "2027-05-02 05:10",
+      "duration_min": 340,
+      "overnight": true
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 936",
+      "from": "DOH",
+      "dep": "2027-05-03 02:50",
+      "to": "CEB",
+      "arr": "2027-05-03 17:55",
+      "duration_min": 605,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "DOH",
+      "duration_min": 1300,
+      "overnight": false
+     }
+    ],
+    "stops": 1,
+    "duration_min": 2245,
+    "airlines": [
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=de&curr=EUR&tfs=CBwQAhp8EgoyMDI3LTA1LTAxIh4KA0JFUhIKMjAyNy0wNS0wMRoDRE9IKgJRUjICODQiHwoDRE9IEgoyMDI3LTA1LTAzGgNDRUIqAlFSMgM5MzYoAmoHCAESA0ZSQWoHCAESA0RVU2oHCAESA01VQ2oHCAESA0JFUnIHCAESA0NFQho7EgoyMDI3LTA1LTMxKAJqBwgBEgNER1RyBwgBEgNGUkFyBwgBEgNEVVNyBwgBEgNNVUNyBwgBEgNCRVJAAUgBcAGYAQM&tfu=EgIIAQ",
+   "typical": null,
+   "_variant": "PH1",
+   "return_leg": {
+    "segments": [
+     {
+      "airline": "Philippine Airlines",
+      "flight_number": "PR 2544",
+      "from": "DGT",
+      "dep": "2027-05-31 13:20",
+      "to": "MNL",
+      "arr": "2027-05-31 14:40",
+      "duration_min": 80,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 933",
+      "from": "MNL",
+      "dep": "2027-05-31 18:35",
+      "to": "DOH",
+      "arr": "2027-05-31 23:05",
+      "duration_min": 570,
+      "overnight": false
+     },
+     {
+      "airline": "Qatar Airways",
+      "flight_number": "QR 69",
+      "from": "DOH",
+      "dep": "2027-06-01 01:55",
+      "to": "FRA",
+      "arr": "2027-06-01 07:15",
+      "duration_min": 380,
+      "overnight": true
+     }
+    ],
+    "layovers": [
+     {
+      "airport": "MNL",
+      "duration_min": 235,
+      "overnight": false
+     },
+     {
+      "airport": "DOH",
+      "duration_min": 170,
+      "overnight": false
+     }
+    ],
+    "stops": 2,
+    "duration_min": 1435,
+    "airlines": [
+     "Philippine Airlines",
+     "Qatar Airways"
+    ],
+    "self_transfer": false
+   },
+   "booking": {
+    "found": true,
+    "separate_tickets": false,
+    "split_options_seen": false,
+    "price": 963.0,
+    "book_with": "Qatar Airways",
+    "option_title": "",
+    "is_separate": false,
+    "direct": true,
+    "baggage": [
+     "1 free carry-on",
+     "2 free checked bags"
+    ],
+    "extensions": [],
+    "bag_cost": 0.0,
+    "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+    "baggage_text": "1 free carry-on | 2 free checked bags"
+   },
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "verified": true,
+   "verify_notes": []
+  },
+  "eval": {
+   "score": 1276.33,
+   "score_parts": [
+    "+20 € Inland/Fähren (Mitte)",
+    "+174 € Reisezeit 37 h 25 min",
+    "+39 € Reisezeit 23 h 55 min",
+    "+40 € 2 Umstiege"
+   ],
+   "total": 963.0,
+   "effective": 1003.0,
+   "bag_cost": 0.0,
+   "bag_note": "inklusive (laut Buchungsoption verifiziert)",
+   "tier": "EXTREM GUT",
+   "good_connection": false,
+   "issues": [
+    "lange Reisezeit (37 h 25 min)",
+    "langer Umstieg DOH (21 h 40 min)"
+   ],
+   "pct_below_baseline": 36.6,
+   "pct_below_ref": 34.0,
+   "reference": 1520.0,
+   "baseline": 1520.0,
+   "reasons": [
+    "34 % unter beobachtetes Niveau (Median 1520 €)"
+   ],
+   "notify": true,
+   "access_cost": 40.0,
+   "access_notes": [
+    "Abflug BER (+40 € Anreise)"
+   ],
+   "separate_tickets": false,
+   "ground_min": 12,
+   "ground_max": 28,
+   "ground_open": [
+    "Flughafen Cebu → Moalboal (Bus/Taxi)",
+    "Apo Island Tagesausflüge"
+   ],
+   "trip": "PH"
+  },
+  "notified": false,
+  "key": "88f635c0224c16c0",
+  "duplicate": true
  }
 ]
